@@ -52,8 +52,10 @@ dependencies {
     kaptTest "com.google.dagger:hilt-android-compiler:$hilt_version"
     // endregion dagger hilt
     //region RxAndroid
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
-    implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
+    implementation "com.jakewharton.rxbinding4:rxbinding:$rx_binding_version"
+    implementation "com.jakewharton.rxrelay3:rxrelay:$rx_version"
+    implementation "io.reactivex.rxjava3:rxandroid:$rx_version"
+    implementation "io.reactivex.rxjava3:rxjava:$rx_version"
     //endregion
     //region Retrofit2
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
