@@ -26,7 +26,7 @@ class SplashIntentFactory @Inject constructor(
 
     private fun makeIntent(viewEvent: SplashViewEvent): Intent<SplashState> {
         return when (viewEvent) {
-            SplashViewEvent.CheckPermission -> TODO()
+            SplashViewEvent.CheckPermission -> buildWeatherRequestIntent() // TODO: Remove #buildWeatherRequestIntent(). Must implement new one.
             SplashViewEvent.RequestWeatherFromActivity -> buildWeatherRequestIntent()
         }
     }
