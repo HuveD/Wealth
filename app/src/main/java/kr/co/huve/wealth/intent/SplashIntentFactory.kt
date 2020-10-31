@@ -21,11 +21,12 @@ class SplashIntentFactory @Inject constructor(
 ) {
 
     fun process(event: SplashViewEvent) {
-        splashModelStore.process(toIntent(event))
+        splashModelStore.process(makeIntent(event))
     }
 
-    private fun toIntent(viewEvent: SplashViewEvent): Intent<SplashState> {
+    private fun makeIntent(viewEvent: SplashViewEvent): Intent<SplashState> {
         return when (viewEvent) {
+            SplashViewEvent.CheckPermission -> TODO()
             SplashViewEvent.RequestWeatherFromActivity -> buildWeatherRequestIntent()
         }
     }

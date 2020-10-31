@@ -50,7 +50,10 @@ class SplashActivity : AppCompatActivity(),
                 Intent(
                     this@SplashActivity,
                     MainActivity::class.java
-                ).apply { startActivity(this) }
+                ).apply {
+                    this.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(this)
+                }
             }
         }
     }
@@ -58,7 +61,7 @@ class SplashActivity : AppCompatActivity(),
     override fun events(): Observable<SplashViewEvent> {
         return splashModelStore.modelState().filter { it == SplashState.Idle }.map {
             // Idle 상태시 로딩 요청 이벤트 전달
-            SplashViewEvent.RequestWeatherFromActivity
+            SplashViewEvent.CheckPermission
         }
     }
 }
