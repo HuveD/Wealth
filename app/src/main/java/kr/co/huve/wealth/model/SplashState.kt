@@ -1,9 +1,15 @@
 package kr.co.huve.wealth.model
 
+import kr.co.huve.wealth.model.backend.data.Weather
+
 sealed class SplashState {
-    object Bored(var nm : Int) : SplashState() {
-        fun loadWeather() = Loading
+    object Idle : SplashState()
+    data class Loading(val cancel: () -> Unit) : SplashState() {
+        enum class Type {
+            IDLE, PROGRESS_IN_WEATHER, COMPLETE
+        }
     }
 
-    object Loading : SplashState()
+    data class Ready(val dataSet: List<Weather>) : SplashState()
+    data class Error(val throwable: Throwable) : SplashState()
 }

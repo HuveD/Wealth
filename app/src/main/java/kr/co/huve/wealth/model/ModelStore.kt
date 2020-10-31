@@ -5,7 +5,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import kr.co.huve.wealth.intent.Intent
 
-open class ModelStore<S>(startingState: S): Model<S> {
+open class ModelStore<S>(startingState: S) : Model<S> {
 
     private val intents = PublishRelay.create<Intent<S>>()
 
@@ -14,6 +14,10 @@ open class ModelStore<S>(startingState: S): Model<S> {
         .scan(startingState) { oldState, intent -> intent.reduce(oldState) }
         .replay(1)
         .apply { connect() }
+
+//    private val internalDisposable = store.subscribe(::internalLogger, ::errorHandler)
+//    private fun internalLogger(state:S) = Log.i("TAG","$state")
+//    private fun errorHandler(throwable: Throwable): Unit = throw throwable
 
     /**
      * Model will receive intents to be processed via this function.
