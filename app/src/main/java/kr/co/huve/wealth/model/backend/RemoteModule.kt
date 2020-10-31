@@ -20,8 +20,8 @@ object RemoteModule {
         return Retrofit.Builder()
             .baseUrl(NetworkConfig.WEATHER_API)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create()).build()
-            .create(WeatherRestApi::class.java)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build().create(WeatherRestApi::class.java)
     }
 
     @Provides
@@ -30,7 +30,7 @@ object RemoteModule {
         return Retrofit.Builder()
             .baseUrl(NetworkConfig.COVID_API)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create()).build()
-            .create(CovidRestApi::class.java)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build().create(CovidRestApi::class.java)
     }
 }

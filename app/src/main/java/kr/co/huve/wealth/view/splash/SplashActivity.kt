@@ -2,7 +2,6 @@ package kr.co.huve.wealth.view.splash
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.Observable
@@ -16,7 +15,6 @@ import kr.co.huve.wealth.view.EventObservable
 import kr.co.huve.wealth.view.MainActivity
 import kr.co.huve.wealth.view.StateSubscriber
 import javax.inject.Inject
-
 
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity(),
@@ -48,7 +46,6 @@ class SplashActivity : AppCompatActivity(),
 
     override fun Observable<SplashState>.subscribeToState(): Disposable {
         return subscribe {
-            Log.d("정현", it.toString())
             if (it is SplashState.Ready) {
                 Intent(
                     this@SplashActivity,

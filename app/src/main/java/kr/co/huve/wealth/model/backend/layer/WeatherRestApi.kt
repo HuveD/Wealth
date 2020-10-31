@@ -12,5 +12,5 @@ interface WeatherRestApi {
         @Query("q") city: String,
         @Query("lang") lang: String,
         @Query("units") units: String
-    ): Observable<Map<String, Weather>>
+    ): Observable<Weather>
 }
