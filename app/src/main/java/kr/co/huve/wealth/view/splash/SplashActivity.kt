@@ -16,10 +16,12 @@ import kr.co.huve.wealth.R
 import kr.co.huve.wealth.intent.SplashIntentFactory
 import kr.co.huve.wealth.model.SplashModelStore
 import kr.co.huve.wealth.model.SplashState
+import kr.co.huve.wealth.model.backend.data.Weather
 import kr.co.huve.wealth.util.WealthLocationManager
+import kr.co.huve.wealth.util.data.ExtraKey
 import kr.co.huve.wealth.view.EventObservable
-import kr.co.huve.wealth.view.MainActivity
 import kr.co.huve.wealth.view.StateSubscriber
+import kr.co.huve.wealth.view.WealthActivity
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -75,7 +77,7 @@ class SplashActivity : AppCompatActivity(),
                 }
                 is SplashState.Loading -> Unit // 현재 위치 날씨 조회 중
                 is SplashState.Error -> errorOccurred()
-                is SplashState.Complete -> startWealth()
+                is SplashState.Complete -> startWealth(it.dataSet)
             }
         }
     }
@@ -114,20 +116,16 @@ class SplashActivity : AppCompatActivity(),
         )
     }
 
-    private fun startWealth() {
+    private fun startWealth(weather: Weather) {
         // 로딩 완료
-        if (!locationManager.isAvailableGps()) Toast.makeText(
-            this,
-            getString(R.string.turn_on_gps),
-            Toast.LENGTH_SHORT
-        ).show()
-        Intent(
-            this@SplashActivity,
-            MainActivity::class.java
-        ).apply {
-            this.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(this)
-        }
+        if (!locationManager.isAvailableGps())
+            Toast.makeText(this, getString(R.string.turn_on_gps), Toast.LENGTH_SHORT).show()
+
+        // Start wealth activity
+        startActivity(Intent(this@SplashActivity, WealthActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            putExtra(ExtraKey.EXTRA_WEATHER_DATA, weather)
+        })
     }
 
     private fun errorOccurred() {

@@ -1,6 +1,7 @@
 package kr.co.huve.wealth.model.backend.data
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Weather(
     val coord: Coordinates?,
@@ -19,12 +20,12 @@ data class Weather(
     val rain: Rain?,
     val snow: Snow?,
     val sys: System?
-)
+) : Serializable
 
 data class Coordinates(
     val lat: Double?,
     val lon: Double?
-)
+) : Serializable
 
 data class WeatherInfo(
     // 날씨 id
@@ -35,7 +36,7 @@ data class WeatherInfo(
     val description: String?,
     // 날씨 아이콘
     val icon: String?
-)
+) : Serializable
 
 data class WeatherInfoDetails(
     val temp: Double?,
@@ -50,32 +51,32 @@ data class WeatherInfoDetails(
     val sea_level: Int?,
     // 지상 대기압
     val grnd_level: Int?
-)
+) : Serializable
 
 data class Wind(
     val speed: Double?,
     val deg: Int?,
     // 돌풍
     val gust: Double?
-)
+) : Serializable
 
 data class Cloud(
     // 구름 정도
     val all: Int?
-)
+) : Serializable
 
 data class Rain(
     @SerializedName("1h") val hour: Double?,
     @SerializedName("3h") val three_hour: Double?,
-)
+) : Serializable
 
 data class Snow(
     @SerializedName("1h") val hour: Double?,
     @SerializedName("3h") val three_hour: Double?,
-)
+) : Serializable
 
 data class System(
     val country: String?,
     val sunrise: Long?,
     val sunset: Long?,
-)
+) : Serializable
