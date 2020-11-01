@@ -3,6 +3,11 @@ package kr.co.huve.wealth.model.backend.data
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
+data class TotalWeather(
+    val lat: Double?,
+    val lon: Double?
+) : Serializable
+
 data class Weather(
     val coord: Coordinates?,
     val weather: List<WeatherInfo>?,
