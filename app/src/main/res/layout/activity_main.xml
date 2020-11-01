@@ -4,18 +4,244 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/iconic_dark_blue"
     tools:context=".view.WealthActivity">
 
-    <TextView
-        android:id="@+id/gemunu"
+    <ImageView
+        android:id="@+id/menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/gemunu_libre_bold"
-        android:text="Hello World!"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="12dp"
+        android:src="@drawable/icon_menu"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/city"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/gemunu_libre_extra_bold"
+        android:textColor="@color/iconic_white"
+        android:textSize="40sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/menu"
+        tools:text="City" />
+
+    <ImageView
+        android:id="@+id/titleImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:src="@drawable/icon_little_cloud_big"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/city" />
+
+    <TextView
+        android:id="@+id/titleTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/gemunu_libre_extra_bold"
+        android:textColor="@color/iconic_white"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleImage"
+        tools:text="17º" />
+
+    <TextView
+        android:id="@+id/titleMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:fontFamily="@font/gemunu_libre_extra_bold"
+        android:textColor="@color/iconic_white"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleTemp"
+        tools:text="구름 조금" />
+
+    <ImageView
+        android:id="@+id/weekTab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/img_tab"
+        android:translationX="-16dp"
+        app:layout_constraintBottom_toTopOf="@id/itemContainer"
+        app:layout_constraintStart_toEndOf="@id/todayTab" />
+
+    <TextView
+        android:id="@+id/weekTabText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/gemunu_libre_extra_bold"
+        android:paddingTop="4dp"
+        android:text="Week"
+        android:textColor="@color/iconic_white"
+        android:textSize="16sp"
+        android:translationX="-16dp"
+        app:layout_constraintBottom_toBottomOf="@id/weekTab"
+        app:layout_constraintEnd_toEndOf="@id/weekTab"
+        app:layout_constraintStart_toStartOf="@id/weekTab"
+        app:layout_constraintTop_toTopOf="@id/weekTab" />
+
+    <ImageView
+        android:id="@+id/todayTab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/img_tab_d"
+        app:layout_constraintBottom_toTopOf="@id/itemContainer"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/todayTabText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/gemunu_libre_extra_bold"
+        android:paddingTop="4dp"
+        android:text="Today"
+        android:textColor="@color/iconic_orange"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/todayTab"
+        app:layout_constraintEnd_toEndOf="@id/todayTab"
+        app:layout_constraintStart_toStartOf="@id/todayTab"
+        app:layout_constraintTop_toTopOf="@id/todayTab" />
+
+    <LinearLayout
+        android:id="@+id/itemContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/iconic_white"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <include
+            layout="@layout/item_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="24dp" />
+
+        <include
+            layout="@layout/item_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="24dp" />
+
+        <include
+            layout="@layout/item_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="24dp" />
+
+        <include
+            layout="@layout/item_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="24dp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/sunRiseTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="32dp"
+        android:fontFamily="@font/gemunu_libre_extra_bold"
+        android:textColor="@color/iconic_white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/todayTab"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="06:58" />
+
+    <TextView
+        android:id="@+id/sunSetTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="32dp"
+        android:fontFamily="@font/gemunu_libre_extra_bold"
+        android:textColor="@color/iconic_white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/todayTab"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="17:45" />
+
+    <ImageView
+        android:id="@+id/sunRiseStone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:src="@drawable/icon_time_stone"
+        app:layout_constraintBottom_toTopOf="@id/sunRiseTime"
+        app:layout_constraintEnd_toEndOf="@id/sunRiseTime"
+        app:layout_constraintStart_toStartOf="@id/sunRiseTime" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="@color/iconic_white"
+        android:paddingStart="1dp"
+        android:paddingEnd="1dp"
+        app:layout_constraintBottom_toBottomOf="@id/sunSetStone"
+        app:layout_constraintEnd_toStartOf="@id/sunSetStone"
+        app:layout_constraintStart_toEndOf="@id/sunRiseStone"
+        app:layout_constraintTop_toTopOf="@id/sunRiseStone" />
+
+    <ImageView
+        android:id="@+id/sunSetStone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:src="@drawable/icon_time_stone"
+        app:layout_constraintBottom_toTopOf="@id/sunSetTime"
+        app:layout_constraintEnd_toEndOf="@id/sunSetTime"
+        app:layout_constraintStart_toStartOf="@id/sunSetTime" />
+
+
+    <ImageView
+        android:id="@+id/currentStone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_time_stone_d"
+        app:layout_constraintBottom_toBottomOf="@id/sunRiseStone"
+        app:layout_constraintEnd_toEndOf="@id/sunSetStone"
+        app:layout_constraintStart_toStartOf="@id/sunRiseStone"
+        app:layout_constraintTop_toTopOf="@id/sunRiseStone" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:src="@drawable/icon_sun_rise"
+        app:layout_constraintBottom_toTopOf="@id/sunRiseStone"
+        app:layout_constraintEnd_toEndOf="@id/sunRiseTime"
+        app:layout_constraintStart_toStartOf="@id/sunRiseTime" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:src="@drawable/icon_sun_set"
+        app:layout_constraintBottom_toTopOf="@id/sunSetStone"
+        app:layout_constraintEnd_toEndOf="@id/sunSetTime"
+        app:layout_constraintStart_toStartOf="@id/sunSetTime" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -64,7 +64,7 @@ class SplashIntentFactory @Inject constructor(
                     NetworkConfig.WEATHER_KEY,
                     lastLocation.latitude,
                     lastLocation.longitude,
-                    "ko",
+                    "eng",
                     "metric"
                 ).subscribeOn(Schedulers.io()).subscribe(::retrofitSuccess, ::retrofitError)
             SplashState.Loading(disposable::dispose)
