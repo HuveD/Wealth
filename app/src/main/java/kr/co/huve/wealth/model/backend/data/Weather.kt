@@ -22,8 +22,8 @@ data class Weather(
 )
 
 data class Coordinates(
-    val lon: Double?,
-    val lat: Double?
+    val lat: Double?,
+    val lon: Double?
 )
 
 data class WeatherInfo(

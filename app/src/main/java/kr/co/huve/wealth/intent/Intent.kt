@@ -23,3 +23,12 @@ fun <T> intent(block: T.() -> T) : Intent<T> = object : Intent<T> {
 fun <T> sideEffect(block: T.() -> Unit) : Intent<T> = object : Intent<T> {
     override fun reduce(oldState: T): T = oldState.apply(block)
 }
+
+
+/*
+    뷰 상태를 바꿔야 된다 -> Intent
+    작업은 있지만 뷰 상태를 바꾸지 않는다 -> Side Effect
+
+    화면 이동(다시 돌아올 일 없음) -> Intent
+    화면 이동 후 다시 돌아오는 경우 -> Side Effect
+ */

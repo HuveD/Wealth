@@ -9,6 +9,7 @@
         android:id="@+id/txt_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/gemunu_libre_medium"
         android:text="@string/app_name"
         android:textColor="@color/iconic_white"
         android:textSize="40sp"
