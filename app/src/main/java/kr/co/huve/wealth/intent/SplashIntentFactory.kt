@@ -3,12 +3,12 @@ package kr.co.huve.wealth.intent
 import android.annotation.SuppressLint
 import dagger.hilt.android.scopes.ActivityScoped
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kr.co.huve.wealth.model.SplashModelStore
-import kr.co.huve.wealth.model.SplashState
 import kr.co.huve.wealth.model.backend.NetworkConfig
 import kr.co.huve.wealth.model.backend.data.Weather
 import kr.co.huve.wealth.model.backend.layer.CovidRestApi
 import kr.co.huve.wealth.model.backend.layer.WeatherRestApi
+import kr.co.huve.wealth.model.splash.SplashModelStore
+import kr.co.huve.wealth.model.splash.SplashState
 import kr.co.huve.wealth.util.WealthLocationManager
 import kr.co.huve.wealth.view.splash.SplashViewEvent
 import retrofit2.HttpException

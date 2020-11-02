@@ -83,7 +83,7 @@ class WealthLocationManager @Inject constructor(@ApplicationContext private val 
     }
 
     override fun onLocationChanged(location: Location) {
-        Timber.d("Location changed from ${location.provider}")
+        Timber.d("Location changed from ${location.provider} (${location.latitude},${location.longitude})")
         this.location.set(location)
     }
 

@@ -26,10 +26,17 @@ class WealthActivity : AppCompatActivity() {
                     city.text = stringBuilder.toString()
                 }
             }
-            main?.run { temp?.run { this@WealthActivity.titleTemp.text = "${this}º" } }
+            main?.run { temp?.run { this@WealthActivity.titleTemp.text = "${this.toInt()}" } }
             weather?.run {
-                first().description?.run {
-                    this@WealthActivity.titleMessage.text = this
+                if (this.isNotEmpty()) {
+                    val item = first()
+                    item.description?.run {
+                        this@WealthActivity.titleMessage.text =
+                            getString(item.getWeatherDescription(this@WealthActivity.applicationContext))
+                    }
+                    item.id.run {
+                        this@WealthActivity.titleImage.setImageResource(item.getWeatherIcon(true))
+                    }
                 }
             }
             sys?.run {

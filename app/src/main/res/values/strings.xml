@@ -2,4 +2,68 @@
     <string name="app_name">Wealth</string>
     <string name="error_load_app">에러가 발생하여 앱을 종료합니다.</string>
     <string name="turn_on_gps">GPS를 활성화해주세요</string>
+    <string name="symbol_celsius">º</string>
+
+    <!--날씨 id에 따른 날씨 설명-->
+    <string name="weather_not_found">지금 날씨는 정말 안좋아요</string>
+    <!--비-->
+    <string name="weather_200">천둥 번개를 동반한 비가 내려요</string>
+    <string name="weather_201">천둥 번개를 동반한 비가 내려요</string>
+    <string name="weather_202">천둥 번개를 동반한 비가 내려요</string>
+    <string name="weather_210">천둥 번개가 치고 있어요</string>
+    <string name="weather_211">천둥 번개가 치고 있어요</string>
+    <string name="weather_212">천둥 번개가 치고 있어요</string>
+    <string name="weather_221">천둥 번개가 치고 있어요</string>
+    <string name="weather_230">천둥 번개를 동반한 비가 내려요</string>
+    <string name="weather_231">천둥 번개를 동반한 비가 내려요</string>
+    <string name="weather_232">천둥 번개를 동반한 비가 내려요</string>
+    <string name="weather_300">이슬비가 내려요</string>
+    <string name="weather_301">이슬비가 내려요</string>
+    <string name="weather_302">이슬비가 내려요</string>
+    <string name="weather_310">이슬비가 내려요</string>
+    <string name="weather_311">이슬비가 내려요</string>
+    <string name="weather_312">이슬비가 내려요</string>
+    <string name="weather_313">이슬비가 내려요</string>
+    <string name="weather_314">이슬비가 내려요</string>
+    <string name="weather_321">이슬비가 내려요</string>
+    <string name="weather_500">비가 조금 내려요</string>
+    <string name="weather_501">비가 내리고 있어요</string>
+    <string name="weather_502">비가 많이 내려요</string>
+    <string name="weather_503">비가 몰아치듯 강렬하게 내려요</string>
+    <string name="weather_504">비가 몰아치듯 강렬하게 내려요</string>
+    <string name="weather_511">우빙이 보여요</string>
+    <string name="weather_520">가벼운 소나기가 내려요</string>
+    <string name="weather_521">소나기가 내려요</string>
+    <string name="weather_522">강렬한 소나기가 내리고 있어요</string>
+    <string name="weather_531">소나기가 내려요</string>
+    <!--눈-->
+    <string name="weather_600">눈이 조금 내려요</string>
+    <string name="weather_601">눈이 내리고 있어요</string>
+    <string name="weather_602">폭설이 몰아치고 있어요</string>
+    <string name="weather_611">진눈깨비가 내려요</string>
+    <string name="weather_612">가벼운 소나기처럼 진눈깨비가 내려요</string>
+    <string name="weather_613">소나기처럼 진눈깨비가 내려요</string>
+    <string name="weather_615">눈과 비가 조금씩 내려요</string>
+    <string name="weather_616">눈과 비가 내려요</string>
+    <string name="weather_620">가벼운 소나기처럼 눈이 내려요</string>
+    <string name="weather_621">소나기처럼 눈이 내려요</string>
+    <string name="weather_622">강렬한 소나기처럼 눈이 내려요</string>
+    <!--특수 기상 예보-->
+    <string name="weather_701">안개가 끼었어요</string>
+    <string name="weather_711">주변에서 연기가 나는걸 봤어요</string>
+    <string name="weather_721">안개가 끼었어요</string>
+    <string name="weather_731">먼지 바람이 불어요</string>
+    <string name="weather_741">안개가 끼었어요</string>
+    <string name="weather_751">대기 중 먼지가 많아요</string>
+    <string name="weather_761">대기 중 먼지가 많아요</string>
+    <string name="weather_762">화산재를 조심하세요</string>
+    <string name="weather_771">돌풍이 불고 있어요</string>
+    <string name="weather_781">토네이도를 조심하세요</string>
+    <!--맑음-->
+    <string name="weather_800">맑은 하늘이 정말 아름답네요</string>
+    <string name="weather_801">구름이 곁들여진 맑은 하늘이 이뻐요</string>
+    <!--흐림-->
+    <string name="weather_802">날이 조금 흐리네요</string>
+    <string name="weather_803">구름이 많은 날이네요</string>
+    <string name="weather_804">구름이 하늘을 가득 덮었어요</string>
 </resources>

@@ -1,4 +1,4 @@
-package kr.co.huve.wealth.model
+package kr.co.huve.wealth.model.splash
 
 import kr.co.huve.wealth.model.backend.data.Weather
 
