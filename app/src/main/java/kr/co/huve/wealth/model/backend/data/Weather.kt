@@ -2,6 +2,7 @@ package kr.co.huve.wealth.model.backend.data
 
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
+import java.util.*
 
 data class TotalWeather(
     val lat: Double?,
@@ -28,8 +29,8 @@ data class Weather(
 ) : Serializable
 
 data class Coordinates(
-    val lat: Double?,
-    val lon: Double?
+    val lat: Double,
+    val lon: Double
 ) : Serializable
 
 data class WeatherInfo(
@@ -84,4 +85,23 @@ data class System(
     val country: String?,
     val sunrise: Long?,
     val sunset: Long?,
-) : Serializable
+) : Serializable {
+
+    fun getTimeFromSunSetTime(): String {
+        val calendar = Calendar.getInstance()
+        if (sunset != null) {
+            val date = Date(sunset * 1000L)
+            calendar.time = date
+        }
+        return "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
+    }
+
+    fun getTimeFromSunRiseTime(): String {
+        val calendar = Calendar.getInstance()
+        if (sunrise != null) {
+            val date = Date(sunrise * 1000L)
+            calendar.time = date
+        }
+        return "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
+    }
+}

@@ -1,5 +1,6 @@
 package kr.co.huve.wealth.view
 
+import android.location.Geocoder
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -17,22 +18,23 @@ class WealthActivity : AppCompatActivity() {
 
         var data = intent.getSerializableExtra(ExtraKey.EXTRA_WEATHER_DATA) as Weather?
         data?.run {
-            name?.run { city.text = this }
+            coord?.run {
+                val geocoder = Geocoder(this@WealthActivity, Locale.getDefault())
+                geocoder.getFromLocation(lat, lon, 1)?.run {
+                    val stringBuilder = StringBuilder()
+                    first().thoroughfare?.run { stringBuilder.append(this) }
+                    city.text = stringBuilder.toString()
+                }
+            }
             main?.run { temp?.run { this@WealthActivity.titleTemp.text = "${this}º" } }
-            weather?.run { first().main?.run { this@WealthActivity.titleMessage.text = this } }
+            weather?.run {
+                first().description?.run {
+                    this@WealthActivity.titleMessage.text = this
+                }
+            }
             sys?.run {
-                sunset?.run {
-                    val calendar = Calendar.getInstance()
-                    calendar.timeInMillis = this
-                    sunSetTime.text =
-                        "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
-                }
-                sunrise?.run {
-                    val calendar = Calendar.getInstance()
-                    calendar.timeInMillis = this
-                    sunRiseTime.text =
-                        "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
-                }
+                sunSetTime.text = getTimeFromSunSetTime()
+                sunRiseTime.text = getTimeFromSunRiseTime()
             }
         }
     }
