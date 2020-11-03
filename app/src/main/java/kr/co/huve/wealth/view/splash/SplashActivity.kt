@@ -15,9 +15,9 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import kr.co.huve.wealth.R
 import kr.co.huve.wealth.intent.SplashIntentFactory
+import kr.co.huve.wealth.model.backend.data.TotalWeather
 import kr.co.huve.wealth.model.splash.SplashModelStore
 import kr.co.huve.wealth.model.splash.SplashState
-import kr.co.huve.wealth.model.backend.data.Weather
 import kr.co.huve.wealth.util.WealthLocationManager
 import kr.co.huve.wealth.util.data.ExtraKey
 import kr.co.huve.wealth.view.EventObservable
@@ -118,7 +118,7 @@ class SplashActivity : AppCompatActivity(),
         )
     }
 
-    private fun startWealth(weather: Weather) {
+    private fun startWealth(singleWeather: TotalWeather) {
         // 로딩 완료
         if (!locationManager.isAvailableGps())
             Toast.makeText(this, getString(R.string.turn_on_gps), Toast.LENGTH_SHORT).show()
@@ -126,7 +126,7 @@ class SplashActivity : AppCompatActivity(),
         // Start wealth activity
         startActivity(Intent(this@SplashActivity, WealthActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            putExtra(ExtraKey.EXTRA_WEATHER_DATA, weather)
+            putExtra(ExtraKey.EXTRA_WEATHER_DATA, singleWeather)
         })
     }
 

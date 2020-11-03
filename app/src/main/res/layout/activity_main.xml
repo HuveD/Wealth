@@ -228,12 +228,17 @@
         app:layout_constraintEnd_toEndOf="@id/sunSetTime"
         app:layout_constraintStart_toStartOf="@id/sunSetTime" />
 
-
-    <ImageView
+    <SeekBar
         android:id="@+id/currentStone"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon_time_stone_d"
+        android:background="@null"
+        android:paddingStart="5dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="5dp"
+        android:paddingBottom="5dp"
+        android:progressDrawable="@android:color/transparent"
+        android:thumb="@drawable/icon_time_stone_d"
         app:layout_constraintBottom_toBottomOf="@id/sunRiseStone"
         app:layout_constraintEnd_toEndOf="@id/sunSetStone"
         app:layout_constraintStart_toStartOf="@id/sunRiseStone"

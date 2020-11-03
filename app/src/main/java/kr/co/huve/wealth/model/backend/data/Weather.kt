@@ -6,12 +6,7 @@ import kr.co.huve.wealth.R
 import java.io.Serializable
 import java.util.*
 
-data class TotalWeather(
-    val lat: Double?,
-    val lon: Double?
-) : Serializable
-
-data class Weather(
+data class SingleWeather(
     val coord: Coordinates?,
     val weather: List<WeatherInfo>?,
     val base: String?,
@@ -39,9 +34,9 @@ data class WeatherInfo(
     // 날씨 id
     val id: Int,
     // 날씨 그룹 (눈, 비, 등등)
-    val main: String?,
+    val main: String,
     // 요청 언어로 현재 날씨 그룹 상태 간략 설명
-    val description: String?,
+    val description: String,
     // 날씨 아이콘
     val icon: String?
 ) : Serializable {
@@ -71,10 +66,10 @@ data class WeatherInfo(
 }
 
 data class WeatherInfoDetails(
-    val temp: Double?,
-    val feels_like: Double?,
-    val temp_min: Double?,
-    val temp_max: Double?,
+    val temp: Float?,
+    val feels_like: Float?,
+    val temp_min: Float?,
+    val temp_max: Float?,
     // 대기압 (해수면, 지상 없는 경우)
     val pressure: Int?,
     // 습도
@@ -86,10 +81,10 @@ data class WeatherInfoDetails(
 ) : Serializable
 
 data class Wind(
-    val speed: Double?,
+    val speed: Float?,
     val deg: Int?,
     // 돌풍
-    val gust: Double?
+    val gust: Float?
 ) : Serializable
 
 data class Cloud(
@@ -98,13 +93,13 @@ data class Cloud(
 ) : Serializable
 
 data class Rain(
-    @SerializedName("1h") val hour: Double?,
-    @SerializedName("3h") val three_hour: Double?,
+    @SerializedName("1h") val hour: Float,
+    @SerializedName("3h") val three_hour: Float?,
 ) : Serializable
 
 data class Snow(
-    @SerializedName("1h") val hour: Double?,
-    @SerializedName("3h") val three_hour: Double?,
+    @SerializedName("1h") val hour: Float,
+    @SerializedName("3h") val three_hour: Float?,
 ) : Serializable
 
 data class System(
@@ -131,3 +126,157 @@ data class System(
         return "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
     }
 }
+
+data class TotalWeather(
+    val lat: Double,
+    val lon: Double,
+    val current: DayWeather,
+    val hourly: List<DayWeather>,
+    val daily: List<WeekWeather>
+) : Serializable
+
+abstract class Weather {
+    abstract val dt: Long
+    abstract val sunrise: Long?
+    abstract val sunset: Long?
+    abstract val pressure: Int
+    abstract val humidity: Int
+    abstract val dewPoint: Float
+    abstract val uvi: Float?
+    abstract val clouds: Int
+
+    // meter
+    abstract val visibility: Int
+
+    // meter / sec
+    abstract val windSpeed: Float
+
+    // meter / sec * 일시적인 돌풍
+    abstract val windGust: Float?
+    abstract val windDeg: Int
+
+    // 강수 확률
+    protected abstract val pop: Float?
+    abstract val weather: List<WeatherInfo>
+    abstract fun getTimeFromSunSetTime(): String
+    abstract fun getTimeFromSunRiseTime(): String
+    abstract fun getProbabilityPrecipitation(): Int
+}
+
+data class DayWeather(
+    override var dt: Long,
+    override val sunrise: Long?,
+    override val sunset: Long?,
+    override val pressure: Int,
+    override val humidity: Int,
+    @SerializedName("dew_point")
+    override val dewPoint: Float,
+    override val uvi: Float?,
+    override val clouds: Int,
+    override val visibility: Int,
+    @SerializedName("wind_speed")
+    override val windSpeed: Float,
+    @SerializedName("wind_gust")
+    override val windGust: Float?,
+    @SerializedName("wind_deg")
+    override val windDeg: Int,
+    override val pop: Float?,
+    override val weather: List<WeatherInfo>,
+
+    @SerializedName("feels_like")
+    val feelsLike: Float,
+    val rain: Rain?,
+    val snow: Snow?,
+    val temp: Float
+) : Weather(), Serializable {
+    override fun getTimeFromSunSetTime(): String {
+        val calendar = Calendar.getInstance()
+        if (sunset != null) {
+            val date = Date(sunset * 1000L)
+            calendar.time = date
+        }
+        return "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
+    }
+
+    override fun getTimeFromSunRiseTime(): String {
+        val calendar = Calendar.getInstance()
+        if (sunrise != null) {
+            val date = Date(sunrise * 1000L)
+            calendar.time = date
+        }
+        return "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
+    }
+
+    override fun getProbabilityPrecipitation(): Int {
+        return pop?.toInt() ?: 0
+    }
+}
+
+data class WeekWeather(
+    override var dt: Long,
+    override val sunrise: Long?,
+    override val sunset: Long?,
+    override val pressure: Int,
+    override val humidity: Int,
+    @SerializedName("dew_point")
+    override val dewPoint: Float,
+    override val uvi: Float?,
+    override val clouds: Int,
+    override val visibility: Int,
+    @SerializedName("wind_speed")
+    override val windSpeed: Float,
+    @SerializedName("wind_gust")
+    override val windGust: Float?,
+    @SerializedName("wind_deg")
+    override val windDeg: Int,
+    override val pop: Float?,
+    override val weather: List<WeatherInfo>,
+    @SerializedName("feels_like")
+    val feelsLike: FeelsLike,
+    val rain: Float?,
+    val snow: Float?,
+    val temp: Temp
+) : Weather(), Serializable {
+
+    override fun getTimeFromSunSetTime(): String {
+        val calendar = Calendar.getInstance()
+        if (sunset != null) {
+            val date = Date(sunset * 1000L)
+            calendar.time = date
+        }
+        return "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
+    }
+
+    override fun getTimeFromSunRiseTime(): String {
+        val calendar = Calendar.getInstance()
+        if (sunrise != null) {
+            val date = Date(sunrise * 1000L)
+            calendar.time = date
+        }
+        return "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
+    }
+
+    override fun getProbabilityPrecipitation(): Int {
+        return pop?.toInt() ?: 0
+    }
+}
+
+data class Temp(
+    @SerializedName("morn")
+    val morning: Float,
+    @SerializedName("eve")
+    val evening: Float,
+    val night: Float,
+    val min: Float,
+    val max: Float,
+    val day: Float
+) : Serializable
+
+data class FeelsLike(
+    @SerializedName("morn")
+    val morning: Float,
+    @SerializedName("eve")
+    val evening: Float,
+    val night: Float,
+    val day: Float
+) : Serializable

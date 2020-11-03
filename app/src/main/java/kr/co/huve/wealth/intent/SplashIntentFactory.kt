@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import dagger.hilt.android.scopes.ActivityScoped
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kr.co.huve.wealth.model.backend.NetworkConfig
-import kr.co.huve.wealth.model.backend.data.Weather
+import kr.co.huve.wealth.model.backend.data.TotalWeather
 import kr.co.huve.wealth.model.backend.layer.CovidRestApi
 import kr.co.huve.wealth.model.backend.layer.WeatherRestApi
 import kr.co.huve.wealth.model.splash.SplashModelStore
@@ -46,7 +46,7 @@ class SplashIntentFactory @Inject constructor(
     @SuppressLint("MissingPermission")
     private fun buildWeatherRequestIntent(): Intent<SplashState> {
         return intent {
-            fun retrofitSuccess(data: Weather) = chainedIntent {
+            fun retrofitSuccess(data: TotalWeather) = chainedIntent {
                 SplashState.Complete(dataSet = data)
             }
 
@@ -60,10 +60,11 @@ class SplashIntentFactory @Inject constructor(
             // 현재 위치에 날씨 요청
             val lastLocation = locationManager.getLastLocation()
             val disposable =
-                weatherRestApi.getCurrentWeatherWithCoords(
+                weatherRestApi.getTotalWeatherWithCoords(
                     NetworkConfig.WEATHER_KEY,
                     lastLocation.latitude,
                     lastLocation.longitude,
+                    "minutely",
                     "kr",
                     "metric"
                 ).subscribeOn(Schedulers.io()).subscribe(::retrofitSuccess, ::retrofitError)

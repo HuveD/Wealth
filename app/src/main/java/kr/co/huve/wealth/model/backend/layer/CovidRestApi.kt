@@ -1,7 +1,7 @@
 package kr.co.huve.wealth.model.backend.layer
 
 import io.reactivex.rxjava3.core.Observable
-import kr.co.huve.wealth.model.backend.data.Weather
+import kr.co.huve.wealth.model.backend.data.SingleWeather
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -13,5 +13,5 @@ interface CovidRestApi {
         @Query("numOfRows") numOfRows: Int,
         @Query("startCreateDt") startDate: String,
         @Query("endCreateDt") endDate: String
-    ): Observable<Map<String, Weather>>
+    ): Observable<Map<String, SingleWeather>>
 }
