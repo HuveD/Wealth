@@ -22,7 +22,7 @@ import kr.co.huve.wealth.util.WealthLocationManager
 import kr.co.huve.wealth.util.data.ExtraKey
 import kr.co.huve.wealth.view.EventObservable
 import kr.co.huve.wealth.view.StateSubscriber
-import kr.co.huve.wealth.view.WealthActivity
+import kr.co.huve.wealth.view.main.WealthActivity
 import timber.log.Timber
 import javax.inject.Inject
 

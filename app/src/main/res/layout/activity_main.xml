@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/iconic_dark_blue"
-    tools:context=".view.WealthActivity">
+    tools:context=".view.main.WealthActivity">
 
     <ImageView
         android:id="@+id/menu"
@@ -84,7 +84,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/img_tab"
         android:translationX="-16dp"
-        app:layout_constraintBottom_toTopOf="@id/itemContainer"
+        app:layout_constraintBottom_toTopOf="@id/predictWeatherList"
         app:layout_constraintStart_toEndOf="@id/todayTab" />
 
     <TextView
@@ -107,7 +107,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/img_tab_d"
-        app:layout_constraintBottom_toTopOf="@id/itemContainer"
+        app:layout_constraintBottom_toTopOf="@id/predictWeatherList"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -124,52 +124,14 @@
         app:layout_constraintStart_toStartOf="@id/todayTab"
         app:layout_constraintTop_toTopOf="@id/todayTab" />
 
-    <LinearLayout
-        android:id="@+id/itemContainer"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/predictWeatherList"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/iconic_white"
-        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <include
-            layout="@layout/item_weather"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginBottom="24dp" />
-
-        <include
-            layout="@layout/item_weather"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginBottom="24dp" />
-
-        <include
-            layout="@layout/item_weather"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginBottom="24dp" />
-
-        <include
-            layout="@layout/item_weather"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginBottom="24dp" />
-    </LinearLayout>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/sunRiseTime"

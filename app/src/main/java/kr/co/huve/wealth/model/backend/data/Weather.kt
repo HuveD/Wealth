@@ -157,34 +157,34 @@ abstract class Weather {
 
     // 강수 확률
     protected abstract val pop: Float?
-    abstract val weather: List<WeatherInfo>
+    abstract val weatherInfo: List<WeatherInfo>
     abstract fun getTimeFromSunSetTime(): String
     abstract fun getTimeFromSunRiseTime(): String
     abstract fun getProbabilityPrecipitation(): Int
 }
 
 data class DayWeather(
-    override var dt: Long,
-    override val sunrise: Long?,
-    override val sunset: Long?,
-    override val pressure: Int,
-    override val humidity: Int,
     @SerializedName("dew_point")
     override val dewPoint: Float,
-    override val uvi: Float?,
-    override val clouds: Int,
-    override val visibility: Int,
     @SerializedName("wind_speed")
     override val windSpeed: Float,
     @SerializedName("wind_gust")
     override val windGust: Float?,
     @SerializedName("wind_deg")
     override val windDeg: Int,
-    override val pop: Float?,
-    override val weather: List<WeatherInfo>,
-
+    @SerializedName("weather")
+    override val weatherInfo: List<WeatherInfo>,
     @SerializedName("feels_like")
     val feelsLike: Float,
+    override var dt: Long,
+    override val sunrise: Long?,
+    override val sunset: Long?,
+    override val pressure: Int,
+    override val humidity: Int,
+    override val uvi: Float?,
+    override val clouds: Int,
+    override val visibility: Int,
+    override val pop: Float?,
     val rain: Rain?,
     val snow: Snow?,
     val temp: Float
@@ -213,26 +213,27 @@ data class DayWeather(
 }
 
 data class WeekWeather(
-    override var dt: Long,
-    override val sunrise: Long?,
-    override val sunset: Long?,
-    override val pressure: Int,
-    override val humidity: Int,
     @SerializedName("dew_point")
     override val dewPoint: Float,
-    override val uvi: Float?,
-    override val clouds: Int,
-    override val visibility: Int,
+    @SerializedName("weather")
+    override val weatherInfo: List<WeatherInfo>,
+    @SerializedName("feels_like")
+    val feelsLike: FeelsLike,
     @SerializedName("wind_speed")
     override val windSpeed: Float,
     @SerializedName("wind_gust")
     override val windGust: Float?,
     @SerializedName("wind_deg")
     override val windDeg: Int,
+    override var dt: Long,
+    override val sunrise: Long?,
+    override val sunset: Long?,
+    override val pressure: Int,
+    override val humidity: Int,
+    override val uvi: Float?,
+    override val clouds: Int,
+    override val visibility: Int,
     override val pop: Float?,
-    override val weather: List<WeatherInfo>,
-    @SerializedName("feels_like")
-    val feelsLike: FeelsLike,
     val rain: Float?,
     val snow: Float?,
     val temp: Temp

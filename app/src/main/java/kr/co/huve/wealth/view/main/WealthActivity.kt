@@ -1,9 +1,10 @@
-package kr.co.huve.wealth.view
+package kr.co.huve.wealth.view.main
 
 import android.location.Geocoder
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
@@ -35,7 +36,8 @@ class WealthActivity : AppCompatActivity() {
                 }
 
             // 현재 날씨 아이콘 및 설명
-            val element = if (current.weather.isNotEmpty()) current.weather.first() else null
+            val element =
+                if (current.weatherInfo.isNotEmpty()) current.weatherInfo.first() else null
             element?.run {
                 this@WealthActivity.titleMessage.text =
                     getString(getWeatherDescription(this@WealthActivity.applicationContext))
@@ -48,6 +50,7 @@ class WealthActivity : AppCompatActivity() {
             sunSetTime.text = current.getTimeFromSunSetTime()
             sunRiseTime.text = current.getTimeFromSunRiseTime()
         }
+        initializePredictWeatherList(true)
     }
 
     override fun onResume() {
@@ -61,6 +64,22 @@ class WealthActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         disposables.clear()
+    }
+
+    private fun initializePredictWeatherList(isHourly: Boolean) {
+        data?.run {
+            val hourlyWeather = hourly
+            val dailyWeather = daily
+            predictWeatherList.apply {
+                setHasFixedSize(true)
+                layoutManager = LinearLayoutManager(this@WealthActivity).run {
+                    orientation = LinearLayoutManager.HORIZONTAL
+                    this
+                }
+                adapter = PredictWeatherAdapter(if (isHourly) hourlyWeather else dailyWeather)
+            }
+        }
+
     }
 
     private fun invalidateCurrentStone() {
