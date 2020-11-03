@@ -3,6 +3,7 @@ package kr.co.huve.wealth.model.backend.data
 import android.content.Context
 import com.google.gson.annotations.SerializedName
 import kr.co.huve.wealth.R
+import timber.log.Timber
 import java.io.Serializable
 import java.util.*
 
@@ -42,6 +43,7 @@ data class WeatherInfo(
 ) : Serializable {
 
     fun getWeatherIcon(isTitle: Boolean): Int {
+        Timber.d("$id")
         return when (id) {
             // 화산재, 스콜, 황사, 모래 바람, 안개, 연무, 연기 등등
             701, 711, 721, 731, 741, 751, 761, 762, 771, 781 -> if (isTitle) R.drawable.icon_cloud_big else R.drawable.icon_cloud

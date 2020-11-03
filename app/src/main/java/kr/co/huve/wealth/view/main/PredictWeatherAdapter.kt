@@ -30,15 +30,21 @@ class PredictWeatherAdapter<T : Weather>(var weathers: List<T>) :
         val weather = weathers[position]
         holder.icon.setImageResource(weather.weatherInfo.first().getWeatherIcon(false))
         holder.temp.apply { text = getTemp(context = context, weather) }
-        holder.title.apply { text = getHour(weather.dt) }
+        holder.title.apply { text = getTitle(weather.dt, weather is DayWeather) }
     }
 
-    private fun getHour(dateTime: Long): String {
-        val hour = Date().run {
-            time = dateTime * 1000L
-            ((time % 86400000) / 3600000).toInt()
+    private fun getTitle(dateTime: Long, isHour: Boolean): String {
+        return if (isHour) {
+            val hour = Date().run {
+                time = dateTime * 1000L
+                ((time % 86400000) / 3600000).toInt()
+            }
+            if (hour < 10) "0$hour:00" else "$hour:00"
+        } else {
+            val calendar = Calendar.getInstance()
+            calendar.time = Date().apply { time = dateTime * 1000L }
+            "${calendar.get(Calendar.MONDAY)}/${calendar.get(Calendar.DAY_OF_MONTH)}"
         }
-        return if (hour < 10) "0$hour:00" else "$hour:00"
     }
 
     private fun getTemp(context: Context, weather: Weather): String {

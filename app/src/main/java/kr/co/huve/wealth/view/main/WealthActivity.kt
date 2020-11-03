@@ -51,6 +51,14 @@ class WealthActivity : AppCompatActivity() {
             sunRiseTime.text = current.getTimeFromSunRiseTime()
         }
         initializePredictWeatherList(true)
+
+        todayTab.setOnClickListener {
+            initializePredictWeatherList(true)
+        }
+
+        weekTab.setOnClickListener {
+            initializePredictWeatherList(false)
+        }
     }
 
     override fun onResume() {
@@ -67,6 +75,35 @@ class WealthActivity : AppCompatActivity() {
     }
 
     private fun initializePredictWeatherList(isHourly: Boolean) {
+        if (isHourly) {
+            todayTab.setImageResource(R.drawable.img_tab_d)
+            weekTab.setImageResource(R.drawable.img_tab)
+            todayTab.elevation = 1f
+            weekTab.elevation = 0f
+            todayTabText.elevation = 1f
+            weekTabText.elevation = 0f
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                todayTabText.setTextColor(this.resources.getColor(R.color.iconic_orange, null))
+                weekTabText.setTextColor(this.resources.getColor(R.color.iconic_white, null))
+            } else {
+                todayTabText.setTextColor(this.resources.getColor(R.color.iconic_orange))
+                weekTabText.setTextColor(this.resources.getColor(R.color.iconic_white))
+            }
+        } else {
+            todayTab.setImageResource(R.drawable.img_tab)
+            weekTab.setImageResource(R.drawable.img_tab_d)
+            todayTab.elevation = 0f
+            weekTab.elevation = 1f
+            todayTabText.elevation = 0f
+            weekTabText.elevation = 1f
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                todayTabText.setTextColor(this.resources.getColor(R.color.iconic_white, null))
+                weekTabText.setTextColor(this.resources.getColor(R.color.iconic_orange, null))
+            } else {
+                todayTabText.setTextColor(this.resources.getColor(R.color.iconic_white))
+                weekTabText.setTextColor(this.resources.getColor(R.color.iconic_orange))
+            }
+        }
         data?.run {
             val hourlyWeather = hourly
             val dailyWeather = daily
