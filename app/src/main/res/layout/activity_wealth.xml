@@ -37,18 +37,18 @@
             android:id="@+id/pageIndicator1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_time_stone" />
+            android:src="@drawable/style_tab_host" />
 
         <ImageView
             android:id="@+id/pageIndicator2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/default_dot" />
+            android:src="@drawable/style_tab_host" />
 
         <ImageView
             android:id="@+id/pageIndicator3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/default_dot" />
+            android:src="@drawable/style_tab_host" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,7 +6,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import kr.co.huve.wealth.view.main.fragment.WeatherFragment
 import javax.inject.Inject
 
-private const val PAGE_NUM = 1
+private const val PAGE_NUM = 3
 
 class WealthPagerAdapter @Inject constructor(activity: FragmentActivity) :
     FragmentStateAdapter(activity) {
