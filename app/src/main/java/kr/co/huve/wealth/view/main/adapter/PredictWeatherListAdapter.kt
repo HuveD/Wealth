@@ -1,4 +1,4 @@
-package kr.co.huve.wealth.view.main
+package kr.co.huve.wealth.view.main.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -13,8 +13,8 @@ import kr.co.huve.wealth.model.backend.data.Weather
 import kr.co.huve.wealth.model.backend.data.WeekWeather
 import java.util.*
 
-class PredictWeatherAdapter<T : Weather>(var weathers: List<T>) :
-    RecyclerView.Adapter<PredictWeatherAdapter<T>.Holder>() {
+class PredictWeatherListAdapter<T : Weather>(var weathers: List<T>) :
+    RecyclerView.Adapter<PredictWeatherListAdapter<T>.Holder>() {
     private val calendar: Calendar = Calendar.getInstance()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
