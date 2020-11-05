@@ -10,7 +10,7 @@ object NetworkConfig {
 
     const val WEATHER_API = "https://api.openweathermap.org/data/2.5/"
     // @Todo: Insert your Api key from https://openweathermap.org/. The api key is free.
-    const val WEATHER_KEY = "b14098fa85c625b3e1a27f4774341479"
+    const val WEATHER_KEY = ""
 
     const val COVID_API = "http://openapi.data.go.kr"
     // @Todo: Insert your Api key from https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15043376. The api key is free.
