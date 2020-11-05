@@ -49,9 +49,9 @@
     <string name="weather_621">소나기처럼 눈이 내려요</string>
     <string name="weather_622">강렬한 소나기처럼 눈이 내려요</string>
     <!--특수 기상 예보-->
-    <string name="weather_701">안개가 끼었어요</string>
+    <string name="weather_701">이슬이 맺혔어요</string>
     <string name="weather_711">주변에서 연기가 나는걸 봤어요</string>
-    <string name="weather_721">안개가 끼었어요</string>
+    <string name="weather_721">실안개가 끼었어요</string>
     <string name="weather_731">먼지 바람이 불어요</string>
     <string name="weather_741">안개가 끼었어요</string>
     <string name="weather_751">대기 중 먼지가 많아요</string>
