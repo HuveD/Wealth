@@ -1,37 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingStart="12dp"
-    android:paddingTop="24dp"
+    android:paddingTop="20dp"
     android:paddingEnd="12dp"
-    android:paddingBottom="24dp">
+    android:paddingBottom="20dp">
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/gemunu_libre_extra_bold"
+        android:textColor="@color/iconic_dark"
+        android:textSize="12sp"
+        android:visibility="gone"
+        tools:text="11.05"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/predictTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:fontFamily="@font/gemunu_libre_extra_bold"
-        android:text="now"
         android:textColor="@color/iconic_dark"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        tools:text="now" />
 
     <ImageView
         android:id="@+id/predictIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="12dp"
-        android:src="@drawable/icon_rain" />
+        tools:src="@drawable/icon_rain" />
 
     <TextView
         android:id="@+id/predictTemp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/gemunu_libre_extra_bold"
-        android:text="21º"
         android:textColor="@color/iconic_dark"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        tools:text="21º" />
 </LinearLayout>

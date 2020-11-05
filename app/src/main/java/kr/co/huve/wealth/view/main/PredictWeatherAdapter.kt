@@ -15,6 +15,7 @@ import java.util.*
 
 class PredictWeatherAdapter<T : Weather>(var weathers: List<T>) :
     RecyclerView.Adapter<PredictWeatherAdapter<T>.Holder>() {
+    private val calendar: Calendar = Calendar.getInstance()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         LayoutInflater.from(parent.context).inflate(R.layout.item_weather, parent, false).apply {
@@ -31,20 +32,28 @@ class PredictWeatherAdapter<T : Weather>(var weathers: List<T>) :
         holder.icon.setImageResource(weather.weatherInfo.first().getWeatherIcon(false))
         holder.temp.apply { text = getTemp(context = context, weather) }
         holder.title.apply { text = getTitle(weather.dt, weather is DayWeather) }
+
+        if (weather is DayWeather) {
+            holder.date.text = getDate(dateTime = weather.dt)
+            holder.date.visibility = View.VISIBLE
+        } else {
+            holder.date.visibility = View.GONE
+        }
     }
 
     private fun getTitle(dateTime: Long, isHour: Boolean): String {
         return if (isHour) {
-            val hour = Date().run {
-                time = dateTime * 1000L
-                ((time % 86400000) / 3600000).toInt()
-            }
-            if (hour < 10) "0$hour:00" else "$hour:00"
-        } else {
-            val calendar = Calendar.getInstance()
             calendar.time = Date().apply { time = dateTime * 1000L }
-            "${calendar.get(Calendar.MONDAY)}/${calendar.get(Calendar.DAY_OF_MONTH)}"
+            val calendarHour = calendar.get(Calendar.HOUR_OF_DAY)
+            return if (calendarHour < 10) "0${calendarHour}:00" else "$calendarHour:00"
+        } else {
+            getDate(dateTime)
         }
+    }
+
+    private fun getDate(dateTime: Long): String {
+        calendar.time = Date().apply { time = dateTime * 1000L }
+        return "${calendar.get(Calendar.MONDAY)}/${calendar.get(Calendar.DAY_OF_MONTH)}"
     }
 
     private fun getTemp(context: Context, weather: Weather): String {
@@ -59,6 +68,7 @@ class PredictWeatherAdapter<T : Weather>(var weathers: List<T>) :
     }
 
     inner class Holder(view: View) : RecyclerView.ViewHolder(view) {
+        val date: TextView = view.findViewById(R.id.date)
         val title: TextView = view.findViewById(R.id.predictTitle)
         val icon: ImageView = view.findViewById(R.id.predictIcon)
         val temp: TextView = view.findViewById(R.id.predictTemp)

@@ -47,8 +47,8 @@ class WealthActivity : AppCompatActivity() {
             titleTemp.text = "${current.temp.toInt()}"
 
             // 일출, 일몰
-            sunSetTime.text = current.getTimeFromSunSetTime()
-            sunRiseTime.text = current.getTimeFromSunRiseTime()
+            sunSetTime.text = current.getTimeFromSunTime(current.sunset)
+            sunRiseTime.text = current.getTimeFromSunTime(current.sunrise)
         }
         initializePredictWeatherList(true)
 
@@ -105,6 +105,7 @@ class WealthActivity : AppCompatActivity() {
             }
         }
         data?.run {
+            val calender = Calendar.getInstance()
             val hourlyWeather = hourly
             val dailyWeather = daily
             predictWeatherList.apply {
@@ -113,7 +114,10 @@ class WealthActivity : AppCompatActivity() {
                     orientation = LinearLayoutManager.HORIZONTAL
                     this
                 }
-                adapter = PredictWeatherAdapter(if (isHourly) hourlyWeather else dailyWeather)
+                adapter =
+                    PredictWeatherAdapter(if (isHourly) hourlyWeather.filter {
+                        it.dt * 1000L > calender.time.time
+                    } else dailyWeather)
             }
         }
 

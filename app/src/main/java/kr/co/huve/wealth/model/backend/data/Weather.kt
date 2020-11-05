@@ -108,26 +108,7 @@ data class System(
     val country: String?,
     val sunrise: Long?,
     val sunset: Long?,
-) : Serializable {
-
-    fun getTimeFromSunSetTime(): String {
-        val calendar = Calendar.getInstance()
-        if (sunset != null) {
-            val date = Date(sunset * 1000L)
-            calendar.time = date
-        }
-        return "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
-    }
-
-    fun getTimeFromSunRiseTime(): String {
-        val calendar = Calendar.getInstance()
-        if (sunrise != null) {
-            val date = Date(sunrise * 1000L)
-            calendar.time = date
-        }
-        return "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
-    }
-}
+) : Serializable
 
 data class TotalWeather(
     val lat: Double,
@@ -160,8 +141,7 @@ abstract class Weather {
     // 강수 확률
     protected abstract val pop: Float?
     abstract val weatherInfo: List<WeatherInfo>
-    abstract fun getTimeFromSunSetTime(): String
-    abstract fun getTimeFromSunRiseTime(): String
+    abstract fun getTimeFromSunTime(time: Long?): String
     abstract fun getProbabilityPrecipitation(): Int
 }
 
@@ -191,22 +171,18 @@ data class DayWeather(
     val snow: Snow?,
     val temp: Float
 ) : Weather(), Serializable {
-    override fun getTimeFromSunSetTime(): String {
-        val calendar = Calendar.getInstance()
-        if (sunset != null) {
-            val date = Date(sunset * 1000L)
-            calendar.time = date
-        }
-        return "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
-    }
 
-    override fun getTimeFromSunRiseTime(): String {
+    override fun getTimeFromSunTime(time: Long?): String {
         val calendar = Calendar.getInstance()
-        if (sunrise != null) {
-            val date = Date(sunrise * 1000L)
+        if (time != null) {
+            val date = Date(time * 1000L)
             calendar.time = date
         }
-        return "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
+        val calenderHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val calenderMin = calendar.get(Calendar.MINUTE)
+        val returnHour = if (calenderHour < 10) "0${calenderHour}" else "$calenderHour"
+        val returnMin = if (calenderMin < 10) "0${calenderMin}" else "$calenderMin"
+        return "${returnHour}:${returnMin}"
     }
 
     override fun getProbabilityPrecipitation(): Int {
@@ -241,22 +217,17 @@ data class WeekWeather(
     val temp: Temp
 ) : Weather(), Serializable {
 
-    override fun getTimeFromSunSetTime(): String {
+    override fun getTimeFromSunTime(time: Long?): String {
         val calendar = Calendar.getInstance()
-        if (sunset != null) {
-            val date = Date(sunset * 1000L)
+        if (time != null) {
+            val date = Date(time * 1000L)
             calendar.time = date
         }
-        return "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
-    }
-
-    override fun getTimeFromSunRiseTime(): String {
-        val calendar = Calendar.getInstance()
-        if (sunrise != null) {
-            val date = Date(sunrise * 1000L)
-            calendar.time = date
-        }
-        return "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
+        val calenderHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val calenderMin = calendar.get(Calendar.MINUTE)
+        val returnHour = if (calenderHour < 10) "0${calenderHour}" else "$calenderHour"
+        val returnMin = if (calenderMin < 10) "0${calenderMin}" else "$calenderMin"
+        return "${returnHour}:${returnMin}"
     }
 
     override fun getProbabilityPrecipitation(): Int {
