@@ -37,7 +37,7 @@ class PredictWeatherAdapter<T : Weather>(var weathers: List<T>) :
             holder.date.text = getDate(dateTime = weather.dt)
             holder.date.visibility = View.VISIBLE
         } else {
-            holder.date.visibility = View.GONE
+            holder.date.visibility = View.INVISIBLE
         }
     }
 
