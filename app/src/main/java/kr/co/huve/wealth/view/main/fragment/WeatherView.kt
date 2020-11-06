@@ -88,25 +88,22 @@ class WeatherView @Inject constructor(@ActivityContext val context: Context) {
     }
 
     private fun initializePredictWeatherList(isHourly: Boolean) {
-        if (isHourly) {
-            todayTab.setImageResource(R.drawable.img_tab_d)
-            weekTab.setImageResource(R.drawable.img_tab)
-            todayTab.elevation = 1f
-            weekTab.elevation = 0f
-            todayTabText.elevation = 1f
-            weekTabText.elevation = 0f
-            todayTabText.setTextColor(ContextCompat.getColor(context, R.color.iconic_orange))
-            weekTabText.setTextColor(ContextCompat.getColor(context, R.color.iconic_white))
-        } else {
-            todayTab.setImageResource(R.drawable.img_tab)
-            weekTab.setImageResource(R.drawable.img_tab_d)
-            todayTab.elevation = 0f
-            weekTab.elevation = 1f
-            todayTabText.elevation = 0f
-            weekTabText.elevation = 1f
-            todayTabText.setTextColor(ContextCompat.getColor(context, R.color.iconic_white))
-            weekTabText.setTextColor(ContextCompat.getColor(context, R.color.iconic_orange))
-        }
+        todayTab.setImageResource(if (isHourly) R.drawable.img_tab_d else R.drawable.img_tab)
+        weekTab.setImageResource(if (isHourly) R.drawable.img_tab else R.drawable.img_tab_d)
+        todayTab.elevation = if (isHourly) 1f else 0f
+        weekTab.elevation = if (isHourly) 0f else 1f
+        todayTabText.elevation = if (isHourly) 1f else 0f
+        weekTabText.elevation = if (isHourly) 0f else 1f
+        todayTabText.setTextColor(
+            ContextCompat.getColor(
+                context, if (isHourly) R.color.iconic_orange else R.color.iconic_white
+            )
+        )
+        weekTabText.setTextColor(
+            ContextCompat.getColor(
+                context, if (isHourly) R.color.iconic_white else R.color.iconic_orange
+            )
+        )
         totalWeather.run {
             val calender = Calendar.getInstance()
             val hourlyWeather = hourly
