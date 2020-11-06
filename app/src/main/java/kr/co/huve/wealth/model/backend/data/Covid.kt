@@ -1,62 +1,72 @@
 package kr.co.huve.wealth.model.backend.data
 
+import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-//@XmlRootElement(name = "response")
-data class CovidResponse(
-//    @XmlElement(name = "header")
+data class CovidResult(
+    @SerializedName("response")
+    val response: Response
+) : Serializable
+
+data class Response(
+    @SerializedName("header")
     val header: Header,
-//    @XmlElement(name = "body")
+    @SerializedName("body")
     val body: Body
 ) : Serializable
 
-//@XmlRootElement(name = "header")
 data class Header(
-//    @XmlElement(name = "resultCode")
+    @SerializedName("resultCode")
     val resultCode: String,
-//    @XmlElement(name = "resultMsg")
+    @SerializedName("resultMsg")
     val resultMsg: String
 ) : Serializable
 
-
-//@XmlRootElement(name = "body")
 data class Body(
-
-//    @field:XmlElementWrapper(name = "items")
-//    @field:XmlElement(name = "item")
-    val items: List<Data>?
+    @SerializedName("items")
+    val result: Items,
+    @SerializedName("numOfRows")
+    val numOfRows: Int,
+    @SerializedName("pageNo")
+    val pageNo: Int,
+    @SerializedName("totalCount")
+    val totalCount: Int
 ) : Serializable
 
-//@XmlRootElement(name = "item")
-data class Data(
+data class Items(
+    @SerializedName("item")
+    val items: List<Item>
+) : Serializable
+
+data class Item(
     // 데이터 생성 날짜
-//    @field:XmlElement(name = "createDt")
+    @SerializedName("createDt")
     val createDateString: String,
     // 해당 지역 사망자 수
-//    @field:XmlElement(name = "deathCnt")
+    @SerializedName("deathCnt")
     val deathCount: Int,
     // 해당 지역 확진자 수
-//    @field:XmlElement(name = "defCnt")
+    @SerializedName("defCnt")
     val covidCount: Int,
     // 해당 지역명
-//    @field:XmlElement(name = "gubun")
+    @SerializedName("gubun")
     val region: String,
     // 전일 대비 증감 수
-//    @field:XmlElement(name = "incDec")
+    @SerializedName("incDec")
     val increasedCount: Int,
     // 격리 해제 수
-//    @field:XmlElement(name = "isolClearCnt")
+    @SerializedName("isolClearCnt")
     val isolationDoneCount: Int,
     // 격리 수
-//    @field:XmlElement(name = "isolIngCnt")
+    @SerializedName("isolIngCnt")
     val isolatingCount: Int,
     // 지역 발생 수
-//    @field:XmlElement(name = "localOccCnt")
+    @SerializedName("localOccCnt")
     val localOccurCount: Int,
     // 유입 발생
-//    @field:XmlElement(name = "overFlowCnt")
+    @SerializedName("overFlowCnt")
     val inflowCount: Int,
     // 10만명 당 발생 비율
-//    @field:XmlElement(name = "qurRate")
-    val occurrencePerTenThousand: Int,
+    @SerializedName("qurRate")
+    val occurrencePerTenThousand: String,
 ) : Serializable
