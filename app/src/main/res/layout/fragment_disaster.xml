@@ -4,21 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/iconic_dark_blue"
+    android:background="@color/iconic_sky_blue"
     tools:context=".view.main.WealthActivity">
 
     <TextView
         android:id="@+id/response"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="70dp"
         android:fontFamily="@font/gemunu_libre_extra_bold"
+        android:gravity="center"
+        android:text="Loading"
         android:textColor="@color/iconic_white"
         android:textSize="40sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="Loading"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Response" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
