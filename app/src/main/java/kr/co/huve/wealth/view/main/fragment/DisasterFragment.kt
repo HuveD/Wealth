@@ -17,9 +17,12 @@ class DisasterFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         covidRestApi.getCovidStatus(NetworkConfig.COVID_KEY, 1, 20, "20201106", "20201107")
-            .subscribeOn(Schedulers.io()).subscribe {
+            .subscribeOn(Schedulers.io()).subscribe({
                 Timber.d(it.toString())
-            }
+            }, {
+                Timber.d(it.toString())
+            })
     }
 }

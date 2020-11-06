@@ -12,7 +12,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.jaxb.JaxbConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import javax.inject.Singleton
 
 
@@ -45,7 +45,7 @@ object RemoteModule {
             .client(client.build())
             .baseUrl(NetworkConfig.COVID_API)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .addConverterFactory(JaxbConverterFactory.create())
+            .addConverterFactory(ScalarsConverterFactory.create())
             .build().create(CovidRestApi::class.java)
     }
 }
