@@ -1,6 +1,5 @@
 package kr.co.huve.wealth.intent
 
-import android.annotation.SuppressLint
 import dagger.hilt.android.scopes.ActivityScoped
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kr.co.huve.wealth.model.backend.NetworkConfig
@@ -43,7 +42,6 @@ class SplashIntentFactory @Inject constructor(
         }
     }
 
-    @SuppressLint("MissingPermission")
     private fun buildWeatherRequestIntent(): Intent<SplashState> {
         return intent {
             fun retrofitSuccess(data: TotalWeather) = chainedIntent {

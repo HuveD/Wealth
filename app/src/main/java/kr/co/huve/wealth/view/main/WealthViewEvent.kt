@@ -1,4 +1,5 @@
 package kr.co.huve.wealth.view.main
 
-class WealthViewEvent {
+sealed class WealthViewEvent {
+    data class PageChanged(val index: Int) : WealthViewEvent()
 }
