@@ -11,7 +11,8 @@
     <color name="iconic_sunset">#D7A37D</color>
     <color name="iconic_orange">#EE6F57</color>
     <color name="iconic_dark">#5C5C5C</color>
-    <color name="iconic_little_warn">#9C8686</color>
-    <color name="iconic_warn">#BE7878</color>
+    <color name="iconic_little_warn">#CCCCCC</color>
+    <color name="iconic_warn">#9C8686</color>
     <color name="iconic_safe">#51B5A3</color>
+    <color name="iconic_red">#B02626</color>
 </resources>

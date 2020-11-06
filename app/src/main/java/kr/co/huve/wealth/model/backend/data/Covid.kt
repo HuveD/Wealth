@@ -6,7 +6,11 @@ import java.io.Serializable
 data class CovidResult(
     @SerializedName("response")
     val response: Response
-) : Serializable
+) : Serializable {
+    fun getItemList() : List<Item>{
+        return response.body.result.items
+    }
+}
 
 data class Response(
     @SerializedName("header")

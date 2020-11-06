@@ -66,4 +66,14 @@
     <string name="weather_802">날이 조금 흐리네요</string>
     <string name="weather_803">구름이 많은 날이네요</string>
     <string name="weather_804">구름이 하늘을 가득 덮었어요</string>
+    <string name="covid_title">Covid-19</string>
+    <string name="city">City</string>
+    <string name="today">Today</string>
+    <string name="week">Week</string>
+    <string name="all">All</string>
+    <string name="patient_occur">확진 발생</string>
+    <string name="Isolator">격리자</string>
+    <string name="region_occur">지역 발생</string>
+    <string name="zero">0</string>
+    <string name="inflow">해외 유입</string>
 </resources>
