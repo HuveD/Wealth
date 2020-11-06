@@ -22,14 +22,14 @@ import javax.inject.Inject
 @FragmentScoped
 class WeatherView @Inject constructor(@ActivityContext val context: Context) {
     val view: View = LayoutInflater.from(context).inflate(R.layout.fragment_weather, null, false)
+    val todayTab: ImageView
+    val weekTab: ImageView
     private val predictWeatherList: RecyclerView
     private val currentStone: SeekBar
     private val titleMessage: TextView
     private val titleImage: ImageView
     private val titleTemp: TextView
-    private val todayTab: ImageView
     private val todayTabText: TextView
-    private val weekTab: ImageView
     private val weekTabText: TextView
     private val sunRiseTime: TextView
     private val sunSetTime: TextView
@@ -77,17 +77,9 @@ class WeatherView @Inject constructor(@ActivityContext val context: Context) {
         sunRiseTime.text = current.getTimeFromSunTime(current.sunrise)
 
         initializePredictWeatherList(true)
-
-        todayTab.setOnClickListener {
-            initializePredictWeatherList(true)
-        }
-
-        weekTab.setOnClickListener {
-            initializePredictWeatherList(false)
-        }
     }
 
-    private fun initializePredictWeatherList(isHourly: Boolean) {
+    fun initializePredictWeatherList(isHourly: Boolean) {
         todayTab.setImageResource(if (isHourly) R.drawable.img_tab_d else R.drawable.img_tab)
         weekTab.setImageResource(if (isHourly) R.drawable.img_tab else R.drawable.img_tab_d)
         todayTab.elevation = if (isHourly) 1f else 0f

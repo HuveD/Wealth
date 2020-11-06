@@ -11,7 +11,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_wealth.*
 import kr.co.huve.wealth.R
-import kr.co.huve.wealth.intent.WeatherIntentFactory
+import kr.co.huve.wealth.intent.WealthIntentFactory
 import kr.co.huve.wealth.model.wealth.WealthModelStore
 import kr.co.huve.wealth.model.wealth.WealthState
 import kr.co.huve.wealth.view.EventObservable
@@ -28,7 +28,7 @@ class WealthActivity : FragmentActivity(), StateSubscriber<WealthState>,
     lateinit var viewPagerAdapter: WealthPagerAdapter
 
     @Inject
-    lateinit var intentFactory: WeatherIntentFactory
+    lateinit var intentFactory: WealthIntentFactory
 
     @Inject
     lateinit var modelStore: WealthModelStore
@@ -68,6 +68,7 @@ class WealthActivity : FragmentActivity(), StateSubscriber<WealthState>,
             when (it) {
                 WealthState.IDLE -> initializePager()
                 is WealthState.FragmentSelected -> invalidateIndicator(it.position)
+                else -> Unit
             }
         }
     }
