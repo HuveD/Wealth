@@ -4,6 +4,7 @@ import android.content.Context
 import android.location.Geocoder
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
@@ -14,6 +15,7 @@ import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.FragmentScoped
 import kr.co.huve.wealth.R
 import kr.co.huve.wealth.model.backend.data.TotalWeather
+import kr.co.huve.wealth.view.main.WealthTheme
 import kr.co.huve.wealth.view.main.adapter.PredictWeatherListAdapter
 import java.util.*
 import javax.inject.Inject
@@ -21,6 +23,7 @@ import javax.inject.Inject
 @FragmentScoped
 class WeatherView @Inject constructor(@ActivityContext val context: Context) {
     val view: View = LayoutInflater.from(context).inflate(R.layout.fragment_weather, null, false)
+    var theme: WealthTheme = WealthTheme.CovidSafe
     val todayTab: ImageView
     val weekTab: ImageView
     private val predictWeatherList: RecyclerView
@@ -32,6 +35,7 @@ class WeatherView @Inject constructor(@ActivityContext val context: Context) {
     private val weekTabText: TextView
     private val sunRiseTime: TextView
     private val sunSetTime: TextView
+    private val background: ViewGroup
     private val city: TextView
     lateinit var totalWeather: TotalWeather
 
@@ -47,12 +51,17 @@ class WeatherView @Inject constructor(@ActivityContext val context: Context) {
         weekTabText = view.findViewById(R.id.weekTabText)
         sunRiseTime = view.findViewById(R.id.sunRiseTime)
         sunSetTime = view.findViewById(R.id.sunSetTime)
+        background = view.findViewById(R.id.background)
         city = view.findViewById(R.id.city)
     }
 
     fun bind(data: TotalWeather) {
-        this.totalWeather = data
+        totalWeather = data
         currentStone.isEnabled = false
+
+        // 배경 설정
+        val current = totalWeather.current
+        background.setBackgroundColor(current.getTheme().getBackgroundColor(context))
 
         // 도시
         Geocoder(context, Locale.getDefault()).getFromLocation(
@@ -62,7 +71,6 @@ class WeatherView @Inject constructor(@ActivityContext val context: Context) {
         )?.run { city.text = first().thoroughfare }
 
         // 현재 날씨 아이콘 및 설명
-        val current = totalWeather.current
         val element = if (current.weatherInfo.isNotEmpty()) current.weatherInfo.first() else null
         element?.run {
             titleMessage.text = context.getString(getWeatherDescription(context))
@@ -79,6 +87,22 @@ class WeatherView @Inject constructor(@ActivityContext val context: Context) {
     }
 
     fun initializePredictWeatherList(isHourly: Boolean) {
+        initializeTabStyle(isHourly)
+        totalWeather.run {
+            val calender = Calendar.getInstance()
+            predictWeatherList.apply {
+                setHasFixedSize(true)
+                layoutManager = LinearLayoutManager(context).apply {
+                    orientation = LinearLayoutManager.HORIZONTAL
+                }
+                adapter = PredictWeatherListAdapter(
+                    if (isHourly) hourly.filter { it.dt * 1000L > calender.time.time }
+                    else daily)
+            }
+        }
+    }
+
+    private fun initializeTabStyle(isHourly: Boolean) {
         todayTab.setImageResource(if (isHourly) R.drawable.img_tab_d else R.drawable.img_tab)
         weekTab.setImageResource(if (isHourly) R.drawable.img_tab else R.drawable.img_tab_d)
         todayTab.elevation = if (isHourly) 1f else 0f
@@ -95,28 +119,21 @@ class WeatherView @Inject constructor(@ActivityContext val context: Context) {
                 context, if (isHourly) R.color.iconic_white else R.color.iconic_orange
             )
         )
-        totalWeather.run {
-            val calender = Calendar.getInstance()
-            predictWeatherList.apply {
-                setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(context).apply {
-                    orientation = LinearLayoutManager.HORIZONTAL
-                }
-                adapter = PredictWeatherListAdapter(
-                    if (isHourly) hourly.filter { it.dt * 1000L > calender.time.time }
-                    else daily)
-            }
-        }
+    }
+
+    private fun invalidateTheme() {
+        val current = totalWeather.current
+        background.setBackgroundColor(current.getTheme().getBackgroundColor(context))
     }
 
     fun invalidateCurrentStone() {
         val currentTime = Calendar.getInstance().timeInMillis
         val currentItem = totalWeather.current
-        val riseTime = currentItem.sunrise
-        val setTime = currentItem.sunset
-        if (riseTime != null && setTime != null) {
-            currentStone.max = (setTime * 1000L - riseTime * 1000L).toInt()
-            currentStone.progress = (currentTime - riseTime * 1000L).toInt()
-        }
+        currentStone.max = (currentItem.sunset * 1000L - currentItem.sunrise * 1000L).toInt()
+        currentStone.progress = (currentTime - currentItem.sunrise * 1000L).toInt()
+
+        // 테마도 체크하여 갱신
+        invalidateTheme()
     }
+
 }

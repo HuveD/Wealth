@@ -15,7 +15,7 @@ import dagger.hilt.android.scopes.FragmentScoped
 import kr.co.huve.wealth.R
 import kr.co.huve.wealth.model.backend.data.Item
 import kr.co.huve.wealth.util.WealthLocationManager
-import kr.co.huve.wealth.view.main.CovidTheme
+import kr.co.huve.wealth.view.main.WealthTheme
 import kr.co.huve.wealth.view.main.adapter.CovidListAdapter
 import java.util.*
 import javax.inject.Inject
@@ -26,7 +26,7 @@ class CovidView @Inject constructor(
     private val locationManager: WealthLocationManager
 ) {
     val view: View = LayoutInflater.from(context).inflate(R.layout.fragment_disaster, null, false)
-    var theme: CovidTheme = CovidTheme.Safe
+    var theme: WealthTheme = WealthTheme.CovidSafe
     private val background: ViewGroup
     private val title: TextView
     private val city: TextView
@@ -75,9 +75,9 @@ class CovidView @Inject constructor(
 
     private fun invalidateData(item: Item) {
         theme = when {
-            item.increasedCount > 50 -> CovidTheme.Danger
-            item.increasedCount > 0 -> CovidTheme.Normal
-            else -> CovidTheme.Safe
+            item.increasedCount > 50 -> WealthTheme.CovidDanger
+            item.increasedCount > 0 -> WealthTheme.CovidNormal
+            else -> WealthTheme.CovidSafe
         }
 
         // 배경

@@ -3,6 +3,7 @@ package kr.co.huve.wealth.model.backend.data
 import android.content.Context
 import com.google.gson.annotations.SerializedName
 import kr.co.huve.wealth.R
+import kr.co.huve.wealth.view.main.WealthTheme
 import timber.log.Timber
 import java.io.Serializable
 import java.util.*
@@ -106,8 +107,8 @@ data class Snow(
 
 data class System(
     val country: String?,
-    val sunrise: Long?,
-    val sunset: Long?,
+    val sunrise: Long,
+    val sunset: Long,
 ) : Serializable
 
 data class TotalWeather(
@@ -120,8 +121,8 @@ data class TotalWeather(
 
 abstract class Weather {
     abstract val dt: Long
-    abstract val sunrise: Long?
-    abstract val sunset: Long?
+    abstract val sunrise: Long
+    abstract val sunset: Long
     abstract val pressure: Int
     abstract val humidity: Int
     abstract val dewPoint: Float
@@ -159,8 +160,8 @@ data class DayWeather(
     @SerializedName("feels_like")
     val feelsLike: Float,
     override var dt: Long,
-    override val sunrise: Long?,
-    override val sunset: Long?,
+    override val sunrise: Long,
+    override val sunset: Long,
     override val pressure: Int,
     override val humidity: Int,
     override val uvi: Float?,
@@ -188,6 +189,28 @@ data class DayWeather(
     override fun getProbabilityPrecipitation(): Int {
         return pop?.toInt() ?: 0
     }
+
+    fun getTheme(): WealthTheme {
+        val calendar = Calendar.getInstance()
+        val currentTime = calendar.time.time
+        val sunriseTime = sunrise * 1000L
+        val sunsetTime = sunset * 1000L
+        return when {
+            currentTime > (sunriseTime - 1800000L) && currentTime < sunriseTime -> {
+                // 일출 30분
+                WealthTheme.WeatherSunset
+            }
+            currentTime > (sunsetTime - 1800000L) && currentTime < sunsetTime -> {
+                // 일몰 30분
+                WealthTheme.WeatherSunset
+            }
+            currentTime > sunriseTime && currentTime < (sunsetTime - 1800000L) -> {
+                // 해 뜬 후 -> 일몰 30분 전
+                WealthTheme.WeatherDaytime
+            }
+            else -> WealthTheme.WeatherNight
+        }
+    }
 }
 
 data class WeekWeather(
@@ -204,8 +227,8 @@ data class WeekWeather(
     @SerializedName("wind_deg")
     override val windDeg: Int,
     override var dt: Long,
-    override val sunrise: Long?,
-    override val sunset: Long?,
+    override val sunrise: Long,
+    override val sunset: Long,
     override val pressure: Int,
     override val humidity: Int,
     override val uvi: Float?,
