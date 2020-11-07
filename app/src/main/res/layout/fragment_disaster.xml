@@ -25,6 +25,7 @@
             android:src="@drawable/icon_virus" />
 
         <TextView
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -87,6 +88,7 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/occurCountLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -121,6 +123,7 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/isolationCountLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -153,6 +156,7 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/regionCountLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -185,6 +189,7 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/inflowCountLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
