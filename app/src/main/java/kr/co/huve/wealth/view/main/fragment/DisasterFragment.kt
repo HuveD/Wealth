@@ -9,6 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -18,6 +20,7 @@ import kr.co.huve.wealth.model.backend.data.CovidResult
 import kr.co.huve.wealth.model.backend.data.Item
 import kr.co.huve.wealth.model.backend.layer.CovidRestApi
 import kr.co.huve.wealth.util.WealthLocationManager
+import kr.co.huve.wealth.view.main.adapter.CovidListAdapter
 import org.json.XML
 import timber.log.Timber
 import java.util.*
@@ -42,32 +45,52 @@ class DisasterFragment : Fragment() {
     lateinit var regionCount: TextView
     lateinit var inflowCount: TextView
     lateinit var updateDate: TextView
+    lateinit var covidList: RecyclerView
+
+    var itemList: List<Item> = arrayListOf()
+    var selectedItem: Item? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        covidRestApi.getCovidStatus(NetworkConfig.COVID_KEY, 1, 20, "20201106", "20201107")
+        val calendar = Calendar.getInstance()
+        covidRestApi.getCovidStatus(
+            NetworkConfig.COVID_KEY,
+            1,
+            20,
+            "${calendar.get(Calendar.YEAR)}${calendar.get(Calendar.MONTH)+1}0${calendar.get(Calendar.DAY_OF_MONTH)-1}",
+            "${calendar.get(Calendar.YEAR)}${calendar.get(Calendar.MONTH)+1}0${calendar.get(Calendar.DAY_OF_MONTH)-1}"
+        )
             .subscribeOn(Schedulers.io()).subscribe({
                 val obj = gson.fromJson(XML.toJSONObject(it).toString(), CovidResult::class.java)
                 Timber.d("$obj")
                 val location = locationManager.location
-                val selectedItem = Geocoder(context, Locale.getDefault()).getFromLocation(
+                selectedItem = Geocoder(context, Locale.getDefault()).getFromLocation(
                     location.latitude,
                     location.longitude,
                     1
                 ).first()?.run {
-                    val list = obj.getItemList()
-                    var selected = list.first()
-                    for (i in 0..list.lastIndex) {
-                        if (this.adminArea.contains(list[i].region)) {
-                            selected = list[i]
+                    itemList = obj.getItemList()
+                    var selected = itemList.first()
+                    for (i in 0..itemList.lastIndex) {
+                        if (this.adminArea.contains(itemList[i].region)) {
+                            selected = itemList[i]
                             break
                         }
                     }
                     selected
                 }
                 background.post {
-                    if (selectedItem != null) invalidateData(selectedItem)
+                    if (selectedItem != null) invalidateData(selectedItem!!)
+
+                    covidList.apply {
+                        setHasFixedSize(true)
+                        layoutManager = LinearLayoutManager(context).run {
+                            orientation = LinearLayoutManager.HORIZONTAL
+                            this
+                        }
+                        adapter =
+                            CovidListAdapter(itemList.reversed())
+                    }
                 }
             }, {
                 Timber.d(it.toString())
@@ -81,6 +104,7 @@ class DisasterFragment : Fragment() {
     ): View? {
         val v = inflater.inflate(R.layout.fragment_disaster, container, false)
         background = v.findViewById(R.id.background)
+        covidList = v.findViewById(R.id.covidList)
         city = v.findViewById(R.id.city)
         increaseIcon = v.findViewById(R.id.increaseIcon)
         occurCount = v.findViewById(R.id.occurCount)
