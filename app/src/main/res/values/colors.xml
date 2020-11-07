@@ -12,7 +12,7 @@
     <color name="iconic_orange">#EE6F57</color>
     <color name="iconic_dark">#5C5C5C</color>
     <color name="iconic_little_warn">#CCCCCC</color>
-    <color name="iconic_warn">#9C8686</color>
+    <color name="iconic_warn">#E2BFBF</color>
     <color name="iconic_safe">#51B5A3</color>
-    <color name="iconic_red">#B02626</color>
+    <color name="iconic_red">#AF5E5E</color>
 </resources>

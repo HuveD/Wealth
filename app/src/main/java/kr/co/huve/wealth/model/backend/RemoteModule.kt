@@ -1,6 +1,5 @@
 package kr.co.huve.wealth.model.backend
 
-import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +14,6 @@ import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import javax.inject.Singleton
-
 
 @Module
 @InstallIn(ApplicationComponent::class)
@@ -48,11 +46,5 @@ object RemoteModule {
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(ScalarsConverterFactory.create())
             .build().create(CovidRestApi::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideGson(): Gson {
-        return Gson()
     }
 }

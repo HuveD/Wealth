@@ -122,6 +122,7 @@
         android:background="@color/iconic_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_min="168dp"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView

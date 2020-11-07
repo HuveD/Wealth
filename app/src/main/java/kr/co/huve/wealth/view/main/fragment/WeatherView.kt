@@ -15,7 +15,6 @@ import dagger.hilt.android.scopes.FragmentScoped
 import kr.co.huve.wealth.R
 import kr.co.huve.wealth.model.backend.data.TotalWeather
 import kr.co.huve.wealth.view.main.adapter.PredictWeatherListAdapter
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -98,18 +97,14 @@ class WeatherView @Inject constructor(@ActivityContext val context: Context) {
         )
         totalWeather.run {
             val calender = Calendar.getInstance()
-            val hourlyWeather = hourly
-            val dailyWeather = daily
             predictWeatherList.apply {
                 setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(context).run {
+                layoutManager = LinearLayoutManager(context).apply {
                     orientation = LinearLayoutManager.HORIZONTAL
-                    this
                 }
-                adapter =
-                    PredictWeatherListAdapter(if (isHourly) hourlyWeather.filter {
-                        it.dt * 1000L > calender.time.time
-                    } else dailyWeather)
+                adapter = PredictWeatherListAdapter(
+                    if (isHourly) hourly.filter { it.dt * 1000L > calender.time.time }
+                    else daily)
             }
         }
     }
@@ -122,8 +117,6 @@ class WeatherView @Inject constructor(@ActivityContext val context: Context) {
         if (riseTime != null && setTime != null) {
             currentStone.max = (setTime * 1000L - riseTime * 1000L).toInt()
             currentStone.progress = (currentTime - riseTime * 1000L).toInt()
-            Timber.d((setTime * 1000L - riseTime * 1000L).toInt().toString())
-            Timber.d((currentTime - (riseTime * 1000L)).toInt().toString())
         }
     }
 }

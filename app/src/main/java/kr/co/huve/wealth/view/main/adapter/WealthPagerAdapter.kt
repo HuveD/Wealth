@@ -3,11 +3,11 @@ package kr.co.huve.wealth.view.main.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import kr.co.huve.wealth.view.main.fragment.DisasterFragment
+import kr.co.huve.wealth.view.main.fragment.CovidFragment
 import kr.co.huve.wealth.view.main.fragment.WeatherFragment
 import javax.inject.Inject
 
-private const val PAGE_NUM = 3
+private const val PAGE_NUM = 2
 
 class WealthPagerAdapter @Inject constructor(activity: FragmentActivity) :
     FragmentStateAdapter(activity) {
@@ -18,9 +18,17 @@ class WealthPagerAdapter @Inject constructor(activity: FragmentActivity) :
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> WeatherFragment()
-            1 -> DisasterFragment()
+            Type.Weather.ordinal -> WeatherFragment()
+            Type.Covid.ordinal -> CovidFragment()
             else -> WeatherFragment()
+        }
+    }
+
+    companion object {
+        enum class Type {
+            Weather,
+            Covid,
+            Dust
         }
     }
 }
