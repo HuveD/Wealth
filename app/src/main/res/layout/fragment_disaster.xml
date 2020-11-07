@@ -237,7 +237,7 @@
         android:background="@color/iconic_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_min="168dp"
+        app:layout_constraintHeight_min="170dp"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
@@ -245,8 +245,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#00FFFFFF"
-        android:progressTint="#FFFFFF"
         android:indeterminateTint="@color/iconic_orange"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
