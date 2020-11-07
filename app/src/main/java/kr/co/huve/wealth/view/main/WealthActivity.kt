@@ -38,6 +38,7 @@ class WealthActivity : FragmentActivity(), StateSubscriber<WealthState>,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.black)
         setContentView(R.layout.activity_wealth)
     }
 
@@ -85,7 +86,6 @@ class WealthActivity : FragmentActivity(), StateSubscriber<WealthState>,
     }
 
     private fun initializePager() {
-        window.statusBarColor = ContextCompat.getColor(this, R.color.iconic_dark_blue)
         viewPager.adapter = viewPagerAdapter
     }
 

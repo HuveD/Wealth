@@ -49,7 +49,7 @@ class WeatherFragment : Fragment(), EventObservable<WealthViewEvent>, StateSubsc
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        data?.run { weatherView.bind(this) }
+        data?.apply { weatherView.bind(this) }
         return weatherView.view
     }
 

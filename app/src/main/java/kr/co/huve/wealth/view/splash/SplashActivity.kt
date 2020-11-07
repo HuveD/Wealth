@@ -44,7 +44,7 @@ class SplashActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.iconic_dark_blue)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.black)
         setContentView(R.layout.activity_splash)
     }
 
