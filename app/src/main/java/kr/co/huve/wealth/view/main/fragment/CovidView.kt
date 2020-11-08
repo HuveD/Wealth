@@ -124,12 +124,15 @@ class CovidView @Inject constructor(
         Geocoder(context, Locale.getDefault()).getFromLocation(
             location.latitude,
             location.longitude,
-            1
-        ).first()?.also {
-            for (i in 0..data.lastIndex) {
-                if (it.adminArea.contains(data[i].region)) {
-                    selected = data[i]
-                    break
+            5
+        )?.apply {
+            if (isNotEmpty()) {
+                val address = first()
+                for (i in 0..data.lastIndex) {
+                    if (address.adminArea.contains(data[i].region)) {
+                        selected = data[i]
+                        break
+                    }
                 }
             }
         }

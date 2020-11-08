@@ -67,8 +67,10 @@ class WeatherView @Inject constructor(@ActivityContext val context: Context) {
         Geocoder(context, Locale.getDefault()).getFromLocation(
             totalWeather.lat,
             totalWeather.lon,
-            1
-        )?.run { city.text = first().thoroughfare }
+            5
+        )?.apply {
+            if (isNotEmpty()) city.text = first().thoroughfare
+        }
 
         // 현재 날씨 아이콘 및 설명
         val element = if (current.weatherInfo.isNotEmpty()) current.weatherInfo.first() else null
