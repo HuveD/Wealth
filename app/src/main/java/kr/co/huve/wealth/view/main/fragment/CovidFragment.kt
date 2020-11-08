@@ -41,6 +41,7 @@ class CovidFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<
     lateinit var covidView: CovidView
     private val format = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
     private val calendar = Calendar.getInstance()
+    private var initializeDone = false
 
     private val requestRelay = PublishRelay.create<WealthViewEvent>()
     private val disposable = CompositeDisposable()
@@ -70,17 +71,23 @@ class CovidFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<
             is WealthState.FragmentSelected -> {
                 if (it.position == WealthPagerAdapter.Companion.Type.Covid.ordinal) requestCovidData()
             }
-            is WealthState.RequestCovid -> covidView.refreshProgress(show = true)
+            is WealthState.RequestCovid -> {
+                disposable.add(it.disposable)
+                covidView.refreshProgress(show = true)
+            }
             is WealthState.CovidDataReceived -> {
                 if (it.data.isEmpty()) {
+                    initializeDone = false
                     calendar.add(Calendar.DAY_OF_MONTH, -1)
                     requestCovidData()
                 } else {
+                    initializeDone = true
                     covidView.bind(it.data.reversed())
                     covidView.refreshProgress(false)
                 }
             }
             is WealthState.CovidRequestFail -> {
+                initializeDone = false
                 covidView.refreshProgress(false)
                 Toast.makeText(
                     context,
@@ -94,6 +101,7 @@ class CovidFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<
 
     override fun events(): Observable<WealthViewEvent> = requestRelay
 
-    private fun requestCovidData() =
-        requestRelay.accept(WealthViewEvent.RequestCovid(format.format(calendar.time)))
+    private fun requestCovidData() {
+        if (!initializeDone) requestRelay.accept(WealthViewEvent.RequestCovid(format.format(calendar.time)))
+    }
 }
