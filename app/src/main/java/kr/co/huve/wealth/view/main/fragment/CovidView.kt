@@ -65,6 +65,13 @@ class CovidView @Inject constructor(
     }
 
     fun bind(data: List<Item>) {
+        val nationwide =data.first()
+        theme = when {
+            nationwide.localOccurCount > 300 -> WealthTheme.CovidDanger
+            nationwide.localOccurCount > 0 -> WealthTheme.CovidNormal
+            else -> WealthTheme.CovidSafe
+        }
+
         val currentCityData = getCurrentCityData(data)
         invalidateData(currentCityData)
         covidList.apply {
@@ -78,12 +85,6 @@ class CovidView @Inject constructor(
     }
 
     private fun invalidateData(item: Item) {
-        theme = when {
-            item.increasedCount > 50 -> WealthTheme.CovidDanger
-            item.increasedCount > 0 -> WealthTheme.CovidNormal
-            else -> WealthTheme.CovidSafe
-        }
-
         // 배경
         background.setBackgroundColor(theme.getBackgroundColor(context))
         title.setTextColor(theme.getLabelColor(context))
