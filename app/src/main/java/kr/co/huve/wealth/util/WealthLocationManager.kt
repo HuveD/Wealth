@@ -42,16 +42,16 @@ class WealthLocationManager @Inject constructor(@ApplicationContext private val 
                     this
                 )
                 locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)?.run {
-                    Timber.d("Provided from the network")
-                    location.set(this)
+                    Timber.d("Provided from the ${provider} (${latitude},${longitude},${time})")
+                    if (this@WealthLocationManager.location.time < time) location.set(this)
                 }
             }
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 initialized = true
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, this)
                 locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)?.run {
-                    Timber.d("Provided from the GPS")
-                    location.set(this)
+                    Timber.d("Provided from the ${provider} (${latitude},${longitude},${time})")
+                    if (this@WealthLocationManager.location.time < time) location.set(this)
                 }
             }
             if (location.provider == "Default") {

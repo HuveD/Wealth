@@ -27,6 +27,7 @@ class CovidView @Inject constructor(
 ) {
     val view: View = LayoutInflater.from(context).inflate(R.layout.fragment_disaster, null, false)
     var theme: WealthTheme = WealthTheme.CovidSafe
+    var isbinded = false
     private val background: ViewGroup
     private val title: TextView
     private val city: TextView
@@ -42,6 +43,7 @@ class CovidView @Inject constructor(
     private val updateDate: TextView
     private val covidList: RecyclerView
     private val progress: ProgressBar
+    private val loading: TextView
 
     init {
         background = view.findViewById(R.id.background)
@@ -59,6 +61,7 @@ class CovidView @Inject constructor(
         updateDate = view.findViewById(R.id.updateDate)
         covidList = view.findViewById(R.id.covidList)
         progress = view.findViewById(R.id.progress)
+        loading = view.findViewById(R.id.loading)
     }
 
     fun bind(data: List<Item>) {
@@ -71,6 +74,7 @@ class CovidView @Inject constructor(
             adapter = CovidListAdapter(covidList = data)
             setHasFixedSize(true)
         }
+        isbinded = true
     }
 
     private fun invalidateData(item: Item) {
@@ -134,5 +138,6 @@ class CovidView @Inject constructor(
 
     fun refreshProgress(show: Boolean) {
         progress.visibility = if (show) View.VISIBLE else View.GONE
+        loading.visibility = if (show) View.VISIBLE else View.GONE
     }
 }

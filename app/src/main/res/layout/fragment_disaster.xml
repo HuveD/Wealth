@@ -245,6 +245,19 @@
         app:layout_constraintHeight_min="170dp"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <TextView
+        android:id="@+id/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/gemunu_libre_extra_bold"
+        android:text="@string/loading"
+        android:textColor="@color/iconic_dark"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="@id/covidList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/covidList" />
+
     <ProgressBar
         android:id="@+id/progress"
         android:layout_width="wrap_content"
