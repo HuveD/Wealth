@@ -65,7 +65,7 @@ class CovidView @Inject constructor(
     }
 
     fun bind(data: List<Item>) {
-        val nationwide =data.first()
+        val nationwide = data.first()
         theme = when {
             nationwide.localOccurCount > 300 -> WealthTheme.CovidDanger
             nationwide.localOccurCount > 0 -> WealthTheme.CovidNormal
