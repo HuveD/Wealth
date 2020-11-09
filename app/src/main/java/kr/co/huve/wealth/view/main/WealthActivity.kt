@@ -14,6 +14,7 @@ import kr.co.huve.wealth.R
 import kr.co.huve.wealth.intent.WealthIntentFactory
 import kr.co.huve.wealth.model.wealth.WealthModelStore
 import kr.co.huve.wealth.model.wealth.WealthState
+import kr.co.huve.wealth.util.DepthPageTransformer
 import kr.co.huve.wealth.view.EventObservable
 import kr.co.huve.wealth.view.StateSubscriber
 import kr.co.huve.wealth.view.main.adapter.WealthPagerAdapter
@@ -86,6 +87,7 @@ class WealthActivity : FragmentActivity(), StateSubscriber<WealthState>,
     }
 
     private fun initializePager() {
+        viewPager.setPageTransformer(DepthPageTransformer())
         viewPager.adapter = viewPagerAdapter
     }
 
