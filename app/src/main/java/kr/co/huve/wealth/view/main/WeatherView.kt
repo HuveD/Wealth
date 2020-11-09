@@ -1,4 +1,4 @@
-package kr.co.huve.wealth.view.main.fragment
+package kr.co.huve.wealth.view.main
 
 import android.content.Context
 import android.location.Geocoder
@@ -15,7 +15,6 @@ import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.FragmentScoped
 import kr.co.huve.wealth.R
 import kr.co.huve.wealth.model.backend.data.TotalWeather
-import kr.co.huve.wealth.view.main.WealthTheme
 import kr.co.huve.wealth.view.main.adapter.PredictWeatherListAdapter
 import java.util.*
 import javax.inject.Inject

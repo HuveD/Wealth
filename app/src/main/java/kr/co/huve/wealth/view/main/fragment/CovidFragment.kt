@@ -18,6 +18,7 @@ import kr.co.huve.wealth.model.wealth.WealthState
 import kr.co.huve.wealth.util.WealthLocationManager
 import kr.co.huve.wealth.view.EventObservable
 import kr.co.huve.wealth.view.StateSubscriber
+import kr.co.huve.wealth.view.main.CovidView
 import kr.co.huve.wealth.view.main.WealthViewEvent
 import kr.co.huve.wealth.view.main.adapter.WealthPagerAdapter
 import timber.log.Timber
@@ -76,6 +77,7 @@ class CovidFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<
             }
             is WealthState.CovidDataReceived -> {
                 if (it.data.isEmpty()) {
+                    Toast.makeText(context, "아직 오늘 정보가 발표되지 않았어요", Toast.LENGTH_SHORT).show()
                     calendar.add(Calendar.DAY_OF_MONTH, -1)
                     requestCovidData()
                 } else {

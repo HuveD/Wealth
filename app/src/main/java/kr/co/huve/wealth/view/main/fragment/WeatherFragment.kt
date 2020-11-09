@@ -18,6 +18,7 @@ import kr.co.huve.wealth.util.data.ExtraKey
 import kr.co.huve.wealth.view.EventObservable
 import kr.co.huve.wealth.view.StateSubscriber
 import kr.co.huve.wealth.view.main.WealthViewEvent
+import kr.co.huve.wealth.view.main.WeatherView
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
