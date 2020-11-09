@@ -8,6 +8,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.jakewharton.rxrelay3.PublishRelay
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.Observable
@@ -18,6 +22,7 @@ import kr.co.huve.wealth.intent.SplashIntentFactory
 import kr.co.huve.wealth.model.backend.data.TotalWeather
 import kr.co.huve.wealth.model.splash.SplashModelStore
 import kr.co.huve.wealth.model.splash.SplashState
+import kr.co.huve.wealth.util.ShowWealthAlertWorker
 import kr.co.huve.wealth.util.WealthLocationManager
 import kr.co.huve.wealth.util.data.ExtraKey
 import kr.co.huve.wealth.view.EventObservable
@@ -46,6 +51,16 @@ class SplashActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         window.statusBarColor = ContextCompat.getColor(this, R.color.black)
         setContentView(R.layout.activity_splash)
+
+
+        val saveRequest =
+            OneTimeWorkRequest.Builder(ShowWealthAlertWorker::class.java)
+                .setConstraints(
+                    Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+                )
+                .build()
+
+        WorkManager.getInstance(this).enqueue(saveRequest)
     }
 
     override fun onResume() {

@@ -3,6 +3,7 @@ buildscript {
     //region Global variable
     ext.kotlin_version = "1.4.10"
     ext.hilt_version = "2.29.1-alpha"
+    ext.jetpack_hilt_version = "1.0.0-alpha02"
     ext.retrofit_version = "2.9.0"
     ext.gson_version = "2.8.6"
     ext.rx_binding_version = "4.0.0"

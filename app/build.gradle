@@ -48,6 +48,8 @@ dependencies {
     // region dagger hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+    implementation "androidx.hilt:hilt-work:$jetpack_hilt_version"
+    kapt "androidx.hilt:hilt-compiler:$jetpack_hilt_version"
     // For instrumentation tests
     androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
