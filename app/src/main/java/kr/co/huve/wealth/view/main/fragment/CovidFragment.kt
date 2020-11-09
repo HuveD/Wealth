@@ -77,7 +77,11 @@ class CovidFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<
             }
             is WealthState.CovidDataReceived -> {
                 if (it.data.isEmpty()) {
-                    Toast.makeText(context, "아직 오늘 정보가 발표되지 않았어요", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        getString(R.string.not_exist_update_data),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     calendar.add(Calendar.DAY_OF_MONTH, -1)
                     requestCovidData()
                 } else {
