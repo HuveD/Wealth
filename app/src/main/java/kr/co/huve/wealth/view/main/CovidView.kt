@@ -41,6 +41,7 @@ class CovidView @Inject constructor(
     private val inflowCount: TextView
     private val updateDate: TextView
     private val covidList: RecyclerView
+    private val progressBackground: View
     private val progress: ProgressBar
     private val loading: TextView
 
@@ -59,6 +60,7 @@ class CovidView @Inject constructor(
         inflowCount = view.findViewById(R.id.inflowCount)
         updateDate = view.findViewById(R.id.updateDate)
         covidList = view.findViewById(R.id.covidList)
+        progressBackground = view.findViewById(R.id.progressBackground)
         progress = view.findViewById(R.id.progress)
         loading = view.findViewById(R.id.loading)
     }
@@ -140,7 +142,9 @@ class CovidView @Inject constructor(
     }
 
     fun refreshProgress(show: Boolean) {
-        progress.visibility = if (show) View.VISIBLE else View.GONE
-        loading.visibility = if (show) View.VISIBLE else View.GONE
+        val visibility = if (show) View.VISIBLE else View.GONE
+        progressBackground.visibility = visibility
+        progress.visibility = visibility
+        loading.visibility = visibility
     }
 }
