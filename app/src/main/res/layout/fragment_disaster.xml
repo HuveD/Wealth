@@ -59,33 +59,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/city" />
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/increaseIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/icon_increase_small"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/occurCount"
+        app:layout_constraintEnd_toStartOf="@id/occurCount"
+        app:layout_constraintTop_toTopOf="@id/occurCount" />
+
+    <TextView
+        android:id="@+id/occurCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/gemunu_libre_extra_bold"
+        android:text="@string/zero"
+        android:textColor="@color/iconic_white"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="@id/occurIcon"
         app:layout_constraintEnd_toEndOf="@id/occurIcon"
         app:layout_constraintStart_toStartOf="@id/occurIcon"
-        app:layout_constraintTop_toTopOf="@id/occurIcon">
-
-        <ImageView
-            android:id="@+id/increaseIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/icon_increase_small"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/occurCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/gemunu_libre_extra_bold"
-            android:text="@string/zero"
-            android:textColor="@color/iconic_white"
-            android:textSize="30sp" />
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="@id/occurIcon" />
 
     <TextView
         android:id="@+id/occurCountLabel"
