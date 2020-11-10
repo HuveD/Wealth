@@ -5,7 +5,7 @@ import androidx.work.*
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kr.co.huve.wealth.util.data.DataKey
 import kr.co.huve.wealth.util.worker.CovidAlertCheckWorker
-import kr.co.huve.wealth.util.worker.MorningNotificationWorker
+import kr.co.huve.wealth.util.worker.DailyNotificationWorker
 import kr.co.huve.wealth.util.worker.WealthAlertCheckWorker
 import timber.log.Timber
 import java.util.*
@@ -41,9 +41,7 @@ class TaskManager @Inject constructor(@ApplicationContext val context: Context) 
             DataKey.WORK_NOTIFICATION.name,
             ExistingWorkPolicy.REPLACE, listOf(weatherRequest, covidRequest)
         ).then(
-            OneTimeWorkRequest.Builder(
-                MorningNotificationWorker::class.java
-            ).build()
+            OneTimeWorkRequest.Builder(DailyNotificationWorker::class.java).build()
         ).enqueue()
     }
 }

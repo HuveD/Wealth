@@ -7,15 +7,15 @@ import androidx.work.WorkerParameters
 import androidx.work.rxjava3.RxWorker
 import androidx.work.workDataOf
 import io.reactivex.rxjava3.core.Single
+import kr.co.huve.wealth.R
 import kr.co.huve.wealth.model.backend.NetworkConfig
 import kr.co.huve.wealth.model.backend.data.TotalWeather
 import kr.co.huve.wealth.model.backend.layer.WeatherRestApi
 import kr.co.huve.wealth.util.WealthLocationManager
 import kr.co.huve.wealth.util.data.DataKey
-import timber.log.Timber
 
 class WealthAlertCheckWorker @WorkerInject constructor(
-    @Assisted appContext: Context,
+    @Assisted val appContext: Context,
     @Assisted workerParams: WorkerParameters,
     var locationManager: WealthLocationManager,
     var weatherApi: WeatherRestApi
@@ -32,12 +32,28 @@ class WealthAlertCheckWorker @WorkerInject constructor(
                 "kr",
                 "metric"
             ).map {
-                val need = needUmbrella(it)
-                val outputData = workDataOf(DataKey.WORK_NEED_UMBRELLA.name to need)
-                Timber.d("Do I have to take a umbrella? -> $need")
+                val outputData = workDataOf(
+                    DataKey.WORK_NEED_UMBRELLA.name to needUmbrella(it),
+                    DataKey.WORK_WEATHER_DESCRIPTION.name to getDescription(it)
+                )
                 Result.success(outputData)
             }
         )
+    }
+
+    private fun getDescription(totalWeather: TotalWeather): String {
+        var sb = StringBuilder()
+        if (totalWeather.daily.isNotEmpty()) {
+            val today = totalWeather.daily.first()
+            sb.append("오늘 온도는 ")
+            sb.append(today.temp.day.toInt())
+            sb.append(appContext.getString(R.string.symbol_celsius))
+            sb.append("이며 체감 온도는 ")
+            sb.append(today.feelsLike.day.toInt())
+            sb.append(appContext.getString(R.string.symbol_celsius))
+            sb.append("입니다. ")
+        }
+        return sb.toString()
     }
 
     private fun needUmbrella(totalWeather: TotalWeather): Boolean {

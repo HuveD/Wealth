@@ -13,7 +13,6 @@ import kr.co.huve.wealth.model.backend.data.CovidResult
 import kr.co.huve.wealth.model.backend.layer.CovidRestApi
 import kr.co.huve.wealth.util.data.DataKey
 import org.json.XML
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -36,11 +35,9 @@ class CovidAlertCheckWorker @WorkerInject constructor(
                 format.format(calendar.time)
             ).map {
                 val result = gson.fromJson(XML.toJSONObject(it).toString(), CovidResult::class.java)
-                val need = needMask(result)
                 val outputData = workDataOf(
-                    DataKey.WORK_NEED_MASK.name to need
+                    DataKey.WORK_NEED_MASK.name to needMask(result)
                 )
-                Timber.d("Do I have to take a mask? -> $need")
                 Result.success(outputData)
             }
         )
