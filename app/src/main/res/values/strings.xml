@@ -77,6 +77,11 @@
     <string name="zero">0</string>
     <string name="inflow">해외 유입</string>
     <string name="covid_request_fail">코로나 정보를 받아오는데 문제가 발생했습니다</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading..</string>
     <string name="not_exist_update_data">아직 오늘 정보가 발표되지 않았어요!</string>
+    <string name="daily_notification">오늘의 웰스 안내</string>
+    <string name="task_mask_and_umbrella">마스크와 우산 챙기는 것을 잊지 마세요</string>
+    <string name="take_umbrella">우산 챙기는 것을 잊지 마세요</string>
+    <string name="take_mask">마스크 챙기는 것을 잊지 마세요</string>
+    <string name="have_nothing_to_do">오늘은 마스크와 우산이 필요 없는 날이에요</string>
 </resources>

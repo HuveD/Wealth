@@ -1,4 +1,4 @@
-package kr.co.huve.wealth.model.backend.worker
+package kr.co.huve.wealth.util.worker
 
 import android.content.Context
 import androidx.hilt.Assisted
@@ -32,8 +32,9 @@ class WealthAlertCheckWorker @WorkerInject constructor(
                 "kr",
                 "metric"
             ).map {
-                val outputData = workDataOf(DataKey.WORK_NEED_UMBRELLA.name to needUmbrella(it))
-                Timber.d("Do I have to take a umbrella? ${needUmbrella(it)}")
+                val need = needUmbrella(it)
+                val outputData = workDataOf(DataKey.WORK_NEED_UMBRELLA.name to need)
+                Timber.d("Do I have to take a umbrella? -> $need")
                 Result.success(outputData)
             }
         )

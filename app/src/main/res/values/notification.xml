@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="daily_alert_id">wealth_daily</string>
+    <string name="daily_alert_name">매일 정기 알림</string>
+    <string name="daily_alert_description">매일 정기 안내를 위한 알림입니다.</string>
+</resources>

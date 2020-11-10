@@ -8,10 +8,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.work.Constraints
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import com.jakewharton.rxrelay3.PublishRelay
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.Observable
@@ -20,10 +16,9 @@ import io.reactivex.rxjava3.disposables.Disposable
 import kr.co.huve.wealth.R
 import kr.co.huve.wealth.intent.SplashIntentFactory
 import kr.co.huve.wealth.model.backend.data.TotalWeather
-import kr.co.huve.wealth.model.backend.worker.CovidAlertCheckWorker
-import kr.co.huve.wealth.model.backend.worker.WealthAlertCheckWorker
 import kr.co.huve.wealth.model.splash.SplashModelStore
 import kr.co.huve.wealth.model.splash.SplashState
+import kr.co.huve.wealth.util.TaskManager
 import kr.co.huve.wealth.util.WealthLocationManager
 import kr.co.huve.wealth.util.data.DataKey
 import kr.co.huve.wealth.view.EventObservable
@@ -45,6 +40,9 @@ class SplashActivity : AppCompatActivity(),
     @Inject
     lateinit var locationManager: WealthLocationManager
 
+    @Inject
+    lateinit var taskManager: TaskManager
+
     private val permissionRelay = PublishRelay.create<SplashViewEvent>()
     private val disposables = CompositeDisposable()
 
@@ -52,18 +50,6 @@ class SplashActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         window.statusBarColor = ContextCompat.getColor(this, R.color.black)
         setContentView(R.layout.activity_splash)
-
-        val saveRequest = OneTimeWorkRequest.Builder(WealthAlertCheckWorker::class.java)
-            .setConstraints(
-                Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-            ).build()
-        val saveRequest2 = OneTimeWorkRequest.Builder(CovidAlertCheckWorker::class.java)
-            .setConstraints(
-                Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-            ).build()
-
-        WorkManager.getInstance(this).enqueue(saveRequest)
-        WorkManager.getInstance(this).enqueue(saveRequest2)
     }
 
     override fun onResume() {
@@ -95,7 +81,8 @@ class SplashActivity : AppCompatActivity(),
                         checkPermission()
                     }
                 }
-                is SplashState.Loading -> Unit // 현재 위치 날씨 조회 중
+                // 권한 체크 완료 -> 현재 위치 날씨 조회 중
+                is SplashState.Loading -> taskManager.scheduleMorningAlert()
                 is SplashState.Error -> errorOccurred()
                 is SplashState.Complete -> startWealth(it.dataSet)
             }

@@ -1,4 +1,4 @@
-package kr.co.huve.wealth.model.backend.worker
+package kr.co.huve.wealth.util.worker
 
 import android.content.Context
 import androidx.hilt.Assisted
@@ -35,22 +35,12 @@ class CovidAlertCheckWorker @WorkerInject constructor(
                 format.format(calendar.time),
                 format.format(calendar.time)
             ).map {
+                val result = gson.fromJson(XML.toJSONObject(it).toString(), CovidResult::class.java)
+                val need = needMask(result)
                 val outputData = workDataOf(
-                    DataKey.WORK_NEED_MASK.name to needMask(
-                        gson.fromJson(
-                            XML.toJSONObject(it).toString(), CovidResult::class.java
-                        )
-                    )
+                    DataKey.WORK_NEED_MASK.name to need
                 )
-                Timber.d(
-                    "Do I have to take a mask? ${
-                        needMask(
-                            gson.fromJson(
-                                XML.toJSONObject(it).toString(), CovidResult::class.java
-                            )
-                        )
-                    }"
-                )
+                Timber.d("Do I have to take a mask? -> $need")
                 Result.success(outputData)
             }
         )
