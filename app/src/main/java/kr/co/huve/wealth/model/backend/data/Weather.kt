@@ -46,17 +46,21 @@ data class WeatherInfo(
     fun getWeatherIcon(isTitle: Boolean): Int {
         Timber.d("$id")
         return when (id) {
+            // 천둥 번개 동반한 비
+            200, 201, 202, 230, 231, 232 -> if (isTitle) R.drawable.icon_thunder_rain_big else R.drawable.icon_thunder_rain
+            // 천둥 번개
+            210, 211, 212, 221 -> if (isTitle) R.drawable.icon_thunder_big else R.drawable.icon_thunder
             // 화산재, 스콜, 황사, 모래 바람, 안개, 연무, 연기 등등
             701, 711, 721, 731, 741, 751, 761, 762, 771, 781 -> if (isTitle) R.drawable.icon_cloud_big else R.drawable.icon_cloud
             // 눈 종류
-            600, 601, 602, 611, 612, 613, 615, 616, 620, 621, 622 -> if (isTitle) R.drawable.icon_snow_big else R.drawable.icon_snow
+            511, 600, 601, 602, 611, 612, 613, 615, 616, 620, 621, 622 -> if (isTitle) R.drawable.icon_snow_big else R.drawable.icon_snow
             // 구름 있음
             801, 802 -> if (isTitle) R.drawable.icon_little_cloud_big else R.drawable.icon_little_cloud
             803 -> if (isTitle) R.drawable.icon_cloud_big else R.drawable.icon_cloud
             804 -> if (isTitle) R.drawable.icon_many_cloud_big else R.drawable.icon_many_cloud
             // 맑음
             800 -> if (isTitle) R.drawable.icon_sun_big else R.drawable.icon_sun
-            // 이슬비, 소나기, 천둥 번개 등등
+            // 이슬비, 소나기 등등
             else -> if (isTitle) R.drawable.icon_rain_big else R.drawable.icon_rain
         }
     }
