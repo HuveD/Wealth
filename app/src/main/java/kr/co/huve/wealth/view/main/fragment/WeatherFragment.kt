@@ -14,7 +14,7 @@ import kr.co.huve.wealth.intent.WealthIntentFactory
 import kr.co.huve.wealth.model.backend.data.TotalWeather
 import kr.co.huve.wealth.model.wealth.WealthModelStore
 import kr.co.huve.wealth.model.wealth.WealthState
-import kr.co.huve.wealth.util.data.ExtraKey
+import kr.co.huve.wealth.util.data.DataKey
 import kr.co.huve.wealth.view.EventObservable
 import kr.co.huve.wealth.view.StateSubscriber
 import kr.co.huve.wealth.view.main.WealthViewEvent
@@ -41,7 +41,7 @@ class WeatherFragment : Fragment(), EventObservable<WealthViewEvent>, StateSubsc
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         data = activity?.run {
-            intent.getSerializableExtra(ExtraKey.EXTRA_WEATHER_DATA) as TotalWeather?
+            intent.getSerializableExtra(DataKey.EXTRA_WEATHER_DATA.name) as TotalWeather?
         }
     }
 

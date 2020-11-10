@@ -20,11 +20,12 @@ import io.reactivex.rxjava3.disposables.Disposable
 import kr.co.huve.wealth.R
 import kr.co.huve.wealth.intent.SplashIntentFactory
 import kr.co.huve.wealth.model.backend.data.TotalWeather
+import kr.co.huve.wealth.model.backend.worker.CovidAlertCheckWorker
+import kr.co.huve.wealth.model.backend.worker.WealthAlertCheckWorker
 import kr.co.huve.wealth.model.splash.SplashModelStore
 import kr.co.huve.wealth.model.splash.SplashState
-import kr.co.huve.wealth.util.ShowWealthAlertWorker
 import kr.co.huve.wealth.util.WealthLocationManager
-import kr.co.huve.wealth.util.data.ExtraKey
+import kr.co.huve.wealth.util.data.DataKey
 import kr.co.huve.wealth.view.EventObservable
 import kr.co.huve.wealth.view.StateSubscriber
 import kr.co.huve.wealth.view.main.WealthActivity
@@ -52,15 +53,17 @@ class SplashActivity : AppCompatActivity(),
         window.statusBarColor = ContextCompat.getColor(this, R.color.black)
         setContentView(R.layout.activity_splash)
 
-
-        val saveRequest =
-            OneTimeWorkRequest.Builder(ShowWealthAlertWorker::class.java)
-                .setConstraints(
-                    Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-                )
-                .build()
+        val saveRequest = OneTimeWorkRequest.Builder(WealthAlertCheckWorker::class.java)
+            .setConstraints(
+                Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+            ).build()
+        val saveRequest2 = OneTimeWorkRequest.Builder(CovidAlertCheckWorker::class.java)
+            .setConstraints(
+                Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+            ).build()
 
         WorkManager.getInstance(this).enqueue(saveRequest)
+        WorkManager.getInstance(this).enqueue(saveRequest2)
     }
 
     override fun onResume() {
@@ -141,7 +144,7 @@ class SplashActivity : AppCompatActivity(),
         // Start wealth activity
         startActivity(Intent(this@SplashActivity, WealthActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            putExtra(ExtraKey.EXTRA_WEATHER_DATA, singleWeather)
+            putExtra(DataKey.EXTRA_WEATHER_DATA.name, singleWeather)
         })
     }
 
