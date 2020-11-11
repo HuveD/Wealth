@@ -44,7 +44,7 @@ class WealthAlertCheckWorker @WorkerInject constructor(
     private fun getDescription(totalWeather: TotalWeather): String {
         var sb = StringBuilder()
         if (totalWeather.daily.isNotEmpty()) {
-            val format = appContext.getString(R.string.daily_alert)
+            val format = appContext.getString(R.string.daily_alert_format)
             val today = totalWeather.daily.first()
             sb.append(String.format(format, today.temp.day.toInt(), today.feelsLike.day.toInt()))
         }
