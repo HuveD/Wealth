@@ -12,4 +12,8 @@ sealed class WealthState {
     data class RequestCovid(val disposable: Disposable) : WealthState()
     data class CovidDataReceived(val data: List<Item>) : WealthState()
     object CovidRequestFail : WealthState()
+
+    data class DustRequestRunning(val disposable: Disposable) : WealthState()
+    object DustRequestFinish : WealthState()
+    object DustRequestError : WealthState()
 }

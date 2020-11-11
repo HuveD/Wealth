@@ -10,14 +10,14 @@ import retrofit2.http.Query
 interface DustRestApi {
     @GET("/openapi/services/rest/MsrstnInfoInqireSvc/getTMStdrCrdnt")
     fun getTransverseMercatorCoordinate(
-        @Query("serviceKey") key: String,
+        @Query("serviceKey", encoded = true) key: String,
         @Query("umdName") city: String,
         @Query("_returnType") returnType: String
     ): Observable<TmCoord>
 
     @GET("/openapi/services/rest/MsrstnInfoInqireSvc/getNearbyMsrstnList")
     fun getDustStation(
-        @Query("serviceKey") key: String,
+        @Query("serviceKey", encoded = true) key: String,
         @Query("numOfRows") numOfRows: Int,
         @Query("pageNo") page: Int,
         @Query("tmX") tmX: Double,
@@ -27,7 +27,7 @@ interface DustRestApi {
 
     @GET("/openapi/services/rest/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty")
     fun getNearDustInfo(
-        @Query("serviceKey") key: String,
+        @Query("serviceKey", encoded = true) key: String,
         @Query("numOfRows") numOfRows: Int,
         @Query("pageNo") page: Int,
         @Query("stationName") stationName: String,
@@ -38,7 +38,7 @@ interface DustRestApi {
 
     @GET("/openapi/services/rest/ArpltnInforInqireSvc/getMinuDustFrcstDspth")
     fun getPredictDustInfo(
-        @Query("serviceKey") key: String,
+        @Query("serviceKey", encoded = true) key: String,
         @Query("searchDate") date: String,
         @Query("ver") version: String,
         @Query("_returnType") returnType: String

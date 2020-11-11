@@ -6,6 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import kr.co.huve.wealth.BuildConfig
 import kr.co.huve.wealth.model.backend.layer.CovidRestApi
+import kr.co.huve.wealth.model.backend.layer.DustRestApi
 import kr.co.huve.wealth.model.backend.layer.WeatherRestApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -46,5 +47,20 @@ object RemoteModule {
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(ScalarsConverterFactory.create())
             .build().create(CovidRestApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDustService(): DustRestApi {
+        val client = OkHttpClient.Builder()
+        if (BuildConfig.DEBUG) client.addInterceptor(HttpLoggingInterceptor().also {
+            it.level = HttpLoggingInterceptor.Level.HEADERS
+        })
+        return Retrofit.Builder()
+            .client(client.build())
+            .baseUrl(NetworkConfig.DUST_API)
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build().create(DustRestApi::class.java)
     }
 }
