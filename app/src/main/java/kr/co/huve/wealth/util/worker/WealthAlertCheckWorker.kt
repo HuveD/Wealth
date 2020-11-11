@@ -44,14 +44,9 @@ class WealthAlertCheckWorker @WorkerInject constructor(
     private fun getDescription(totalWeather: TotalWeather): String {
         var sb = StringBuilder()
         if (totalWeather.daily.isNotEmpty()) {
+            val format = appContext.getString(R.string.daily_alert)
             val today = totalWeather.daily.first()
-            sb.append("오늘 온도는 ")
-            sb.append(today.temp.day.toInt())
-            sb.append(appContext.getString(R.string.symbol_celsius))
-            sb.append("이며 체감 온도는 ")
-            sb.append(today.feelsLike.day.toInt())
-            sb.append(appContext.getString(R.string.symbol_celsius))
-            sb.append("입니다. ")
+            sb.append(String.format(format, today.temp.day.toInt(), today.feelsLike.day.toInt()))
         }
         return sb.toString()
     }
