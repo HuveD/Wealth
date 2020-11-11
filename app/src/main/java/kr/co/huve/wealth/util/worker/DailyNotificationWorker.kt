@@ -2,7 +2,9 @@ package kr.co.huve.wealth.util.worker
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -15,6 +17,7 @@ import io.reactivex.rxjava3.core.Single
 import kr.co.huve.wealth.R
 import kr.co.huve.wealth.util.TaskManager
 import kr.co.huve.wealth.util.data.DataKey
+import kr.co.huve.wealth.view.splash.SplashActivity
 
 class DailyNotificationWorker @WorkerInject constructor(
     @Assisted val appContext: Context,
@@ -42,6 +45,10 @@ class DailyNotificationWorker @WorkerInject constructor(
     }
 
     private fun makeNotification(content: String) {
+        val intent = Intent(appContext, SplashActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(appContext, 0, intent, 0)
         var builder =
             NotificationCompat.Builder(appContext, appContext.getString(R.string.daily_alert_id))
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -49,6 +56,8 @@ class DailyNotificationWorker @WorkerInject constructor(
                 .setContentText(content)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(content))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
 
         with(NotificationManagerCompat.from(appContext)) {
             notify(0, builder.build())
