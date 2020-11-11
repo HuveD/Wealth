@@ -16,16 +16,18 @@ import javax.inject.Singleton
 @Singleton
 class TaskManager @Inject constructor(@ApplicationContext val context: Context) {
     fun scheduleMorningAlert() {
-        // Calculate duration
+        // Set time
         val morningHour = 7
         val calendar = Calendar.getInstance()
         val current = calendar.time.time
-        if (calendar.get(Calendar.HOUR_OF_DAY) > morningHour) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1)
-        }
         calendar.set(Calendar.HOUR_OF_DAY, morningHour)
         calendar.set(Calendar.MINUTE, 0)
         calendar.set(Calendar.SECOND, 0)
+
+        // Calculate duration
+        if (calendar.time.time <= current) {
+            calendar.add(Calendar.DAY_OF_MONTH, 1)
+        }
         val duration = calendar.time.time - current
 
         // Create worker
