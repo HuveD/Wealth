@@ -18,7 +18,7 @@ sealed class WealthTheme {
         CovidDanger -> ContextCompat.getColor(context, R.color.iconic_warn)
         WeatherSunset -> ContextCompat.getColor(context, R.color.iconic_sunset)
         WeatherNight -> ContextCompat.getColor(context, R.color.iconic_dark_blue)
-        WeatherDaytime -> ContextCompat.getColor(context, R.color.iconic_sky_blue)
+        WeatherDaytime -> ContextCompat.getColor(context, R.color.iconic_sky_green)
         else -> 0
     }
 
