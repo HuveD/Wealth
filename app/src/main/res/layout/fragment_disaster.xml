@@ -5,7 +5,7 @@
     android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/iconic_safe"
+    android:background="@color/iconic_little_warn"
     tools:context=".view.main.WealthActivity">
 
     <LinearLayout
