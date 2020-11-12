@@ -5,6 +5,7 @@ import dagger.hilt.android.scopes.ActivityScoped
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kr.co.huve.wealth.model.backend.NetworkConfig
 import kr.co.huve.wealth.model.backend.data.CovidResult
+import kr.co.huve.wealth.model.backend.data.dust.Dust
 import kr.co.huve.wealth.model.backend.data.dust.DustStation
 import kr.co.huve.wealth.model.backend.data.dust.TmCoord
 import kr.co.huve.wealth.model.backend.layer.CovidRestApi
@@ -68,57 +69,63 @@ class WealthIntentFactory @Inject constructor(
 
     private fun buildRequestDustIntent(city: String): Intent<WealthState> {
         return intent {
-            fun retrofitSuccess(response: TmCoord) = buildRequestDustStationSideEffect(response)
             WealthState.DustRequestRunning(
                 dustRestApi.getTransverseMercatorCoordinate(
                     NetworkConfig.DUST_KEY,
                     city,
                     "json"
-                ).subscribeOn(Schedulers.io()).subscribe(::retrofitSuccess, ::retrofitError)
+                ).subscribeOn(Schedulers.io())
+                    .subscribe(::buildRequestDustStationSideEffect, ::retrofitError)
             )
         }
     }
 
-    private fun buildRequestDustStationSideEffect(tmCoord: TmCoord): Intent<WealthState> {
-        return sideEffect {
-            fun retrofitSuccess(response: DustStation) = chainedIntent {
-                WealthState.DustRequestFinish
-            }
-
+    private fun buildRequestDustStationSideEffect(tmCoord: TmCoord) {
+        return chainedIntent {
             if (tmCoord.items.isNotEmpty()) {
                 val tmItem = tmCoord.items.first()
-                dustRestApi.getDustStation(
-                    key = NetworkConfig.COVID_KEY,
-                    numOfRows = 1,
-                    page = 1,
-                    tmX = tmItem.tmX,
-                    tmY = tmItem.tmY,
-                    returnType = "json"
-                ).subscribeOn(Schedulers.io()).subscribe(::retrofitSuccess, ::retrofitError)
-            }
+                WealthState.DustRequestRunning(
+                    dustRestApi.getDustStation(
+                        key = NetworkConfig.COVID_KEY,
+                        numOfRows = 1,
+                        page = 1,
+                        tmX = tmItem.tmX,
+                        tmY = tmItem.tmY,
+                        returnType = "json"
+                    ).subscribeOn(Schedulers.io())
+                        .subscribe(::buildRequestDustStationIntent, ::retrofitError)
+                )
+            } else WealthState.DustRequestError
         }
     }
 
-    private fun buildRequestDustStationIntent(dateString: String): Intent<WealthState> {
-        return intent {
-            fun retrofitSuccess(response: String) = chainedIntent {
-                WealthState.CovidDataReceived(
-                    data = gson.fromJson(
-                        XML.toJSONObject(response).toString(),
-                        CovidResult::class.java
-                    ).getItemList()
-                )
+    private fun buildRequestDustStationIntent(response: DustStation) {
+        return chainedIntent {
+
+            fun retrofitSuccess(response: Dust) = chainedIntent {
+                if (response.items.isNotEmpty()) {
+                    WealthState.DustDataReceived(response.items)
+                } else {
+                    WealthState.DustRequestError
+                }
             }
 
-            WealthState.RequestCovid(
-                covidRestApi.getCovidStatus(
-                    NetworkConfig.COVID_KEY,
-                    1,
-                    20,
-                    dateString,
-                    dateString
-                ).subscribeOn(Schedulers.io()).subscribe(::retrofitSuccess, ::retrofitError)
-            )
+            if (response.stations.isNotEmpty()) {
+                val station = response.stations.first()
+                WealthState.DustRequestRunning(
+                    dustRestApi.getNearDustInfo(
+                        key = NetworkConfig.COVID_KEY,
+                        numOfRows = 20,
+                        page = 1,
+                        stationName = station.stationName,
+                        dataTerm = "DAILY",
+                        version = "1.3",
+                        returnType = "json"
+                    ).subscribeOn(Schedulers.io()).subscribe(::retrofitSuccess, ::retrofitError)
+                )
+            } else {
+                WealthState.DustRequestError
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package kr.co.huve.wealth.model.wealth
 
 import io.reactivex.rxjava3.disposables.Disposable
 import kr.co.huve.wealth.model.backend.data.Item
+import kr.co.huve.wealth.model.backend.data.dust.DustItem
 
 sealed class WealthState {
     object IDLE : WealthState()
@@ -14,6 +15,6 @@ sealed class WealthState {
     object CovidRequestFail : WealthState()
 
     data class DustRequestRunning(val disposable: Disposable) : WealthState()
-    object DustRequestFinish : WealthState()
+    data class DustDataReceived(val data: List<DustItem>) : WealthState()
     object DustRequestError : WealthState()
 }

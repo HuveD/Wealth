@@ -8,7 +8,7 @@ import kr.co.huve.wealth.view.main.fragment.DustFragment
 import kr.co.huve.wealth.view.main.fragment.WeatherFragment
 import javax.inject.Inject
 
-private const val PAGE_NUM = 2
+private const val PAGE_NUM = 3
 
 class WealthPagerAdapter @Inject constructor(activity: FragmentActivity) :
     FragmentStateAdapter(activity) {
