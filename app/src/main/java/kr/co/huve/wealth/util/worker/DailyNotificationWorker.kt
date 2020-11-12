@@ -49,7 +49,7 @@ class DailyNotificationWorker @WorkerInject constructor(
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(appContext, 0, intent, 0)
-        var builder =
+        val builder =
             NotificationCompat.Builder(appContext, appContext.getString(R.string.daily_alert_id))
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(appContext.getString(R.string.daily_notification))

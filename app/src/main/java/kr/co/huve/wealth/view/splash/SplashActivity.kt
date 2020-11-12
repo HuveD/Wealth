@@ -82,9 +82,9 @@ class SplashActivity : AppCompatActivity(),
                     }
                 }
                 // 권한 체크 완료 -> 현재 위치 날씨 조회 중
-                is SplashState.Loading -> taskManager.scheduleMorningAlert()
                 is SplashState.Error -> errorOccurred()
                 is SplashState.Complete -> startWealth(it.dataSet)
+                else -> Unit
             }
         }
     }

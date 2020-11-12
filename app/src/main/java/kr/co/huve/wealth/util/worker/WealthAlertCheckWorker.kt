@@ -13,6 +13,7 @@ import kr.co.huve.wealth.model.backend.data.TotalWeather
 import kr.co.huve.wealth.model.backend.layer.WeatherRestApi
 import kr.co.huve.wealth.util.WealthLocationManager
 import kr.co.huve.wealth.util.data.DataKey
+import timber.log.Timber
 
 class WealthAlertCheckWorker @WorkerInject constructor(
     @Assisted val appContext: Context,
@@ -22,6 +23,7 @@ class WealthAlertCheckWorker @WorkerInject constructor(
 ) : RxWorker(appContext, workerParams) {
 
     override fun createWork(): Single<Result> {
+        Timber.d("WealthAlertCheckWorker Created")
         val lastLocation = locationManager.getLastLocation()
         return Single.fromObservable(
             weatherApi.getTotalWeatherWithCoords(
@@ -36,6 +38,7 @@ class WealthAlertCheckWorker @WorkerInject constructor(
                     DataKey.WORK_NEED_UMBRELLA.name to needUmbrella(it),
                     DataKey.WORK_WEATHER_DESCRIPTION.name to getDescription(it)
                 )
+                Timber.d("WealthAlertCheckWorker Success")
                 Result.success(outputData)
             }
         )
