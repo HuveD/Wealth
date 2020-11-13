@@ -4,12 +4,15 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import androidx.core.content.ContextCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kr.co.huve.wealth.R
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -69,6 +72,39 @@ class WealthLocationManager @Inject constructor(@ApplicationContext private val 
     fun getLastLocation(): Location {
         if (!initialized) initialize()
         return location
+    }
+
+    fun getDetailCity(): String = getDetailCity(location.latitude, location.longitude)
+    fun getDetailCity(lat: Double, lng: Double): String {
+        val address = Geocoder(context, Locale.getDefault()).getFromLocation(
+            lat,
+            lng,
+            5
+        )
+        return if (address == null || address.isEmpty()) {
+            context.getString(R.string.city)
+        } else {
+            val item = address.first()
+            return if (item.thoroughfare.isNullOrEmpty()) {
+                item.adminArea
+            } else {
+                item.thoroughfare
+            }
+        }
+    }
+
+    fun getCity(): String = getCity(location.latitude, location.longitude)
+    fun getCity(lat: Double, lng: Double): String {
+        val address = Geocoder(context, Locale.getDefault()).getFromLocation(
+            lat,
+            lng,
+            5
+        )
+        return if (address == null || address.isEmpty() || address.first().adminArea.isNullOrEmpty()) {
+            context.getString(R.string.city)
+        } else {
+            address.first().adminArea
+        }
     }
 
     private fun permissionGranted(): Boolean {

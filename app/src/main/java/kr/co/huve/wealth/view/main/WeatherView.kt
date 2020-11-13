@@ -1,7 +1,6 @@
 package kr.co.huve.wealth.view.main
 
 import android.content.Context
-import android.location.Geocoder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,14 +14,17 @@ import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.FragmentScoped
 import kr.co.huve.wealth.R
 import kr.co.huve.wealth.model.backend.data.TotalWeather
+import kr.co.huve.wealth.util.WealthLocationManager
 import kr.co.huve.wealth.view.main.adapter.PredictWeatherListAdapter
 import java.util.*
 import javax.inject.Inject
 
 @FragmentScoped
-class WeatherView @Inject constructor(@ActivityContext val context: Context) {
+class WeatherView @Inject constructor(
+    @ActivityContext val context: Context,
+    val locationManager: WealthLocationManager
+) {
     val view: View = LayoutInflater.from(context).inflate(R.layout.fragment_weather, null, false)
-    var theme: WealthTheme = WealthTheme.CovidSafe
     val todayTab: ImageView
     val weekTab: ImageView
     private val predictWeatherList: RecyclerView
@@ -63,13 +65,7 @@ class WeatherView @Inject constructor(@ActivityContext val context: Context) {
         background.setBackgroundColor(current.getTheme().getBackgroundColor(context))
 
         // 도시
-        Geocoder(context, Locale.getDefault()).getFromLocation(
-            totalWeather.lat,
-            totalWeather.lon,
-            5
-        )?.apply {
-            if (isNotEmpty()) city.text = first().thoroughfare
-        }
+        city.text = locationManager.getDetailCity(totalWeather.lat, totalWeather.lon)
 
         // 현재 날씨 아이콘 및 설명
         val element = if (current.weatherInfo.isNotEmpty()) current.weatherInfo.first() else null
@@ -136,5 +132,4 @@ class WeatherView @Inject constructor(@ActivityContext val context: Context) {
         // 테마도 체크하여 갱신
         invalidateTheme()
     }
-
 }

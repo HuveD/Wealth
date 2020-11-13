@@ -7,8 +7,8 @@ data class CovidResult(
     @SerializedName("response")
     val response: Response
 ) : Serializable {
-    fun getItemList() : List<Item>{
-        return response.body.result.items
+    fun getItemList(): List<CovidItem> {
+        return response.body.result.covidItems
     }
 }
 
@@ -28,7 +28,7 @@ data class Header(
 
 data class Body(
     @SerializedName("items")
-    val result: Items,
+    val result: CovidItems,
     @SerializedName("numOfRows")
     val numOfRows: Int,
     @SerializedName("pageNo")
@@ -37,12 +37,12 @@ data class Body(
     val totalCount: Int
 ) : Serializable
 
-data class Items(
+data class CovidItems(
     @SerializedName("item")
-    val items: List<Item>
+    val covidItems: List<CovidItem>
 ) : Serializable
 
-data class Item(
+data class CovidItem(
     // 데이터 생성 날짜
     @SerializedName("createDt")
     val createDateString: String,

@@ -44,7 +44,6 @@ class DustFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<W
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        dustView.bind(emptyList())
         return dustView.view
     }
 
@@ -66,6 +65,15 @@ class DustFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<W
                 if (it.position == WealthPagerAdapter.Companion.Type.Dust.ordinal) requestRelay.accept(
                     WealthViewEvent.RequestDust("삼전동")
                 )
+            }
+            is WealthState.DustDataReceived -> {
+                dustView.bind(it.data)
+                dustView.refreshProgress(false)
+            }
+            is WealthState.DustRequestError -> Timber.d("Request Error Occurred")
+            is WealthState.DustRequestRunning -> {
+                dustView.refreshProgress(true)
+                disposable.add(it.disposable)
             }
             else -> Unit
         }

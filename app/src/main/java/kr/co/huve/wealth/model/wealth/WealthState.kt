@@ -1,7 +1,7 @@
 package kr.co.huve.wealth.model.wealth
 
 import io.reactivex.rxjava3.disposables.Disposable
-import kr.co.huve.wealth.model.backend.data.Item
+import kr.co.huve.wealth.model.backend.data.CovidItem
 import kr.co.huve.wealth.model.backend.data.dust.DustItem
 
 sealed class WealthState {
@@ -11,7 +11,7 @@ sealed class WealthState {
     data class WeatherTabChanged(val isHour: Boolean) : WealthState()
 
     data class RequestCovid(val disposable: Disposable) : WealthState()
-    data class CovidDataReceived(val data: List<Item>) : WealthState()
+    data class CovidDataReceived(val data: List<CovidItem>) : WealthState()
     object CovidRequestFail : WealthState()
 
     data class DustRequestRunning(val disposable: Disposable) : WealthState()

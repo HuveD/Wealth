@@ -1,7 +1,6 @@
 package kr.co.huve.wealth.view.main
 
 import android.content.Context
-import android.location.Geocoder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.FragmentScoped
 import kr.co.huve.wealth.R
-import kr.co.huve.wealth.model.backend.data.Item
+import kr.co.huve.wealth.model.backend.data.CovidItem
 import kr.co.huve.wealth.util.WealthLocationManager
 import kr.co.huve.wealth.view.main.adapter.CovidListAdapter
-import java.util.*
 import javax.inject.Inject
 
 @FragmentScoped
@@ -65,7 +63,7 @@ class CovidView @Inject constructor(
         loading = view.findViewById(R.id.loading)
     }
 
-    fun bind(data: List<Item>) {
+    fun bind(data: List<CovidItem>) {
         val nationwide = data.first()
         theme = when {
             nationwide.localOccurCount > 300 -> WealthTheme.CovidDanger
@@ -85,57 +83,47 @@ class CovidView @Inject constructor(
         isbinded = true
     }
 
-    private fun invalidateData(item: Item) {
+    private fun invalidateData(covidItem: CovidItem) {
         // 배경
         background.setBackgroundColor(theme.getBackgroundColor(context))
         title.setTextColor(theme.getLabelColor(context))
 
         // 도시
         city.setTextColor(theme.getLabelColor(context))
-        city.text = item.region
+        city.text = covidItem.region
 
         // 도시 증가 수
-        increaseIcon.visibility = if (item.increasedCount > 0) View.VISIBLE else View.GONE
-        occurCount.text = item.increasedCount.toString()
+        increaseIcon.visibility = if (covidItem.increasedCount > 0) View.VISIBLE else View.GONE
+        occurCount.text = covidItem.increasedCount.toString()
         occurCount.setTextColor(theme.getFigureColor(context))
         occurCountLabel.setTextColor(theme.getLabelColor(context))
 
         // 격리자 수
-        isolationCount.text = item.isolatingCount.toString()
+        isolationCount.text = covidItem.isolatingCount.toString()
         isolationCountLabel.setTextColor(theme.getLabelColor(context))
         isolationCount.setTextColor(theme.getFigureColor(context))
 
         // 지역 감염 수
-        regionCount.text = item.localOccurCount.toString()
+        regionCount.text = covidItem.localOccurCount.toString()
         regionCountLabel.setTextColor(theme.getLabelColor(context))
         regionCount.setTextColor(theme.getFigureColor(context))
 
         // 해외 유입 수
-        inflowCount.text = item.inflowCount.toString()
+        inflowCount.text = covidItem.inflowCount.toString()
         inflowCountLabel.setTextColor(theme.getLabelColor(context))
         inflowCount.setTextColor(theme.getFigureColor(context))
 
         // 업데이트 시간
-        updateDate.text = ("UPDATE: ${item.createDateString.split(" ")[0]}")
+        updateDate.text = ("UPDATE: ${covidItem.createDateString.split(" ")[0]}")
         updateDate.setTextColor(theme.getLabelColor(context))
     }
 
-    private fun getCurrentCityData(data: List<Item>): Item {
-        val location = locationManager.location
+    private fun getCurrentCityData(data: List<CovidItem>): CovidItem {
         var selected = data.first()
-        Geocoder(context, Locale.getDefault()).getFromLocation(
-            location.latitude,
-            location.longitude,
-            5
-        )?.apply {
-            if (isNotEmpty()) {
-                val address = first()
-                for (i in 0..data.lastIndex) {
-                    if (address.adminArea.contains(data[i].region)) {
-                        selected = data[i]
-                        break
-                    }
-                }
+        for (i in 0..data.lastIndex) {
+            if (locationManager.getCity().contains(data[i].region)) {
+                selected = data[i]
+                break
             }
         }
         return selected

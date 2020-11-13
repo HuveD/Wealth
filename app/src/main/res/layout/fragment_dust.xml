@@ -8,38 +8,11 @@
     android:background="@color/iconic_little_warn"
     tools:context=".view.main.WealthActivity">
 
-    <LinearLayout
-        android:id="@+id/titleContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_virus" />
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:fontFamily="@font/gemunu_libre_extra_bold"
-            android:text="@string/covid_title"
-            android:textColor="@color/iconic_white"
-            android:textSize="40sp" />
-    </LinearLayout>
-
     <TextView
         android:id="@+id/city"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="40dp"
         android:fontFamily="@font/gemunu_libre_extra_bold"
         android:gravity="center"
         android:text="@string/city"
@@ -47,7 +20,7 @@
         android:textSize="30sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleContainer" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/occurIcon"
@@ -59,146 +32,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/city" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/occurCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:fontFamily="@font/gemunu_libre_extra_bold"
+        android:text="@string/zero"
+        android:textColor="@color/iconic_white"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="@id/occurIcon"
         app:layout_constraintEnd_toEndOf="@id/occurIcon"
         app:layout_constraintStart_toStartOf="@id/occurIcon"
-        app:layout_constraintTop_toTopOf="@id/occurIcon">
-
-        <ImageView
-            android:id="@+id/increaseIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/icon_increase_small"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/occurCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/gemunu_libre_extra_bold"
-            android:text="@string/zero"
-            android:textColor="@color/iconic_white"
-            android:textSize="30sp" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/occurCountLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/gemunu_libre_extra_bold"
-        android:text="@string/patient_occur"
-        android:textColor="@color/iconic_white"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/occurIcon" />
-
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="26dp"
-        android:layout_marginBottom="65dp"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/covidList"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <TextView
-            android:id="@+id/isolationCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/icon_small_circle"
-            android:fontFamily="@font/gemunu_libre_extra_bold"
-            android:gravity="center"
-            android:text="@string/zero"
-            android:textColor="@color/iconic_white"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/isolationCountLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/gemunu_libre_extra_bold"
-            android:gravity="center"
-            android:text="@string/Isolator"
-            android:textColor="@color/iconic_white"
-            android:textSize="14sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="65dp"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/covidList"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <TextView
-            android:id="@+id/regionCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/icon_small_circle"
-            android:fontFamily="@font/gemunu_libre_extra_bold"
-            android:gravity="center"
-            android:text="@string/zero"
-            android:textColor="@color/iconic_white"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/regionCountLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/gemunu_libre_extra_bold"
-            android:gravity="center"
-            android:text="@string/region_occur"
-            android:textColor="@color/iconic_white"
-            android:textSize="14sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="26dp"
-        android:layout_marginBottom="65dp"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/covidList"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <TextView
-            android:id="@+id/inflowCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/icon_small_circle"
-            android:fontFamily="@font/gemunu_libre_extra_bold"
-            android:gravity="center"
-            android:text="@string/zero"
-            android:textColor="@color/iconic_white"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/inflowCountLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/gemunu_libre_extra_bold"
-            android:gravity="center"
-            android:text="@string/inflow"
-            android:textColor="@color/iconic_white"
-            android:textSize="14sp" />
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="@id/occurIcon" />
 
     <TextView
         android:id="@+id/updateDate"
@@ -212,28 +57,6 @@
         app:layout_constraintBottom_toTopOf="@id/covidList"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="UPDATE: 2020.11.07" />
-
-    <ImageView
-        android:id="@+id/todayTab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/img_tab_d"
-        app:layout_constraintBottom_toTopOf="@id/covidList"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/todayTabText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/gemunu_libre_extra_bold"
-        android:paddingTop="4dp"
-        android:text="@string/all"
-        android:textColor="@color/iconic_orange"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@id/todayTab"
-        app:layout_constraintEnd_toEndOf="@id/todayTab"
-        app:layout_constraintStart_toStartOf="@id/todayTab"
-        app:layout_constraintTop_toTopOf="@id/todayTab" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/covidList"

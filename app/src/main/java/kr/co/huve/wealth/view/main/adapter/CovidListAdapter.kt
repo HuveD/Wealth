@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kr.co.huve.wealth.R
-import kr.co.huve.wealth.model.backend.data.Item
+import kr.co.huve.wealth.model.backend.data.CovidItem
 
-class CovidListAdapter(var covidList: List<Item>) :
+class CovidListAdapter(var covidList: List<CovidItem>) :
     RecyclerView.Adapter<CovidListAdapter.Holder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {

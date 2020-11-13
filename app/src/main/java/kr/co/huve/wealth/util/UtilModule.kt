@@ -6,7 +6,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
-import kr.co.huve.wealth.model.backend.data.Items
+import kr.co.huve.wealth.model.backend.data.CovidItems
 import kr.co.huve.wealth.util.json.CovidItemDeserializer
 import javax.inject.Singleton
 
@@ -19,7 +19,7 @@ object UtilModule {
     @Singleton
     fun provideGson(): Gson {
         val builder = GsonBuilder()
-        builder.registerTypeAdapter(Items::class.java, CovidItemDeserializer())
+        builder.registerTypeAdapter(CovidItems::class.java, CovidItemDeserializer())
         return builder.create()
     }
 }

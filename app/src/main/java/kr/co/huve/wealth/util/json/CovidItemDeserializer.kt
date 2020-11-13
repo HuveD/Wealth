@@ -3,28 +3,28 @@ package kr.co.huve.wealth.util.json
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
-import kr.co.huve.wealth.model.backend.data.Item
-import kr.co.huve.wealth.model.backend.data.Items
+import kr.co.huve.wealth.model.backend.data.CovidItem
+import kr.co.huve.wealth.model.backend.data.CovidItems
 import java.lang.reflect.Type
 
-class CovidItemDeserializer : JsonDeserializer<Items> {
+class CovidItemDeserializer : JsonDeserializer<CovidItems> {
     override fun deserialize(
         json: JsonElement?,
         typeOfT: Type?,
         context: JsonDeserializationContext?
-    ): Items {
+    ): CovidItems {
         if (json != null && context != null && json.isJsonObject) {
             val item = json.asJsonObject["item"]
-            val dataSet = arrayListOf<Item>()
+            val dataSet = arrayListOf<CovidItem>()
             if (item.isJsonArray) {
                 val jsonArray = item.asJsonArray
                 for (i in 0 until item.asJsonArray.size()) {
-                    val data = context.deserialize<Item>(jsonArray[i], Item::class.java)
+                    val data = context.deserialize<CovidItem>(jsonArray[i], CovidItem::class.java)
                     dataSet.add(data)
                 }
             }
-            return Items(dataSet)
+            return CovidItems(dataSet)
         }
-        return Items(emptyList())
+        return CovidItems(emptyList())
     }
 }
