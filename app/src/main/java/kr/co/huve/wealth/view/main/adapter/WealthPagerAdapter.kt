@@ -25,11 +25,9 @@ class WealthPagerAdapter @Inject constructor(activity: FragmentActivity) :
         }
     }
 
-    companion object {
-        enum class Type {
-            Weather,
-            Covid,
-            Dust
-        }
+    enum class Type {
+        Weather,
+        Covid,
+        Dust
     }
 }

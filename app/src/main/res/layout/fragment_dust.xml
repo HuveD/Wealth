@@ -33,11 +33,11 @@
         app:layout_constraintTop_toBottomOf="@id/city" />
 
     <TextView
-        android:id="@+id/occurCount"
+        android:id="@+id/dustGrade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/gemunu_libre_extra_bold"
-        android:text="@string/zero"
+        android:text="@string/grade_good"
         android:textColor="@color/iconic_white"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="@id/occurIcon"
@@ -54,12 +54,12 @@
         android:fontFamily="@font/gemunu_libre_extra_bold"
         android:textColor="@color/iconic_white"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@id/covidList"
+        app:layout_constraintBottom_toTopOf="@id/dustList"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="UPDATE: 2020.11.07" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/covidList"
+        android:id="@+id/dustList"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/iconic_white"
@@ -79,7 +79,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/covidList" />
+        app:layout_constraintTop_toTopOf="@id/dustList" />
 
     <View
         android:id="@+id/progressBackground"

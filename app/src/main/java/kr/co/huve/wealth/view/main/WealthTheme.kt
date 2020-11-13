@@ -31,12 +31,12 @@ sealed class WealthTheme {
     fun getFigureColor(context: Context) = when (this) {
         CovidSafe -> ContextCompat.getColor(context, R.color.iconic_white)
         CovidDanger, CovidNormal -> ContextCompat.getColor(context, R.color.iconic_red)
-        else -> 0
+        else -> ContextCompat.getColor(context, R.color.iconic_white)
     }
 
     fun getLabelColor(context: Context) = when (this) {
         CovidSafe -> ContextCompat.getColor(context, R.color.iconic_white)
         CovidDanger, CovidNormal -> ContextCompat.getColor(context, R.color.alpha_black)
-        else -> 0
+        else -> ContextCompat.getColor(context, R.color.iconic_white)
     }
 }

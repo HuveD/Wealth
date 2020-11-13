@@ -62,7 +62,7 @@ sealed class NotificationRes : NotificationInfo {
 }
 
 private fun NotificationRes.ordinal(): Int =
-    NotificationRes::class.sealedSubclasses.indexOfFirst { it == this }
+    NotificationRes::class.java.classes.indexOfFirst { it == this.javaClass }
 
 private interface NotificationInfo {
     fun getChannelId(): String

@@ -64,9 +64,7 @@ class DustFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<W
         Timber.d("State Changed: $it")
         when (it) {
             is WealthState.FragmentSelected -> {
-                if (it.position == WealthPagerAdapter.Companion.Type.Dust.ordinal) requestRelay.accept(
-                    WealthViewEvent.RequestDust(locationManager.getDetailCity())
-                )
+                if (it.position == WealthPagerAdapter.Type.Dust.ordinal) requestDust()
             }
             is WealthState.DustDataReceived -> {
                 dustView.bind(it.data)
@@ -93,4 +91,12 @@ class DustFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<W
     }
 
     override fun events(): Observable<WealthViewEvent> = requestRelay
+
+    private fun requestDust() {
+        if (!dustView.isbinded) {
+            requestRelay.accept(
+                WealthViewEvent.RequestDust(locationManager.getDetailCity())
+            )
+        }
+    }
 }

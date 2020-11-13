@@ -16,6 +16,6 @@ sealed class WealthState {
     data class CovidDataReceived(val data: List<CovidItem>) : WealthState()
 
     data class DustRequestRunning(val disposable: Disposable) : WealthState()
-    data class DustDataReceived(val data: List<DustItem>) : WealthState()
+    data class DustDataReceived(val data: DustItem) : WealthState()
     data class DustRequestError(val message: String) : WealthState()
 }

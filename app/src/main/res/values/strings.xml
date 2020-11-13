@@ -85,4 +85,14 @@
     <string name="convert_tm_fail">현재 위치 정보를 수집하는데 실패했습니다. 앱을 종료 후 다시 시작해주세요</string>
     <string name="fail_find_dust_station">주변 측정소를 찾는데 실패했습니다.</string>
     <string name="fail_receicve_dust_from_station">해당 측정소에서 정보를 받아오는데 실패했습니다.</string>
+    <string name="fine_dust">미세먼지</string>
+    <string name="ultra_fine_dust">초미세먼지</string>
+    <string name="carbon_monoxide">일산화탄소</string>
+    <string name="nitrogen_dioxide">이산화질소</string>
+    <string name="ozone">오존</string>
+    <string name="sulfur_dioxide">아황산가스</string>
+    <string name="grade_good">좋음</string>
+    <string name="grade_normal">보통</string>
+    <string name="grade_bad">나쁨</string>
+    <string name="grade_too_bad">매우 나쁨</string>
 </resources>

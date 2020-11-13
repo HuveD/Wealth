@@ -69,7 +69,7 @@ class CovidFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<
         Timber.d("State Changed: $it")
         when (it) {
             is WealthState.FragmentSelected -> {
-                if (it.position == WealthPagerAdapter.Companion.Type.Covid.ordinal) requestCovidData()
+                if (it.position == WealthPagerAdapter.Type.Covid.ordinal) requestCovidData()
             }
             is WealthState.RequestCovid -> {
                 disposable.add(it.disposable)

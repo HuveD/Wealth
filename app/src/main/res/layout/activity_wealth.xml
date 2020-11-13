@@ -51,7 +51,6 @@
             android:id="@+id/pageIndicator3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/style_tab_host"
-            android:visibility="gone" />
+            android:src="@drawable/style_tab_host" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

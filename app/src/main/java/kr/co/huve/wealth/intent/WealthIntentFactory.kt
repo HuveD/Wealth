@@ -111,7 +111,9 @@ class WealthIntentFactory @Inject constructor(
             // request dust info from selected station
             fun retrofitSuccess(response: Dust) = chainedIntent {
                 if (response.items.isNotEmpty()) {
-                    WealthState.DustDataReceived(response.items)
+                    WealthState.DustDataReceived(
+                        response.items.first()
+                    )
                 } else {
                     WealthState.DustRequestError(context.getString(R.string.fail_find_dust_station))
                 }
