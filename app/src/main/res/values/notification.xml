@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--  마스크 & 우산 알림  -->
     <string name="daily_alert_id">wealth_daily</string>
     <string name="daily_alert_name">매일 정기 알림</string>
     <string name="daily_alert_description">매일 정기 안내를 위한 알림입니다.</string>
+    <string name="daily_notification_title">오늘의 웰스 안내</string>
+    <string name="task_mask_and_umbrella">마스크와 우산 챙기는 것을 잊지 마세요.</string>
+    <string name="take_umbrella">우산 챙기는 것을 잊지 마세요.</string>
+    <string name="take_mask">마스크 챙기는 것을 잊지 마세요.</string>
+    <string name="have_nothing_to_do">오늘은 마스크와 우산이 필요 없는 날이에요.</string>
+    <string name="daily_alert_format">오늘 온도는 %dº이며 체감 온도는 %dº입니다. </string>
+
+    <!--  코로나 업데이트 알림  -->
+    <string name="check_covid_update_id">check_covid_update</string>
+    <string name="check_covid_update_name">코로나 업데이트 알림</string>
+    <string name="check_covid_update_description">코로나 업데이트 안내를 위한 알림입니다.</string>
+    <string name="update_covid_title">코로나 확진자 정보 업데이트</string>
+    <string name="update_covid_content">새로운 정보가 발표되었습니다. 자세한 정보는 어플에서 확인해주세요.</string>
 </resources>

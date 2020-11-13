@@ -97,7 +97,7 @@ class WeatherView @Inject constructor(@ActivityContext val context: Context) {
                     orientation = LinearLayoutManager.HORIZONTAL
                 }
                 adapter = PredictWeatherListAdapter(
-                    if (isHourly) hourly.filter { it.dt * 1000L > calender.time.time }
+                    if (isHourly) hourly.filter { it.dt * 1000L > calender.timeInMillis }
                     else daily)
             }
         }

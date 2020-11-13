@@ -82,6 +82,8 @@ class CovidFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<
                         getString(R.string.not_exist_update_data),
                         Toast.LENGTH_SHORT
                     ).show()
+
+                    // 하루 전 데이터 요청
                     calendar.add(Calendar.DAY_OF_MONTH, -1)
                     requestCovidData()
                 } else {

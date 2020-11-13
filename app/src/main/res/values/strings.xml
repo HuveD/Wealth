@@ -66,6 +66,8 @@
     <string name="weather_802">날이 조금 흐리네요</string>
     <string name="weather_803">구름이 많은 날이네요</string>
     <string name="weather_804">구름이 하늘을 가득 덮었어요</string>
+    <!--날씨 id에 따른 날씨 설명-->
+
     <string name="covid_title">Covid-19</string>
     <string name="city">City</string>
     <string name="today">Today</string>
@@ -79,10 +81,4 @@
     <string name="covid_request_fail">코로나 정보를 받아오는데 문제가 발생했습니다</string>
     <string name="loading">Loading..</string>
     <string name="not_exist_update_data">아직 오늘 정보가 발표되지 않았어요!</string>
-    <string name="daily_notification">오늘의 웰스 안내</string>
-    <string name="task_mask_and_umbrella">마스크와 우산 챙기는 것을 잊지 마세요.</string>
-    <string name="take_umbrella">우산 챙기는 것을 잊지 마세요.</string>
-    <string name="take_mask">마스크 챙기는 것을 잊지 마세요.</string>
-    <string name="have_nothing_to_do">오늘은 마스크와 우산이 필요 없는 날이에요.</string>
-    <string name="daily_alert_format">오늘 온도는 %dº이며 체감 온도는 %dº입니다. </string>
 </resources>

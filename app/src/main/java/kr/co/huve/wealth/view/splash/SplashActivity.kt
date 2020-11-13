@@ -18,7 +18,7 @@ import kr.co.huve.wealth.intent.SplashIntentFactory
 import kr.co.huve.wealth.model.backend.data.TotalWeather
 import kr.co.huve.wealth.model.splash.SplashModelStore
 import kr.co.huve.wealth.model.splash.SplashState
-import kr.co.huve.wealth.util.TaskManager
+import kr.co.huve.wealth.util.ScheduleManager
 import kr.co.huve.wealth.util.WealthLocationManager
 import kr.co.huve.wealth.util.data.DataKey
 import kr.co.huve.wealth.view.EventObservable
@@ -41,7 +41,7 @@ class SplashActivity : AppCompatActivity(),
     lateinit var locationManager: WealthLocationManager
 
     @Inject
-    lateinit var taskManager: TaskManager
+    lateinit var scheduleManager: ScheduleManager
 
     private val permissionRelay = PublishRelay.create<SplashViewEvent>()
     private val disposables = CompositeDisposable()

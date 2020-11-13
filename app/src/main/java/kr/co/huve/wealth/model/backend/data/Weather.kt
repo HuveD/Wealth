@@ -196,7 +196,7 @@ data class DayWeather(
 
     fun getTheme(): WealthTheme {
         val calendar = Calendar.getInstance()
-        val currentTime = calendar.time.time
+        val currentTime = calendar.timeInMillis
         val sunriseTime = sunrise * 1000L
         val sunsetTime = sunset * 1000L
         return when {

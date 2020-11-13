@@ -17,7 +17,7 @@ import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CovidAlertCheckWorker @WorkerInject constructor(
+class MaskCheckWorker @WorkerInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     var covidApi: CovidRestApi,

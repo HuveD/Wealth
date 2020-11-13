@@ -15,7 +15,7 @@ import kr.co.huve.wealth.util.WealthLocationManager
 import kr.co.huve.wealth.util.data.DataKey
 import timber.log.Timber
 
-class WealthAlertCheckWorker @WorkerInject constructor(
+class UmbrellaCheckWorker @WorkerInject constructor(
     @Assisted val appContext: Context,
     @Assisted workerParams: WorkerParameters,
     var locationManager: WealthLocationManager,
