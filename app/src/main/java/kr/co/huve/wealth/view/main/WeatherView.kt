@@ -62,7 +62,7 @@ class WeatherView @Inject constructor(
 
         // 배경 설정
         val current = totalWeather.current
-        background.setBackgroundColor(current.getTheme().getBackgroundColor(context))
+        background.setBackgroundResource(current.getTheme().getBackgroundResource())
 
         // 도시
         city.text = locationManager.getDetailCity(totalWeather.lat, totalWeather.lon)
@@ -120,7 +120,7 @@ class WeatherView @Inject constructor(
 
     private fun invalidateTheme() {
         val current = totalWeather.current
-        background.setBackgroundColor(current.getTheme().getBackgroundColor(context))
+        background.setBackgroundResource(current.getTheme().getBackgroundResource())
     }
 
     fun invalidateCurrentStone() {

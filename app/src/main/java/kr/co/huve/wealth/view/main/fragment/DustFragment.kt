@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.jakewharton.rxrelay3.PublishRelay
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
+import kr.co.huve.wealth.R
 import kr.co.huve.wealth.intent.WealthIntentFactory
 import kr.co.huve.wealth.model.wealth.WealthModelStore
 import kr.co.huve.wealth.model.wealth.WealthState
@@ -63,14 +65,25 @@ class DustFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<W
         when (it) {
             is WealthState.FragmentSelected -> {
                 if (it.position == WealthPagerAdapter.Companion.Type.Dust.ordinal) requestRelay.accept(
-                    WealthViewEvent.RequestDust("삼전동")
+                    WealthViewEvent.RequestDust(locationManager.getDetailCity())
                 )
             }
             is WealthState.DustDataReceived -> {
                 dustView.bind(it.data)
                 dustView.refreshProgress(false)
             }
-            is WealthState.DustRequestError -> Timber.d("Request Error Occurred")
+            is WealthState.DustRequestError -> {
+                Toast.makeText(this@DustFragment.context, it.message, Toast.LENGTH_SHORT).show()
+                dustView.refreshProgress(false)
+            }
+            is WealthState.FailReceiveResponseFromAPI -> {
+                Toast.makeText(
+                    this@DustFragment.context,
+                    getString(R.string.api_not_response),
+                    Toast.LENGTH_SHORT
+                ).show()
+                dustView.refreshProgress(false)
+            }
             is WealthState.DustRequestRunning -> {
                 dustView.refreshProgress(true)
                 disposable.add(it.disposable)

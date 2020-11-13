@@ -1,8 +1,11 @@
 package kr.co.huve.wealth.intent
 
+import android.content.Context
 import com.google.gson.Gson
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityScoped
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kr.co.huve.wealth.R
 import kr.co.huve.wealth.model.backend.NetworkConfig
 import kr.co.huve.wealth.model.backend.data.CovidResult
 import kr.co.huve.wealth.model.backend.data.dust.Dust
@@ -12,7 +15,6 @@ import kr.co.huve.wealth.model.backend.layer.CovidRestApi
 import kr.co.huve.wealth.model.backend.layer.DustRestApi
 import kr.co.huve.wealth.model.wealth.WealthModelStore
 import kr.co.huve.wealth.model.wealth.WealthState
-import kr.co.huve.wealth.util.WealthLocationManager
 import kr.co.huve.wealth.view.main.WealthViewEvent
 import org.json.XML
 import retrofit2.HttpException
@@ -21,7 +23,7 @@ import javax.inject.Inject
 
 @ActivityScoped
 class WealthIntentFactory @Inject constructor(
-    private val locationManager: WealthLocationManager,
+    @ApplicationContext private val context: Context,
     private val modelStore: WealthModelStore,
     private val covidRestApi: CovidRestApi,
     private val dustRestApi: DustRestApi,
@@ -62,26 +64,29 @@ class WealthIntentFactory @Inject constructor(
                     20,
                     dateString,
                     dateString
-                ).subscribeOn(Schedulers.io()).subscribe(::retrofitSuccess, ::retrofitError)
+                ).retry(3).subscribeOn(Schedulers.io())
+                    .subscribe(::retrofitSuccess, ::retrofitError)
             )
         }
     }
 
     private fun buildRequestDustIntent(city: String): Intent<WealthState> {
         return intent {
+            // request TM coordinates from wgs84
             WealthState.DustRequestRunning(
                 dustRestApi.getTransverseMercatorCoordinate(
                     NetworkConfig.DUST_KEY,
                     city,
                     "json"
-                ).subscribeOn(Schedulers.io())
-                    .subscribe(::buildRequestDustStationSideEffect, ::retrofitError)
+                ).retry(3).subscribeOn(Schedulers.io())
+                    .subscribe(::buildRequestDustStationIntent, ::retrofitError)
             )
         }
     }
 
-    private fun buildRequestDustStationSideEffect(tmCoord: TmCoord) {
+    private fun buildRequestDustStationIntent(tmCoord: TmCoord) {
         return chainedIntent {
+            // request dust station list
             if (tmCoord.items.isNotEmpty()) {
                 val tmItem = tmCoord.items.first()
                 WealthState.DustRequestRunning(
@@ -92,21 +97,21 @@ class WealthIntentFactory @Inject constructor(
                         tmX = tmItem.tmX,
                         tmY = tmItem.tmY,
                         returnType = "json"
-                    ).subscribeOn(Schedulers.io())
-                        .subscribe(::buildRequestDustStationIntent, ::retrofitError)
+                    ).retry(3).subscribeOn(Schedulers.io())
+                        .subscribe(::buildRequestDustInfoIntent, ::retrofitError)
                 )
-            } else WealthState.DustRequestError
+            } else WealthState.DustRequestError(context.getString(R.string.convert_tm_fail))
         }
     }
 
-    private fun buildRequestDustStationIntent(response: DustStation) {
+    private fun buildRequestDustInfoIntent(response: DustStation) {
         return chainedIntent {
-
+            // request dust info from selected station
             fun retrofitSuccess(response: Dust) = chainedIntent {
                 if (response.items.isNotEmpty()) {
                     WealthState.DustDataReceived(response.items)
                 } else {
-                    WealthState.DustRequestError
+                    WealthState.DustRequestError(context.getString(R.string.fail_find_dust_station))
                 }
             }
 
@@ -121,10 +126,11 @@ class WealthIntentFactory @Inject constructor(
                         dataTerm = "DAILY",
                         version = "1.3",
                         returnType = "json"
-                    ).subscribeOn(Schedulers.io()).subscribe(::retrofitSuccess, ::retrofitError)
+                    ).retry(3).subscribeOn(Schedulers.io())
+                        .subscribe(::retrofitSuccess, ::retrofitError)
                 )
             } else {
-                WealthState.DustRequestError
+                WealthState.DustRequestError(context.getString(R.string.fail_receicve_dust_from_station))
             }
         }
     }
@@ -133,6 +139,6 @@ class WealthIntentFactory @Inject constructor(
         if (t is HttpException) Timber.d(
             t.response().toString()
         ) else Timber.d(t.toString())
-        WealthState.DustRequestError
+        WealthState.FailReceiveResponseFromAPI
     }
 }

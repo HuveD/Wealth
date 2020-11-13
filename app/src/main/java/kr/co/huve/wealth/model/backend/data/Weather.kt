@@ -200,12 +200,12 @@ data class DayWeather(
         val sunriseTime = sunrise * 1000L
         val sunsetTime = sunset * 1000L
         return when {
-            currentTime > (sunriseTime - 1800000L) && currentTime < sunriseTime -> {
-                // 일출 30분
-                WealthTheme.WeatherSunset
+            currentTime > sunriseTime && currentTime < sunriseTime + 1800000L -> {
+                // 일출 -> 30분 뒤까지
+                WealthTheme.WeatherSunrise
             }
             currentTime > (sunsetTime - 1800000L) && currentTime < sunsetTime -> {
-                // 일몰 30분
+                // 일몰 30분 전 -> 일몰
                 WealthTheme.WeatherSunset
             }
             currentTime > sunriseTime && currentTime < (sunsetTime - 1800000L) -> {

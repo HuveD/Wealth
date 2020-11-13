@@ -91,7 +91,7 @@ class CovidFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<
                     covidView.refreshProgress(false)
                 }
             }
-            is WealthState.CovidRequestFail -> {
+            is WealthState.FailReceiveResponseFromAPI -> {
                 covidView.refreshProgress(false)
                 Toast.makeText(
                     context,

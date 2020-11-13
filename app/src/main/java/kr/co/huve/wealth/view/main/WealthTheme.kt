@@ -6,6 +6,7 @@ import kr.co.huve.wealth.R
 
 sealed class WealthTheme {
     object WeatherSunset : WealthTheme()
+    object WeatherSunrise : WealthTheme()
     object WeatherNight : WealthTheme()
     object WeatherDaytime : WealthTheme()
     object CovidSafe : WealthTheme()
@@ -19,6 +20,14 @@ sealed class WealthTheme {
         WeatherSunset -> ContextCompat.getColor(context, R.color.iconic_sunset)
         WeatherNight -> ContextCompat.getColor(context, R.color.iconic_dark_blue)
         WeatherDaytime -> ContextCompat.getColor(context, R.color.iconic_sky_green)
+        else -> 0
+    }
+
+    fun getBackgroundResource() = when (this) {
+        WeatherSunset -> R.drawable.bg_sunset
+        WeatherSunrise -> R.drawable.bg_sunrise
+        WeatherNight -> R.drawable.bg_night
+        WeatherDaytime -> R.drawable.bg_daytime
         else -> 0
     }
 

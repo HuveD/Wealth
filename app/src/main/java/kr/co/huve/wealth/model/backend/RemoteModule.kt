@@ -23,9 +23,6 @@ object RemoteModule {
     @Singleton
     fun provideWeatherService(): WeatherRestApi {
         val client = OkHttpClient.Builder()
-        if (BuildConfig.DEBUG) client.addInterceptor(HttpLoggingInterceptor().also {
-            it.level = HttpLoggingInterceptor.Level.HEADERS
-        })
         return Retrofit.Builder()
             .client(client.build())
             .baseUrl(NetworkConfig.WEATHER_API)
