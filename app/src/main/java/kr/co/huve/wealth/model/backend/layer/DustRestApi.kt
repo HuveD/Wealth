@@ -11,6 +11,8 @@ interface DustRestApi {
     @GET("/openapi/services/rest/MsrstnInfoInqireSvc/getTMStdrCrdnt")
     fun getTransverseMercatorCoordinate(
         @Query("serviceKey", encoded = true) key: String,
+        @Query("numOfRows") numOfRows: Int,
+        @Query("pageNo") page: Int,
         @Query("umdName") city: String,
         @Query("_returnType") returnType: String
     ): Observable<TmCoord>

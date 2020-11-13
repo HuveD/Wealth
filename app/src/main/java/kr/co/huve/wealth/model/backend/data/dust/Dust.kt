@@ -5,7 +5,9 @@ import java.io.Serializable
 
 data class Dust(
     @SerializedName("list")
-    val items: List<DustItem>
+    val items: List<DustItem>,
+    @SerializedName("parm")
+    val requestInfo: RequestInfo
 ) : Serializable
 
 data class DustItem(
@@ -49,4 +51,9 @@ data class DustItem(
     val so2Grade: Int,
     // 아황산가스 농도
     val so2Value: Double,
+) : Serializable
+
+data class RequestInfo(
+    @SerializedName("stationName")
+    val station: String
 ) : Serializable

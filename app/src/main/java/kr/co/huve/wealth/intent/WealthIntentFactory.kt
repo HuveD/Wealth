@@ -59,11 +59,11 @@ class WealthIntentFactory @Inject constructor(
 
             WealthState.RequestCovid(
                 covidRestApi.getCovidStatus(
-                    NetworkConfig.COVID_KEY,
-                    1,
-                    20,
-                    dateString,
-                    dateString
+                    key = NetworkConfig.COVID_KEY,
+                    page = 1,
+                    numOfRows = 20,
+                    startDate = dateString,
+                    endDate = dateString
                 ).retry(3).subscribeOn(Schedulers.io())
                     .subscribe(::retrofitSuccess, ::retrofitError)
             )
@@ -75,9 +75,11 @@ class WealthIntentFactory @Inject constructor(
             // request TM coordinates from wgs84
             WealthState.DustRequestRunning(
                 dustRestApi.getTransverseMercatorCoordinate(
-                    NetworkConfig.DUST_KEY,
-                    city,
-                    "json"
+                    key = NetworkConfig.DUST_KEY,
+                    numOfRows = 1,
+                    page = 1,
+                    city = city,
+                    returnType = "json"
                 ).retry(3).subscribeOn(Schedulers.io())
                     .subscribe(::buildRequestDustStationIntent, ::retrofitError)
             )
@@ -120,7 +122,7 @@ class WealthIntentFactory @Inject constructor(
                 WealthState.DustRequestRunning(
                     dustRestApi.getNearDustInfo(
                         key = NetworkConfig.COVID_KEY,
-                        numOfRows = 20,
+                        numOfRows = 1,
                         page = 1,
                         stationName = station.stationName,
                         dataTerm = "DAILY",
