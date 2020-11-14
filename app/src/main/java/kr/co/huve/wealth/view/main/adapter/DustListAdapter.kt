@@ -27,7 +27,9 @@ class DustListAdapter(private val dustItem: DustItem) :
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val item = DustType.getObject(position)
         if (item != null) {
-            holder.grade.text = context.getString(item.getGrade(dustItem))
+            val grade = item.getGrade(dustItem)
+            holder.gradeIcon.setImageResource(item.getIcon(grade))
+            holder.grade.text = context.getString(item.getGradeString(grade))
             holder.type.text = context.getString(item.getType())
         }
     }
@@ -58,7 +60,7 @@ class DustListAdapter(private val dustItem: DustItem) :
         }
 
         fun getGrade(item: DustItem): Int {
-            val grade = when (this) {
+            return when (this) {
                 FineDust -> item.pm10Grade1h
                 UltraFineDust -> item.pm25Grade1h
                 CarbonMonoxide -> item.coGrade
@@ -66,11 +68,24 @@ class DustListAdapter(private val dustItem: DustItem) :
                 Ozone -> item.o3Grade
                 SulfurDioxide -> item.so2Grade
             }
+        }
+
+        fun getGradeString(grade: Int): Int {
             return when (grade) {
                 1 -> R.string.grade_good
                 2 -> R.string.grade_normal
                 3 -> R.string.grade_bad
                 else -> R.string.grade_too_bad
+            }
+        }
+
+        fun getIcon(grade: Int): Int {
+            return when (grade) {
+                1 -> R.drawable.icon_happy
+                2 -> R.drawable.icon_smile
+                3 -> R.drawable.icon_sad
+                4 -> R.drawable.icon_sick
+                else -> R.drawable.icon_work
             }
         }
 

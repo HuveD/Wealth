@@ -3,6 +3,7 @@ package kr.co.huve.wealth.view.main
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +27,7 @@ class DustView @Inject constructor(
     private val progressBackground: View
     private val dustList: RecyclerView
     private val progress: ProgressBar
+    private val titleIcon: ImageView
     private val updateDate: TextView
     private val dustGrade: TextView
     private val loading: TextView
@@ -34,6 +36,7 @@ class DustView @Inject constructor(
     init {
         progressBackground = view.findViewById(R.id.progressBackground)
         dustList = view.findViewById(R.id.dustList)
+        titleIcon = view.findViewById(R.id.titleIcon)
         progress = view.findViewById(R.id.progress)
         updateDate = view.findViewById(R.id.updateDate)
         dustGrade = view.findViewById(R.id.dustGrade)
@@ -69,6 +72,15 @@ class DustView @Inject constructor(
             3 -> context.getString(R.string.grade_bad)
             else -> context.getString(R.string.grade_too_bad)
         }
+        titleIcon.setImageResource(
+            when (dustItem.khaiGrade) {
+                1 -> R.drawable.icon_happy_big
+                2 -> R.drawable.icon_smile_big
+                3 -> R.drawable.icon_sad_big
+                4 -> R.drawable.icon_sick_big
+                else -> R.drawable.icon_work_big
+            }
+        )
 
         // 업데이트 시간
         dustItem.dataTime
