@@ -6,6 +6,7 @@ object NetworkConfig {
     private const val CONNECT_TIMEOUT = 10L
     private const val WRITE_TIMEOUT = 1L
     private const val READ_TIMEOUT = 20L
+    const val RETRY = 3L
     //endregion Common setting
 
     // @Todo: Insert your Api key from https://openweathermap.org/. The api key is free.
