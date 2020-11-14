@@ -85,7 +85,7 @@ class CovidView @Inject constructor(
 
     private fun invalidateData(covidItem: CovidItem) {
         // 배경
-        background.setBackgroundColor(theme.getBackgroundColor(context))
+        background.setBackgroundResource(theme.getBackgroundResource())
         title.setTextColor(theme.getLabelColor(context))
 
         // 도시
