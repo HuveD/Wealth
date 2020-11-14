@@ -25,6 +25,7 @@ class DustView @Inject constructor(
     var theme: WealthTheme = WealthTheme.CovidSafe
     var isbinded = false
     private val progressBackground: View
+    private val background: View
     private val dustList: RecyclerView
     private val progress: ProgressBar
     private val titleIcon: ImageView
@@ -35,6 +36,7 @@ class DustView @Inject constructor(
 
     init {
         progressBackground = view.findViewById(R.id.progressBackground)
+        background = view.findViewById(R.id.background)
         dustList = view.findViewById(R.id.dustList)
         titleIcon = view.findViewById(R.id.titleIcon)
         progress = view.findViewById(R.id.progress)
@@ -57,21 +59,33 @@ class DustView @Inject constructor(
     }
 
     private fun invalidateData(dustItem: DustItem, stationName: String) {
+        // 종합 지수에 따른 테마 적용
+        dustGrade.text = when (dustItem.khaiGrade) {
+            1 -> {
+                theme = WealthTheme.DustGood
+                context.getString(R.string.grade_good)
+            }
+            2 -> {
+                theme = WealthTheme.DustNormal
+                context.getString(R.string.grade_normal)
+            }
+            3 -> {
+                theme = WealthTheme.DustBad
+                context.getString(R.string.grade_bad)
+            }
+            else -> {
+                theme = WealthTheme.DustTooBad
+                context.getString(R.string.grade_too_bad)
+            }
+        }
+
         // 배경
-//        background.setBackgroundColor(theme.getBackgroundColor(context))
-//        title.setTextColor(theme.getLabelColor(context))
+        background.setBackgroundResource(theme.getBackgroundResource())
 
         // 도시
         city.setTextColor(theme.getLabelColor(context))
         city.text = stationName
 
-        // 종합 지수
-        dustGrade.text = when (dustItem.khaiGrade) {
-            1 -> context.getString(R.string.grade_good)
-            2 -> context.getString(R.string.grade_normal)
-            3 -> context.getString(R.string.grade_bad)
-            else -> context.getString(R.string.grade_too_bad)
-        }
         titleIcon.setImageResource(
             when (dustItem.khaiGrade) {
                 1 -> R.drawable.icon_happy_big
