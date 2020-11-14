@@ -96,4 +96,6 @@
     <string name="grade_bad">나쁨</string>
     <string name="grade_too_bad">매우 나쁨</string>
     <string name="working">작업중</string>
+    <string name="current">현재</string>
+    <string name="tomorrow">내일</string>
 </resources>

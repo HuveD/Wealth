@@ -69,6 +69,83 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
+        android:id="@+id/today"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="64dp"
+        android:fontFamily="@font/gemunu_libre_extra_bold"
+        android:text="@string/current"
+        android:textColor="@color/iconic_white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/dustList"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tomorrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="64dp"
+        android:fontFamily="@font/gemunu_libre_extra_bold"
+        android:text="@string/tomorrow"
+        android:textColor="@color/iconic_white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/dustList"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/todayIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="22dp"
+        android:src="@drawable/icon_work_mini"
+        app:layout_constraintBottom_toTopOf="@id/tomorrow"
+        app:layout_constraintEnd_toEndOf="@id/tomorrow"
+        app:layout_constraintStart_toStartOf="@id/tomorrow" />
+
+    <ImageView
+        android:id="@+id/tomorrowIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="22dp"
+        android:src="@drawable/icon_work_mini"
+        app:layout_constraintBottom_toTopOf="@id/today"
+        app:layout_constraintEnd_toEndOf="@id/today"
+        app:layout_constraintStart_toStartOf="@id/today" />
+
+    <ImageView
+        android:id="@+id/todayStone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:src="@drawable/icon_time_stone"
+        app:layout_constraintBottom_toTopOf="@id/today"
+        app:layout_constraintEnd_toEndOf="@id/today"
+        app:layout_constraintStart_toStartOf="@id/today" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="@color/iconic_white"
+        android:paddingStart="1dp"
+        android:paddingEnd="1dp"
+        app:layout_constraintBottom_toBottomOf="@id/tomorrowStone"
+        app:layout_constraintEnd_toStartOf="@id/tomorrowStone"
+        app:layout_constraintStart_toEndOf="@id/todayStone"
+        app:layout_constraintTop_toTopOf="@id/todayStone" />
+
+    <ImageView
+        android:id="@+id/tomorrowStone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:src="@drawable/icon_time_stone"
+        app:layout_constraintBottom_toTopOf="@id/tomorrow"
+        app:layout_constraintEnd_toEndOf="@id/tomorrow"
+        app:layout_constraintStart_toStartOf="@id/tomorrow" />
+
+    <TextView
         android:id="@+id/loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -15,6 +15,7 @@ import kr.co.huve.wealth.model.backend.data.dust.DustItem
 import kr.co.huve.wealth.util.WealthLocationManager
 import kr.co.huve.wealth.view.main.adapter.DustListAdapter
 import javax.inject.Inject
+import kotlin.math.max
 
 @FragmentScoped
 class DustView @Inject constructor(
@@ -26,6 +27,8 @@ class DustView @Inject constructor(
     var isbinded = false
     private val progressBackground: View
     private val background: View
+    private val tomorrowIcon: ImageView
+    private val todayIcon: ImageView
     private val dustList: RecyclerView
     private val progress: ProgressBar
     private val titleIcon: ImageView
@@ -38,6 +41,8 @@ class DustView @Inject constructor(
         progressBackground = view.findViewById(R.id.progressBackground)
         background = view.findViewById(R.id.background)
         dustList = view.findViewById(R.id.dustList)
+        tomorrowIcon = view.findViewById(R.id.tomorrowIcon)
+        todayIcon = view.findViewById(R.id.todayIcon)
         titleIcon = view.findViewById(R.id.titleIcon)
         progress = view.findViewById(R.id.progress)
         updateDate = view.findViewById(R.id.updateDate)
@@ -86,15 +91,11 @@ class DustView @Inject constructor(
         city.setTextColor(theme.getLabelColor(context))
         city.text = stationName
 
-        titleIcon.setImageResource(
-            when (dustItem.khaiGrade) {
-                1 -> R.drawable.icon_happy_big
-                2 -> R.drawable.icon_smile_big
-                3 -> R.drawable.icon_sad_big
-                4 -> R.drawable.icon_sick_big
-                else -> R.drawable.icon_work_big
-            }
-        )
+        val todayIconRes = getGradeIconRes(dustItem.khaiGrade)
+        val tomorrowIconRes = getGradeIconRes(max(dustItem.pm10Grade, dustItem.pm25Grade))
+        tomorrowIcon.setImageResource(tomorrowIconRes)
+        titleIcon.setImageResource(todayIconRes)
+        todayIcon.setImageResource(todayIconRes)
 
         // 업데이트 시간
         dustItem.dataTime
@@ -107,5 +108,15 @@ class DustView @Inject constructor(
         progressBackground.visibility = visibility
         progress.visibility = visibility
         loading.visibility = visibility
+    }
+
+    private fun getGradeIconRes(grade: Int): Int {
+        return when (grade) {
+            1 -> R.drawable.icon_happy_big
+            2 -> R.drawable.icon_smile_big
+            3 -> R.drawable.icon_sad_big
+            4 -> R.drawable.icon_sick_big
+            else -> R.drawable.icon_work_big
+        }
     }
 }
