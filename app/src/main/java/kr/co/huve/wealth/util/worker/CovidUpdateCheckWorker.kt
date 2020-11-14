@@ -37,7 +37,7 @@ class CovidUpdateCheckWorker @WorkerInject constructor(
                 20,
                 format.format(calendar.time),
                 format.format(calendar.time)
-            ).map {
+            ).retry(NetworkConfig.RETRY).map {
                 val result =
                     gson.fromJson(XML.toJSONObject(it).toString(), CovidResult::class.java)
                 if (result.getItemList().isNotEmpty()) {

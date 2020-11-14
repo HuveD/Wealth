@@ -7,6 +7,7 @@ import dagger.hilt.android.scopes.ActivityScoped
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kr.co.huve.wealth.R
 import kr.co.huve.wealth.model.backend.NetworkConfig
+import kr.co.huve.wealth.model.backend.NetworkConfig.RETRY
 import kr.co.huve.wealth.model.backend.data.CovidResult
 import kr.co.huve.wealth.model.backend.data.dust.Dust
 import kr.co.huve.wealth.model.backend.data.dust.DustStation
@@ -64,7 +65,7 @@ class WealthIntentFactory @Inject constructor(
                     numOfRows = 20,
                     startDate = dateString,
                     endDate = dateString
-                ).retry(3).subscribeOn(Schedulers.io())
+                ).retry(RETRY).subscribeOn(Schedulers.io())
                     .subscribe(::retrofitSuccess, ::retrofitError)
             )
         }
@@ -80,7 +81,7 @@ class WealthIntentFactory @Inject constructor(
                     page = 1,
                     city = city,
                     returnType = "json"
-                ).retry(3).subscribeOn(Schedulers.io())
+                ).retry(RETRY).subscribeOn(Schedulers.io())
                     .subscribe(::buildRequestDustStationIntent, ::retrofitError)
             )
         }
@@ -99,7 +100,7 @@ class WealthIntentFactory @Inject constructor(
                         tmX = tmItem.tmX,
                         tmY = tmItem.tmY,
                         returnType = "json"
-                    ).retry(3).subscribeOn(Schedulers.io())
+                    ).retry(RETRY).subscribeOn(Schedulers.io())
                         .subscribe(::buildRequestDustInfoIntent, ::retrofitError)
                 )
             } else WealthState.DustRequestError(context.getString(R.string.convert_tm_fail))
@@ -128,9 +129,9 @@ class WealthIntentFactory @Inject constructor(
                         page = 1,
                         stationName = station.stationName,
                         dataTerm = "DAILY",
-                        version = "1.3",
+                        version = NetworkConfig.DUST_API_VERSION,
                         returnType = "json"
-                    ).retry(3).subscribeOn(Schedulers.io())
+                    ).retry(RETRY).subscribeOn(Schedulers.io())
                         .subscribe(::retrofitSuccess, ::retrofitError)
                 )
             } else {

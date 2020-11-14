@@ -3,6 +3,7 @@ package kr.co.huve.wealth.intent
 import dagger.hilt.android.scopes.ActivityScoped
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kr.co.huve.wealth.model.backend.NetworkConfig
+import kr.co.huve.wealth.model.backend.NetworkConfig.RETRY
 import kr.co.huve.wealth.model.backend.data.TotalWeather
 import kr.co.huve.wealth.model.backend.layer.CovidRestApi
 import kr.co.huve.wealth.model.backend.layer.WeatherRestApi
@@ -65,7 +66,8 @@ class SplashIntentFactory @Inject constructor(
                     "minutely",
                     "kr",
                     "metric"
-                ).subscribeOn(Schedulers.io()).subscribe(::retrofitSuccess, ::retrofitError)
+                ).retry(RETRY).subscribeOn(Schedulers.io())
+                    .subscribe(::retrofitSuccess, ::retrofitError)
             SplashState.Loading(disposable::dispose)
         }
     }

@@ -9,7 +9,7 @@
     <string name="take_umbrella">우산 챙기는 것을 잊지 마세요.</string>
     <string name="take_mask">마스크 챙기는 것을 잊지 마세요.</string>
     <string name="have_nothing_to_do">오늘은 마스크와 우산이 필요 없는 날이에요.</string>
-    <string name="daily_alert_format">오늘 온도는 %dº이며 체감 온도는 %dº입니다. </string>
+    <string name="daily_alert_format">오늘 온도는 %dº이며 체감 온도는 %dº입니다.&#160;</string>
 
     <!--  코로나 업데이트 알림  -->
     <string name="check_covid_update_id">check_covid_update</string>

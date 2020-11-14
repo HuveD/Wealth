@@ -35,7 +35,7 @@ class MaskCheckWorker @WorkerInject constructor(
                 20,
                 format.format(calendar.time),
                 format.format(calendar.time)
-            ).map {
+            ).retry(NetworkConfig.RETRY).map {
                 val result = gson.fromJson(XML.toJSONObject(it).toString(), CovidResult::class.java)
                 val outputData = workDataOf(
                     DataKey.WORK_NEED_MASK.name to needMask(result)

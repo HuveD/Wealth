@@ -9,6 +9,7 @@ import androidx.work.workDataOf
 import io.reactivex.rxjava3.core.Single
 import kr.co.huve.wealth.R
 import kr.co.huve.wealth.model.backend.NetworkConfig
+import kr.co.huve.wealth.model.backend.NetworkConfig.RETRY
 import kr.co.huve.wealth.model.backend.data.TotalWeather
 import kr.co.huve.wealth.model.backend.layer.WeatherRestApi
 import kr.co.huve.wealth.util.WealthLocationManager
@@ -33,7 +34,7 @@ class UmbrellaCheckWorker @WorkerInject constructor(
                 "minutely",
                 "kr",
                 "metric"
-            ).map {
+            ).retry(RETRY).map {
                 val outputData = workDataOf(
                     DataKey.WORK_NEED_UMBRELLA.name to needUmbrella(it),
                     DataKey.WORK_WEATHER_DESCRIPTION.name to getDescription(it)
