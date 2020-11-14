@@ -91,10 +91,14 @@ class DustView @Inject constructor(
         city.setTextColor(theme.getLabelColor(context))
         city.text = stationName
 
-        val todayIconRes = getGradeIconRes(dustItem.khaiGrade)
-        val tomorrowIconRes = getGradeIconRes(max(dustItem.pm10Grade, dustItem.pm25Grade))
+        // 타이틀 이미지
+        val todayBigIconRes = getGradeIconRes(dustItem.khaiGrade)
+        titleIcon.setImageResource(todayBigIconRes)
+
+        // 현재 - 내일 등급 설정
+        val todayIconRes = getGradeMiniIconRes(dustItem.khaiGrade)
+        val tomorrowIconRes = getGradeMiniIconRes(max(dustItem.pm10Grade, dustItem.pm25Grade))
         tomorrowIcon.setImageResource(tomorrowIconRes)
-        titleIcon.setImageResource(todayIconRes)
         todayIcon.setImageResource(todayIconRes)
 
         // 업데이트 시간
@@ -117,6 +121,16 @@ class DustView @Inject constructor(
             3 -> R.drawable.icon_sad_big
             4 -> R.drawable.icon_sick_big
             else -> R.drawable.icon_work_big
+        }
+    }
+
+    private fun getGradeMiniIconRes(grade: Int): Int {
+        return when (grade) {
+            1 -> R.drawable.icon_happy_mini
+            2 -> R.drawable.icon_smile_mini
+            3 -> R.drawable.icon_sad_mini
+            4 -> R.drawable.icon_sick_mini
+            else -> R.drawable.icon_work_mini
         }
     }
 }

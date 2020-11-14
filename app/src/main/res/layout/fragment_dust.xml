@@ -95,7 +95,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
-        android:id="@+id/todayIcon"
+        android:id="@+id/tomorrowIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="22dp"
@@ -105,7 +105,7 @@
         app:layout_constraintStart_toStartOf="@id/tomorrow" />
 
     <ImageView
-        android:id="@+id/tomorrowIcon"
+        android:id="@+id/todayIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="22dp"
