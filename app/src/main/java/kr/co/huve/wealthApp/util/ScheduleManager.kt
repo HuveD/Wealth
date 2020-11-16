@@ -35,13 +35,26 @@ class ScheduleManager @Inject constructor(@ApplicationContext val context: Conte
         // Create weather worker
         val config = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
         val weatherRequest = OneTimeWorkRequest.Builder(UmbrellaCheckWorker::class.java)
-            .setInitialDelay(duration, TimeUnit.MILLISECONDS).setConstraints(config).build()
+            .setInitialDelay(duration, TimeUnit.MILLISECONDS)
+            .setBackoffCriteria(
+                BackoffPolicy.LINEAR,
+                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+                TimeUnit.MILLISECONDS
+            )
+            .setConstraints(config)
+            .build()
 
         // Create covid worker
         calendar.add(Calendar.DAY_OF_MONTH, -1)
+
         val covidRequest = OneTimeWorkRequest.Builder(MaskCheckWorker::class.java)
             .setInputData(workDataOf(DataKey.WORK_DATETIME.name to calendar.timeInMillis))
             .setInitialDelay(duration, TimeUnit.MILLISECONDS)
+            .setBackoffCriteria(
+                BackoffPolicy.LINEAR,
+                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+                TimeUnit.MILLISECONDS
+            )
             .setConstraints(config)
             .build()
 
