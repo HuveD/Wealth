@@ -84,6 +84,7 @@ class DustFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<W
             }
             is WealthState.DustRequestRunning -> {
                 dustView.refreshProgress(true)
+                dustView.requestStateChange(it.message)
                 disposable.add(it.disposable)
             }
             else -> Unit

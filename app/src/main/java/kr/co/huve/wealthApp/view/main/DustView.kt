@@ -107,6 +107,10 @@ class DustView @Inject constructor(
         updateDate.setTextColor(theme.getLabelColor(context))
     }
 
+    fun requestStateChange(message: String) {
+        dustGrade.text = message
+    }
+
     fun refreshProgress(show: Boolean) {
         val visibility = if (show) View.VISIBLE else View.GONE
         progressBackground.visibility = visibility

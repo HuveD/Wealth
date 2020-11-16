@@ -82,7 +82,8 @@ class WealthIntentFactory @Inject constructor(
                     city = city,
                     returnType = "json"
                 ).retry(RETRY).subscribeOn(Schedulers.io())
-                    .subscribe(::buildRequestDustStationIntent, ::retrofitError)
+                    .subscribe(::buildRequestDustStationIntent, ::retrofitError),
+                context.getString(R.string.request_coordinates)
             )
         }
     }
@@ -101,7 +102,8 @@ class WealthIntentFactory @Inject constructor(
                         tmY = tmItem.tmY,
                         returnType = "json"
                     ).retry(RETRY).subscribeOn(Schedulers.io())
-                        .subscribe(::buildRequestDustInfoIntent, ::retrofitError)
+                        .subscribe(::buildRequestDustInfoIntent, ::retrofitError),
+                    context.getString(R.string.find_dust_station)
                 )
             } else WealthState.DustRequestError(context.getString(R.string.convert_tm_fail))
         }
@@ -132,7 +134,8 @@ class WealthIntentFactory @Inject constructor(
                         version = NetworkConfig.DUST_API_VERSION,
                         returnType = "json"
                     ).retry(RETRY).subscribeOn(Schedulers.io())
-                        .subscribe(::retrofitSuccess, ::retrofitError)
+                        .subscribe(::retrofitSuccess, ::retrofitError),
+                    context.getString(R.string.request_dust_info)
                 )
             } else {
                 WealthState.DustRequestError(context.getString(R.string.fail_receicve_dust_from_station))

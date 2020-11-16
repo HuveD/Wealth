@@ -98,4 +98,7 @@
     <string name="working">작업중</string>
     <string name="current">현재</string>
     <string name="tomorrow">내일</string>
+    <string name="request_coordinates">위치 정보를 수집 중..</string>
+    <string name="find_dust_station">주변 측정소 찾는 중..</string>
+    <string name="request_dust_info">대기 정보 수집 중..</string>
 </resources>
