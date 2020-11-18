@@ -53,7 +53,7 @@ class PredictWeatherListAdapter<T : Weather>(var weathers: List<T>) :
 
     private fun getDate(dateTime: Long): String {
         calendar.time = Date().apply { time = dateTime * 1000L }
-        return "${calendar.get(Calendar.MONDAY)}/${calendar.get(Calendar.DAY_OF_MONTH)}"
+        return "${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.DAY_OF_MONTH)}"
     }
 
     private fun getTemp(context: Context, weather: Weather): String {

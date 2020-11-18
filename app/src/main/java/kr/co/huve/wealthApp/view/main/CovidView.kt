@@ -64,10 +64,11 @@ class CovidView @Inject constructor(
     }
 
     fun bind(data: List<CovidItem>) {
+        // 첫번째 리스트가 전국 데이터
         val nationwide = data.first()
         theme = when {
-            nationwide.localOccurCount > 300 -> WealthTheme.CovidDanger
-            nationwide.localOccurCount > 0 -> WealthTheme.CovidNormal
+            nationwide.increasedCount > 300 -> WealthTheme.CovidDanger
+            nationwide.increasedCount > 0 -> WealthTheme.CovidNormal
             else -> WealthTheme.CovidSafe
         }
 
