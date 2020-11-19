@@ -5,13 +5,39 @@ import kr.co.huve.wealthApp.R
 
 
 sealed class NotificationRes : NotificationInfo {
+    data class CommonNotification(
+        val context: Context,
+        val titleName: String,
+        val message: String,
+        val notificationId: Int
+    ) : NotificationRes() {
+        override fun getChannelId(): String {
+            return context.getString(R.string.common_alert_id)
+        }
+
+        override fun getChannelName(): String {
+            return context.getString(R.string.common_alert_name)
+        }
+
+        override fun getChannelDescription(): String {
+            return context.getString(R.string.common_alert_description)
+        }
+
+        override fun getTitle(): String {
+            return titleName
+        }
+
+        override fun getContent(): String {
+            return message
+        }
+    }
+
     data class DailyAlert(
         val context: Context,
         val description: String,
         val umbrella: Boolean,
         val mask: Boolean
-    ) :
-        NotificationRes() {
+    ) : NotificationRes() {
         override fun getChannelId(): String = context.getString(R.string.daily_alert_id)
 
         override fun getChannelName(): String = context.getString(R.string.daily_alert_name)

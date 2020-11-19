@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- 일반 알림 -->
+    <string name="common_alert_id">common_alert</string>
+    <string name="common_alert_name">일반 알림</string>
+    <string name="common_alert_description">웰스의 다양한 안내를 위한 일반 알림입니다.</string>
+
     <!--  마스크 & 우산 알림  -->
     <string name="daily_alert_id">wealth_daily</string>
     <string name="daily_alert_name">매일 정기 알림</string>

@@ -12,13 +12,16 @@ import kr.co.huve.wealthApp.model.backend.NetworkConfig
 import kr.co.huve.wealthApp.model.backend.NetworkConfig.RETRY
 import kr.co.huve.wealthApp.model.backend.data.TotalWeather
 import kr.co.huve.wealthApp.model.backend.layer.WeatherRestApi
+import kr.co.huve.wealthApp.util.NotificationUtil
 import kr.co.huve.wealthApp.util.WealthLocationManager
 import kr.co.huve.wealthApp.util.data.DataKey
+import kr.co.huve.wealthApp.util.data.NotificationRes
 import timber.log.Timber
 
 class UmbrellaCheckWorker @WorkerInject constructor(
     @Assisted val appContext: Context,
     @Assisted workerParams: WorkerParameters,
+    var notificationUtil: NotificationUtil,
     var locationManager: WealthLocationManager,
     var weatherApi: WeatherRestApi
 ) : RxWorker(appContext, workerParams) {
@@ -35,6 +38,14 @@ class UmbrellaCheckWorker @WorkerInject constructor(
                 "kr",
                 "metric"
             ).retry(RETRY).map {
+                notificationUtil.makeNotification(
+                    NotificationRes.CommonNotification(
+                        context = appContext,
+                        titleName = "WealthAlertCheckWorker",
+                        message = "${needUmbrella(it)}",
+                        notificationId = 9901
+                    )
+                )
                 val outputData = workDataOf(
                     DataKey.WORK_NEED_UMBRELLA.name to needUmbrella(it),
                     DataKey.WORK_WEATHER_DESCRIPTION.name to getDescription(it)

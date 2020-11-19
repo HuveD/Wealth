@@ -11,16 +11,19 @@ import io.reactivex.rxjava3.core.Single
 import kr.co.huve.wealthApp.model.backend.NetworkConfig
 import kr.co.huve.wealthApp.model.backend.data.CovidResult
 import kr.co.huve.wealthApp.model.backend.layer.CovidRestApi
+import kr.co.huve.wealthApp.util.NotificationUtil
 import kr.co.huve.wealthApp.util.data.DataKey
+import kr.co.huve.wealthApp.util.data.NotificationRes
 import org.json.XML
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MaskCheckWorker @WorkerInject constructor(
-    @Assisted appContext: Context,
-    @Assisted workerParams: WorkerParameters,
-    var covidApi: CovidRestApi,
+    @Assisted val appContext: Context,
+    @Assisted val workerParams: WorkerParameters,
+    val notificationUtil: NotificationUtil,
+    val covidApi: CovidRestApi,
     val gson: Gson
 ) : RxWorker(appContext, workerParams) {
     private val format = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
@@ -39,6 +42,14 @@ class MaskCheckWorker @WorkerInject constructor(
                 val result = gson.fromJson(XML.toJSONObject(it).toString(), CovidResult::class.java)
                 val outputData = workDataOf(
                     DataKey.WORK_NEED_MASK.name to needMask(result)
+                )
+                notificationUtil.makeNotification(
+                    NotificationRes.CommonNotification(
+                        context = appContext,
+                        titleName = "CovidAlertCheckWorker",
+                        message = "${needMask(result)}",
+                        notificationId = 9902
+                    )
                 )
                 Timber.d("CovidAlertCheckWorker Success")
                 Result.success(outputData)
