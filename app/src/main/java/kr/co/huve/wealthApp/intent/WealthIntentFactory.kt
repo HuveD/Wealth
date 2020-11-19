@@ -14,6 +14,7 @@ import kr.co.huve.wealthApp.model.backend.data.dust.DustStation
 import kr.co.huve.wealthApp.model.backend.data.dust.TmCoord
 import kr.co.huve.wealthApp.model.backend.layer.CovidRestApi
 import kr.co.huve.wealthApp.model.backend.layer.DustRestApi
+import kr.co.huve.wealthApp.model.backend.layer.KakaoRestApi
 import kr.co.huve.wealthApp.model.wealth.WealthModelStore
 import kr.co.huve.wealthApp.model.wealth.WealthState
 import kr.co.huve.wealthApp.view.main.WealthViewEvent
@@ -28,6 +29,7 @@ class WealthIntentFactory @Inject constructor(
     private val modelStore: WealthModelStore,
     private val covidRestApi: CovidRestApi,
     private val dustRestApi: DustRestApi,
+    private val kakaoRestApi: KakaoRestApi,
     private val gson: Gson
 ) {
     fun process(event: WealthViewEvent) {
@@ -40,7 +42,7 @@ class WealthIntentFactory @Inject constructor(
             is WealthViewEvent.WeatherTabChanged -> intent { WealthState.WeatherTabChanged(viewEvent.isHour) }
             is WealthViewEvent.InvalidateStone -> intent { WealthState.InvalidateStone }
             is WealthViewEvent.RequestCovid -> buildRequestCovidIntent(viewEvent.dateString)
-            is WealthViewEvent.RequestDust -> buildRequestDustIntent(viewEvent.city)
+            is WealthViewEvent.RequestDust -> buildRequestDustIntent(viewEvent.lat, viewEvent.lng)
         }
     }
 
@@ -71,16 +73,15 @@ class WealthIntentFactory @Inject constructor(
         }
     }
 
-    private fun buildRequestDustIntent(city: String): Intent<WealthState> {
+    private fun buildRequestDustIntent(lat: Double, lng: Double): Intent<WealthState> {
         return intent {
             // request TM coordinates from wgs84
             WealthState.DustRequestRunning(
-                dustRestApi.getTransverseMercatorCoordinate(
-                    key = NetworkConfig.DUST_KEY,
-                    numOfRows = 1,
-                    page = 1,
-                    city = city,
-                    returnType = "json"
+                kakaoRestApi.getTransverseMercatorCoordinate(
+                    auth = "KakaoAK ${NetworkConfig.KAKAO_REST_KEY}",
+                    lng = lng,
+                    lat = lat,
+                    outputCoordSystem = "TM"
                 ).retry(RETRY).subscribeOn(Schedulers.io())
                     .subscribe(::buildRequestDustStationIntent, ::retrofitError),
                 context.getString(R.string.request_coordinates)
@@ -95,11 +96,11 @@ class WealthIntentFactory @Inject constructor(
                 val tmItem = tmCoord.items.first()
                 WealthState.DustRequestRunning(
                     dustRestApi.getDustStation(
-                        key = NetworkConfig.COVID_KEY,
+                        key = NetworkConfig.DUST_KEY,
                         numOfRows = 1,
                         page = 1,
-                        tmX = tmItem.tmX,
-                        tmY = tmItem.tmY,
+                        tmX = tmItem.x,
+                        tmY = tmItem.y,
                         returnType = "json"
                     ).retry(RETRY).subscribeOn(Schedulers.io())
                         .subscribe(::buildRequestDustInfoIntent, ::retrofitError),
@@ -126,7 +127,7 @@ class WealthIntentFactory @Inject constructor(
                 val station = response.stations.first()
                 WealthState.DustRequestRunning(
                     dustRestApi.getNearDustInfo(
-                        key = NetworkConfig.COVID_KEY,
+                        key = NetworkConfig.DUST_KEY,
                         numOfRows = 1,
                         page = 1,
                         stationName = station.stationName,

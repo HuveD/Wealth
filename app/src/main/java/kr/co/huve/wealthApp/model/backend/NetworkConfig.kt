@@ -24,4 +24,8 @@ object NetworkConfig {
         ""
     const val DUST_PREDICT_API_VERSION = "1.1"
     const val DUST_API_VERSION = "1.3"
+
+    // @Todo: Insert your Api key from https://developers.kakao.com/ The api key is free.
+    const val KAKAO_API = "https://dapi.kakao.com/"
+    const val KAKAO_REST_KEY = ""
 }

@@ -96,7 +96,10 @@ class DustFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<W
     private fun requestDust() {
         if (!dustView.isbinded) {
             requestRelay.accept(
-                WealthViewEvent.RequestDust(locationManager.getDetailCity())
+                WealthViewEvent.RequestDust(
+                    locationManager.location.latitude,
+                    locationManager.location.longitude
+                )
             )
         }
     }

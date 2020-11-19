@@ -7,6 +7,7 @@ import dagger.hilt.android.components.ApplicationComponent
 import kr.co.huve.wealthApp.BuildConfig
 import kr.co.huve.wealthApp.model.backend.layer.CovidRestApi
 import kr.co.huve.wealthApp.model.backend.layer.DustRestApi
+import kr.co.huve.wealthApp.model.backend.layer.KakaoRestApi
 import kr.co.huve.wealthApp.model.backend.layer.WeatherRestApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -59,5 +60,21 @@ object RemoteModule {
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(DustRestApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideKakaoService(): KakaoRestApi {
+        val client = OkHttpClient.Builder()
+        if (BuildConfig.DEBUG) client.addInterceptor(HttpLoggingInterceptor().also {
+            it.level = HttpLoggingInterceptor.Level.HEADERS
+        })
+
+        return Retrofit.Builder()
+            .client(client.build())
+            .baseUrl(NetworkConfig.KAKAO_API)
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build().create(KakaoRestApi::class.java)
     }
 }

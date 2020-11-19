@@ -3,19 +3,10 @@ package kr.co.huve.wealthApp.model.backend.layer
 import io.reactivex.rxjava3.core.Observable
 import kr.co.huve.wealthApp.model.backend.data.dust.Dust
 import kr.co.huve.wealthApp.model.backend.data.dust.DustStation
-import kr.co.huve.wealthApp.model.backend.data.dust.TmCoord
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface DustRestApi {
-    @GET("/openapi/services/rest/MsrstnInfoInqireSvc/getTMStdrCrdnt")
-    fun getTransverseMercatorCoordinate(
-        @Query("serviceKey", encoded = true) key: String,
-        @Query("numOfRows") numOfRows: Int,
-        @Query("pageNo") page: Int,
-        @Query("umdName") city: String,
-        @Query("_returnType") returnType: String
-    ): Observable<TmCoord>
 
     @GET("/openapi/services/rest/MsrstnInfoInqireSvc/getNearbyMsrstnList")
     fun getDustStation(
