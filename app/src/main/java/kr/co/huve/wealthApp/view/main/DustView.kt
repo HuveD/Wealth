@@ -33,7 +33,6 @@ class DustView @Inject constructor(
     private val progress: ProgressBar
     private val titleIcon: ImageView
     private val updateDate: TextView
-    private val copyright: TextView
     private val dustGrade: TextView
     private val loading: TextView
     private val city: TextView
@@ -47,16 +46,12 @@ class DustView @Inject constructor(
         titleIcon = view.findViewById(R.id.titleIcon)
         progress = view.findViewById(R.id.progress)
         updateDate = view.findViewById(R.id.updateDate)
-        copyright = view.findViewById(R.id.copyright)
         dustGrade = view.findViewById(R.id.dustGrade)
         loading = view.findViewById(R.id.loading)
         city = view.findViewById(R.id.city)
     }
 
     fun bind(data: DustItem) {
-        val dustCopyright = "@${context.getString(R.string.dust_copyright)}"
-        copyright.text = dustCopyright
-
         // 데이터 업데이트
         invalidateData(dustItem = data, stationName = locationManager.getDetailCity())
         dustList.apply {
@@ -109,7 +104,7 @@ class DustView @Inject constructor(
 
         // 업데이트 시간
         dustItem.dataTime
-        updateDate.text = ("UPDATE: ${dustItem.dataTime}")
+        updateDate.text = ("@${context.getString(R.string.dust_copyright)}\nUPDATE: ${dustItem.dataTime}")
         updateDate.setTextColor(theme.getLabelColor(context))
     }
 
