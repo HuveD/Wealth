@@ -58,6 +58,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="UPDATE: 2020.11.07" />
 
+    <TextView
+        android:id="@+id/copyright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/gemunu_libre_extra_bold"
+        android:textColor="@color/iconic_white"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/dustList"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="한국환경공단" />
+
     <View
         android:layout_width="0dp"
         android:layout_height="0dp"

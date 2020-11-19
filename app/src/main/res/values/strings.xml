@@ -3,6 +3,7 @@
     <string name="error_load_app">에러가 발생하여 앱을 종료합니다.</string>
     <string name="turn_on_gps">GPS를 활성화해주세요</string>
     <string name="symbol_celsius">º</string>
+    <string name="dust_copyright">한국환경공단</string>
 
     <!--날씨 id에 따른 날씨 설명-->
     <string name="weather_not_found">지금 날씨는 정말 안좋아요</string>
