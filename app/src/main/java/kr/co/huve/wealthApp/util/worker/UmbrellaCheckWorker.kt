@@ -1,8 +1,11 @@
 package kr.co.huve.wealthApp.util.worker
 
 import android.content.Context
+import android.content.pm.ServiceInfo
+import android.os.Build
 import androidx.hilt.Assisted
 import androidx.hilt.work.WorkerInject
+import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import androidx.work.rxjava3.RxWorker
 import androidx.work.workDataOf
@@ -28,6 +31,7 @@ class UmbrellaCheckWorker @WorkerInject constructor(
 
     override fun createWork(): Single<Result> {
         Timber.d("WealthAlertCheckWorker Created")
+        setForegroundAsync(createForegroundInfo())
         val lastLocation = locationManager.getLastLocation()
         return Single.fromObservable(
             weatherApi.getTotalWeatherWithCoords(
@@ -38,14 +42,6 @@ class UmbrellaCheckWorker @WorkerInject constructor(
                 "kr",
                 "metric"
             ).retry(RETRY).map {
-                notificationUtil.makeNotification(
-                    NotificationRes.CommonNotification(
-                        context = appContext,
-                        titleName = "WealthAlertCheckWorker",
-                        message = "${needUmbrella(it)}",
-                        notificationId = 9901
-                    )
-                )
                 val outputData = workDataOf(
                     DataKey.WORK_NEED_UMBRELLA.name to needUmbrella(it),
                     DataKey.WORK_WEATHER_DESCRIPTION.name to getDescription(it)
@@ -54,6 +50,22 @@ class UmbrellaCheckWorker @WorkerInject constructor(
                 Result.success(outputData)
             }
         )
+    }
+
+    private fun createForegroundInfo(): ForegroundInfo {
+        val notificationConfig = NotificationRes.LocationForeground(context = appContext)
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ForegroundInfo(
+                notificationConfig.getId(),
+                notificationUtil.makeForegroundNotification(notificationConfig),
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+            )
+        } else {
+            ForegroundInfo(
+                notificationConfig.getId(),
+                notificationUtil.makeForegroundNotification(notificationConfig)
+            )
+        }
     }
 
     private fun getDescription(totalWeather: TotalWeather): String {

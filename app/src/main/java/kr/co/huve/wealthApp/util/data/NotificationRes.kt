@@ -30,6 +30,23 @@ sealed class NotificationRes : NotificationInfo {
         override fun getContent(): String {
             return message
         }
+
+        override fun getId(): Int {
+            return notificationId
+        }
+    }
+
+    data class LocationForeground(val context: Context) : NotificationRes() {
+        override fun getChannelId(): String = context.getString(R.string.daily_alert_id)
+
+        override fun getChannelName(): String = context.getString(R.string.daily_alert_name)
+
+        override fun getChannelDescription(): String =
+            context.getString(R.string.daily_alert_description)
+
+        override fun getTitle(): String = context.getString(R.string.location_foreground_title)
+
+        override fun getContent(): String = context.getString(R.string.location_foreground_content)
     }
 
     data class DailyAlert(
@@ -84,7 +101,7 @@ sealed class NotificationRes : NotificationInfo {
         }
     }
 
-    fun getId(): Int = ordinal()
+    open fun getId(): Int = ordinal()
 }
 
 private fun NotificationRes.ordinal(): Int =

@@ -35,5 +35,11 @@
             android:authorities="${applicationId}.workmanager-init"
             android:exported="false"
             tools:node="remove" />
+
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="location"
+            tools:ignore="Instantiatable"
+            tools:node="merge" />
     </application>
 </manifest>

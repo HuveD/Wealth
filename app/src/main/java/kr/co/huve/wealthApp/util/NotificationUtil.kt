@@ -1,5 +1,6 @@
 package kr.co.huve.wealthApp.util
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -38,6 +39,13 @@ class NotificationUtil @Inject constructor(@ApplicationContext private val conte
         }
     }
 
+    fun makeForegroundNotification(
+        res: NotificationRes
+    ): Notification {
+        createNotificationChannel(res)
+        return getForegroundBuilder(res).build()
+    }
+
     private fun createNotificationChannel(res: NotificationRes) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val importance = NotificationManager.IMPORTANCE_DEFAULT
@@ -60,7 +68,7 @@ class NotificationUtil @Inject constructor(@ApplicationContext private val conte
         res: NotificationRes,
         intent: PendingIntent
     ): NotificationCompat.Builder {
-        return NotificationCompat.Builder(context, context.getString(R.string.daily_alert_id))
+        return NotificationCompat.Builder(context, res.getChannelId())
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(res.getTitle())
             .setContentText(res.getContent())
@@ -68,5 +76,16 @@ class NotificationUtil @Inject constructor(@ApplicationContext private val conte
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(intent)
             .setAutoCancel(true)
+    }
+
+    private fun getForegroundBuilder(
+        res: NotificationRes,
+    ): NotificationCompat.Builder {
+        return NotificationCompat.Builder(context, res.getChannelId())
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle(res.getTitle())
+            .setContentText(res.getContent())
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setOngoing(true)
     }
 }

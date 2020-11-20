@@ -8,6 +8,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Looper
 import androidx.core.content.ContextCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kr.co.huve.wealthApp.R
@@ -42,7 +43,8 @@ class WealthLocationManager @Inject constructor(@ApplicationContext private val 
                     LocationManager.NETWORK_PROVIDER,
                     0,
                     0f,
-                    this
+                    this,
+                    Looper.getMainLooper()
                 )
                 locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)?.run {
                     Timber.d("Provided from the ${provider} (${latitude},${longitude},${time})")
@@ -51,9 +53,15 @@ class WealthLocationManager @Inject constructor(@ApplicationContext private val 
             }
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 initialized = true
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, this)
+                locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    0,
+                    0f,
+                    this,
+                    Looper.getMainLooper()
+                )
                 locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)?.run {
-                    Timber.d("Provided from the ${provider} (${latitude},${longitude},${time})")
+                    Timber.d("Provided from the $provider (${latitude},${longitude},${time})")
                     if (this@WealthLocationManager.location.time < time) location.set(this)
                 }
             }

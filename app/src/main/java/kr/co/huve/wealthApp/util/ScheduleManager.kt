@@ -45,10 +45,7 @@ class ScheduleManager @Inject constructor(@ApplicationContext val context: Conte
             .build()
 
         // Create covid worker
-        calendar.add(Calendar.DAY_OF_MONTH, -1)
-
         val covidRequest = OneTimeWorkRequest.Builder(MaskCheckWorker::class.java)
-            .setInputData(workDataOf(DataKey.WORK_DATETIME.name to calendar.timeInMillis))
             .setInitialDelay(duration, TimeUnit.MILLISECONDS)
             .setBackoffCriteria(
                 BackoffPolicy.LINEAR,
@@ -76,7 +73,6 @@ class ScheduleManager @Inject constructor(@ApplicationContext val context: Conte
             ExistingPeriodicWorkPolicy.KEEP,
             PeriodicWorkRequest
                 .Builder(CovidUpdateCheckWorker::class.java, 15, TimeUnit.MINUTES)
-                .setInitialDelay(15, TimeUnit.MINUTES)
                 .setConstraints(config)
                 .build()
         )

@@ -5,6 +5,10 @@
     <string name="common_alert_name">일반 알림</string>
     <string name="common_alert_description">웰스의 다양한 안내를 위한 일반 알림입니다.</string>
 
+    <!-- 주변 정보 수집 알림 -->
+    <string name="location_foreground_title">주변 정보 확인 중..</string>
+    <string name="location_foreground_content">현재 위치의 날씨와 미세먼지를 조회 중입니다.</string>
+
     <!--  마스크 & 우산 알림  -->
     <string name="daily_alert_id">wealth_daily</string>
     <string name="daily_alert_name">매일 정기 알림</string>
