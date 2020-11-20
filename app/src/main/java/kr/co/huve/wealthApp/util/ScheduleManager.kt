@@ -30,7 +30,7 @@ class ScheduleManager @Inject constructor(@ApplicationContext val context: Conte
             calendar.add(Calendar.DAY_OF_MONTH, 1)
         }
         val duration = calendar.timeInMillis - current
-        Timber.d("scheduleMorningAlert at ${calendar.time}.\nWill be execute in ${duration / 1000 / 60} minute later")
+        Timber.d("scheduleMorningAlert at ${calendar.time}. Will be execute in ${duration / 1000 / 60} minute later")
 
         // Create weather worker
         val config = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
