@@ -13,7 +13,6 @@ import kr.co.huve.wealthApp.model.backend.data.CovidResult
 import kr.co.huve.wealthApp.model.backend.layer.CovidRestApi
 import kr.co.huve.wealthApp.util.NotificationUtil
 import kr.co.huve.wealthApp.util.data.DataKey
-import kr.co.huve.wealthApp.util.data.NotificationRes
 import org.json.XML
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -42,14 +41,6 @@ class MaskCheckWorker @WorkerInject constructor(
                 val result = gson.fromJson(XML.toJSONObject(it).toString(), CovidResult::class.java)
                 val outputData = workDataOf(
                     DataKey.WORK_NEED_MASK.name to needMask(result)
-                )
-                notificationUtil.makeNotification(
-                    NotificationRes.CommonNotification(
-                        context = appContext,
-                        titleName = "CovidAlertCheckWorker",
-                        message = "${needMask(result)}",
-                        notificationId = 9902
-                    )
                 )
                 Timber.d("CovidAlertCheckWorker Success")
                 Result.success(outputData)
