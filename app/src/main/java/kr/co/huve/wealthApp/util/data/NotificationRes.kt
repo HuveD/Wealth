@@ -79,7 +79,7 @@ sealed class NotificationRes : NotificationInfo {
         }
     }
 
-    data class CovidUpdate(val context: Context) : NotificationRes() {
+    data class CovidUpdate(val context: Context, val occurCount: Int) : NotificationRes() {
         override fun getChannelId(): String {
             return context.getString(R.string.check_covid_update_id)
         }
@@ -97,7 +97,7 @@ sealed class NotificationRes : NotificationInfo {
         }
 
         override fun getContent(): String {
-            return context.getString(R.string.update_covid_content)
+            return String.format(context.getString(R.string.update_covid_content), occurCount)
         }
     }
 

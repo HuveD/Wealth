@@ -24,6 +24,6 @@
     <string name="check_covid_update_id">check_covid_update</string>
     <string name="check_covid_update_name">코로나 업데이트 알림</string>
     <string name="check_covid_update_description">코로나 업데이트 안내를 위한 알림입니다.</string>
-    <string name="update_covid_title">코로나 확진자 정보 업데이트</string>
-    <string name="update_covid_content">새로운 정보가 발표되었습니다. 자세한 정보는 어플에서 확인해주세요.</string>
+    <string name="update_covid_title">코로나 정보 업데이트</string>
+    <string name="update_covid_content">오늘의 신규 확진자는 %d명입니다. 자세한 정보는 어플에서 확인해 주세요.</string>
 </resources>

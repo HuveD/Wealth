@@ -42,7 +42,12 @@ class CovidUpdateCheckWorker @WorkerInject constructor(
                     gson.fromJson(XML.toJSONObject(it).toString(), CovidResult::class.java)
                 if (result.getItemList().isNotEmpty()) {
                     // Show notification
-                    notificationUtil.makeNotification(NotificationRes.CovidUpdate(appContext))
+                    notificationUtil.makeNotification(
+                        NotificationRes.CovidUpdate(
+                            appContext,
+                            result.getItemList().reversed().first().increasedCount
+                        )
+                    )
 
                     // Cancel period work
                     WorkManager.getInstance(appContext)
