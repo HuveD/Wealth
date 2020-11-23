@@ -1,6 +1,9 @@
 package kr.co.huve.wealthApp.util.data
 
+import android.annotation.TargetApi
+import android.app.NotificationManager
 import android.content.Context
+import android.os.Build
 import kr.co.huve.wealthApp.R
 
 
@@ -37,16 +40,20 @@ sealed class NotificationRes : NotificationInfo {
     }
 
     data class LocationForeground(val context: Context) : NotificationRes() {
-        override fun getChannelId(): String = context.getString(R.string.daily_alert_id)
+        override fun getChannelId(): String = context.getString(R.string.foreground_id)
 
-        override fun getChannelName(): String = context.getString(R.string.daily_alert_name)
+        override fun getChannelName(): String = context.getString(R.string.foreground_name)
 
         override fun getChannelDescription(): String =
-            context.getString(R.string.daily_alert_description)
+            context.getString(R.string.foreground_description)
 
         override fun getTitle(): String = context.getString(R.string.location_foreground_title)
 
         override fun getContent(): String = context.getString(R.string.location_foreground_content)
+
+        override fun getPriority(): Int {
+            return NotificationManager.IMPORTANCE_LOW
+        }
     }
 
     data class DailyAlert(
@@ -113,4 +120,7 @@ private interface NotificationInfo {
     fun getChannelDescription(): String
     fun getTitle(): String
     fun getContent(): String
+
+    @TargetApi(Build.VERSION_CODES.O)
+    fun getPriority(): Int = NotificationManager.IMPORTANCE_DEFAULT
 }

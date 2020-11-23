@@ -57,13 +57,13 @@ class UmbrellaCheckWorker @WorkerInject constructor(
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ForegroundInfo(
                 notificationConfig.getId(),
-                notificationUtil.makeForegroundNotification(notificationConfig),
+                notificationUtil.makeForegroundNotification(notificationConfig, true),
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
             )
         } else {
             ForegroundInfo(
                 notificationConfig.getId(),
-                notificationUtil.makeForegroundNotification(notificationConfig)
+                notificationUtil.makeForegroundNotification(notificationConfig, true)
             )
         }
     }

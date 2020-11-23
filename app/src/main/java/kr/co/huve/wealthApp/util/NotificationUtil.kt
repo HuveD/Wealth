@@ -40,19 +40,22 @@ class NotificationUtil @Inject constructor(@ApplicationContext private val conte
     }
 
     fun makeForegroundNotification(
-        res: NotificationRes
+        res: NotificationRes,
+        isInfinityProgress: Boolean
     ): Notification {
         createNotificationChannel(res)
-        return getForegroundBuilder(res).build()
+        return when (isInfinityProgress) {
+            false -> getForegroundBuilder(res).build()
+            else -> getForegroundInfinityProgressBuilder(res).build()
+        }
     }
 
     private fun createNotificationChannel(res: NotificationRes) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(
                 res.getChannelId(),
                 res.getChannelName(),
-                importance
+                res.getPriority()
             ).apply {
                 description = res.getChannelDescription()
             }
@@ -83,9 +86,17 @@ class NotificationUtil @Inject constructor(@ApplicationContext private val conte
     ): NotificationCompat.Builder {
         return NotificationCompat.Builder(context, res.getChannelId())
             .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle(res.getTitle())
-            .setContentText(res.getContent())
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentTitle(res.getContent())
+            .setOngoing(true)
+    }
+
+    private fun getForegroundInfinityProgressBuilder(
+        res: NotificationRes,
+    ): NotificationCompat.Builder {
+        return NotificationCompat.Builder(context, res.getChannelId())
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle(res.getContent())
+            .setProgress(0, 0, true)
             .setOngoing(true)
     }
 }
