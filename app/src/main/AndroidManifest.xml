@@ -37,7 +37,7 @@
             tools:ignore="Instantiatable"
             tools:node="merge" />
 
-        <receiver android:name=".WealthWidget">
+        <receiver android:name=".view.widget.WealthWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

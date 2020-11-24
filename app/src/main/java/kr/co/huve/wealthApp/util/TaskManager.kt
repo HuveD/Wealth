@@ -15,7 +15,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ScheduleManager @Inject constructor(@ApplicationContext val context: Context) {
+class TaskManager @Inject constructor(@ApplicationContext val context: Context) {
     fun scheduleMorningAlert() {
         // Set time
         val morningHour = 7

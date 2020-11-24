@@ -8,14 +8,14 @@ import androidx.work.rxjava3.RxWorker
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import kr.co.huve.wealthApp.util.NotificationUtil
-import kr.co.huve.wealthApp.util.ScheduleManager
+import kr.co.huve.wealthApp.util.TaskManager
 import kr.co.huve.wealthApp.util.data.DataKey
 import kr.co.huve.wealthApp.util.data.NotificationRes
 
 class DailyNotificationWorker @WorkerInject constructor(
     @Assisted val appContext: Context,
     @Assisted val workerParams: WorkerParameters,
-    private val scheduleManager: ScheduleManager,
+    private val taskManager: TaskManager,
     private val notificationUtil: NotificationUtil
 ) : RxWorker(appContext, workerParams) {
     override fun createWork(): Single<Result> {
@@ -31,9 +31,9 @@ class DailyNotificationWorker @WorkerInject constructor(
                 )
 
                 // Start Covid Update Check
-                scheduleManager.scheduleCovidUpdateCheck()
+                taskManager.scheduleCovidUpdateCheck()
                 // Schedule tomorrow alert
-                scheduleManager.scheduleMorningAlert()
+                taskManager.scheduleMorningAlert()
                 Result.success()
             }
         )
