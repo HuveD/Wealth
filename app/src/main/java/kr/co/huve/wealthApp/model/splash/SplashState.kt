@@ -1,6 +1,6 @@
 package kr.co.huve.wealthApp.model.splash
 
-import kr.co.huve.wealthApp.model.backend.data.TotalWeather
+import kr.co.huve.wealthApp.util.repository.network.data.TotalWeather
 
 sealed class SplashState {
     object Idle : SplashState()

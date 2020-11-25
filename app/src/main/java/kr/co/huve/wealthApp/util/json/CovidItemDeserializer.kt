@@ -3,8 +3,8 @@ package kr.co.huve.wealthApp.util.json
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
-import kr.co.huve.wealthApp.model.backend.data.CovidItem
-import kr.co.huve.wealthApp.model.backend.data.CovidItems
+import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
+import kr.co.huve.wealthApp.util.repository.network.data.CovidItems
 import java.lang.reflect.Type
 
 class CovidItemDeserializer : JsonDeserializer<CovidItems> {

@@ -1,8 +1,8 @@
-package kr.co.huve.wealthApp.model.backend.layer
+package kr.co.huve.wealthApp.util.repository.network.layer
 
 import io.reactivex.rxjava3.core.Observable
-import kr.co.huve.wealthApp.model.backend.data.dust.Dust
-import kr.co.huve.wealthApp.model.backend.data.dust.DustStation
+import kr.co.huve.wealthApp.util.repository.network.data.dust.Dust
+import kr.co.huve.wealthApp.util.repository.network.data.dust.DustStation
 import retrofit2.http.GET
 import retrofit2.http.Query
 

@@ -1,4 +1,4 @@
-package kr.co.huve.wealthApp.model.backend
+package kr.co.huve.wealthApp.util.repository.network
 
 object NetworkConfig {
 

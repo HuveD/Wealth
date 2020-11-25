@@ -8,9 +8,9 @@ import androidx.work.rxjava3.RxWorker
 import androidx.work.workDataOf
 import com.google.gson.Gson
 import io.reactivex.rxjava3.core.Single
-import kr.co.huve.wealthApp.model.backend.NetworkConfig
-import kr.co.huve.wealthApp.model.backend.data.CovidResult
-import kr.co.huve.wealthApp.model.backend.layer.CovidRestApi
+import kr.co.huve.wealthApp.util.repository.network.NetworkConfig
+import kr.co.huve.wealthApp.util.repository.network.data.CovidResult
+import kr.co.huve.wealthApp.util.repository.network.layer.CovidRestApi
 import kr.co.huve.wealthApp.util.NotificationUtil
 import kr.co.huve.wealthApp.util.data.DataKey
 import org.json.XML

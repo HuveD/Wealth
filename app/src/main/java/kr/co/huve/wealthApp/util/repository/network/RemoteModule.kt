@@ -1,14 +1,14 @@
-package kr.co.huve.wealthApp.model.backend
+package kr.co.huve.wealthApp.util.repository.network
 
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import kr.co.huve.wealthApp.BuildConfig
-import kr.co.huve.wealthApp.model.backend.layer.CovidRestApi
-import kr.co.huve.wealthApp.model.backend.layer.DustRestApi
-import kr.co.huve.wealthApp.model.backend.layer.KakaoRestApi
-import kr.co.huve.wealthApp.model.backend.layer.WeatherRestApi
+import kr.co.huve.wealthApp.util.repository.network.layer.CovidRestApi
+import kr.co.huve.wealthApp.util.repository.network.layer.DustRestApi
+import kr.co.huve.wealthApp.util.repository.network.layer.KakaoRestApi
+import kr.co.huve.wealthApp.util.repository.network.layer.WeatherRestApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

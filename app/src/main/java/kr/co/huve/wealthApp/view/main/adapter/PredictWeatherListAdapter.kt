@@ -8,9 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kr.co.huve.wealthApp.R
-import kr.co.huve.wealthApp.model.backend.data.DayWeather
-import kr.co.huve.wealthApp.model.backend.data.Weather
-import kr.co.huve.wealthApp.model.backend.data.WeekWeather
+import kr.co.huve.wealthApp.util.repository.network.data.DayWeather
+import kr.co.huve.wealthApp.util.repository.network.data.Weather
+import kr.co.huve.wealthApp.util.repository.network.data.WeekWeather
 import java.util.*
 
 class PredictWeatherListAdapter<T : Weather>(var weathers: List<T>) :

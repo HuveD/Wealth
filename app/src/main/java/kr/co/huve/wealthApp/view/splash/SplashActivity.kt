@@ -15,7 +15,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import kr.co.huve.wealthApp.R
 import kr.co.huve.wealthApp.intent.SplashIntentFactory
-import kr.co.huve.wealthApp.model.backend.data.TotalWeather
+import kr.co.huve.wealthApp.util.repository.network.data.TotalWeather
 import kr.co.huve.wealthApp.model.splash.SplashModelStore
 import kr.co.huve.wealthApp.model.splash.SplashState
 import kr.co.huve.wealthApp.util.TaskManager

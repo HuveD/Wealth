@@ -10,9 +10,9 @@ import android.widget.RemoteViews
 import androidx.work.*
 import dagger.hilt.android.AndroidEntryPoint
 import kr.co.huve.wealthApp.R
-import kr.co.huve.wealthApp.model.backend.data.CovidItem
-import kr.co.huve.wealthApp.model.backend.data.DayWeather
-import kr.co.huve.wealthApp.model.backend.data.dust.DustItem
+import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
+import kr.co.huve.wealthApp.util.repository.network.data.DayWeather
+import kr.co.huve.wealthApp.util.repository.network.data.dust.DustItem
 import kr.co.huve.wealthApp.util.TaskManager
 import kr.co.huve.wealthApp.util.data.DataKey
 import kr.co.huve.wealthApp.util.worker.WidgetUpdateWorker

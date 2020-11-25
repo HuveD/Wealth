@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.FragmentScoped
 import kr.co.huve.wealthApp.R
-import kr.co.huve.wealthApp.model.backend.data.CovidItem
+import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
 import kr.co.huve.wealthApp.util.WealthLocationManager
 import kr.co.huve.wealthApp.view.main.adapter.CovidListAdapter
 import javax.inject.Inject

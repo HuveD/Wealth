@@ -2,11 +2,11 @@ package kr.co.huve.wealthApp.intent
 
 import dagger.hilt.android.scopes.ActivityScoped
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kr.co.huve.wealthApp.model.backend.NetworkConfig
-import kr.co.huve.wealthApp.model.backend.NetworkConfig.RETRY
-import kr.co.huve.wealthApp.model.backend.data.TotalWeather
-import kr.co.huve.wealthApp.model.backend.layer.CovidRestApi
-import kr.co.huve.wealthApp.model.backend.layer.WeatherRestApi
+import kr.co.huve.wealthApp.util.repository.network.NetworkConfig
+import kr.co.huve.wealthApp.util.repository.network.NetworkConfig.RETRY
+import kr.co.huve.wealthApp.util.repository.network.data.TotalWeather
+import kr.co.huve.wealthApp.util.repository.network.layer.CovidRestApi
+import kr.co.huve.wealthApp.util.repository.network.layer.WeatherRestApi
 import kr.co.huve.wealthApp.model.splash.SplashModelStore
 import kr.co.huve.wealthApp.model.splash.SplashState
 import kr.co.huve.wealthApp.util.WealthLocationManager

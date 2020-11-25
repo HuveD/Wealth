@@ -11,7 +11,7 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import kr.co.huve.wealthApp.intent.WealthIntentFactory
-import kr.co.huve.wealthApp.model.backend.data.TotalWeather
+import kr.co.huve.wealthApp.util.repository.network.data.TotalWeather
 import kr.co.huve.wealthApp.model.wealth.WealthModelStore
 import kr.co.huve.wealthApp.model.wealth.WealthState
 import kr.co.huve.wealthApp.util.data.DataKey

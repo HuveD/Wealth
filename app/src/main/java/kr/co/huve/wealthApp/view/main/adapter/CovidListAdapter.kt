@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kr.co.huve.wealthApp.R
-import kr.co.huve.wealthApp.model.backend.data.CovidItem
+import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
 
 class CovidListAdapter(var covidList: List<CovidItem>) :
     RecyclerView.Adapter<CovidListAdapter.Holder>() {

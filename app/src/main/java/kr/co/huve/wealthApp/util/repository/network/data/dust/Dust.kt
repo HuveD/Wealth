@@ -1,4 +1,4 @@
-package kr.co.huve.wealthApp.model.backend.data.dust
+package kr.co.huve.wealthApp.util.repository.network.data.dust
 
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable

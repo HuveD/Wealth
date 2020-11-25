@@ -1,8 +1,8 @@
 package kr.co.huve.wealthApp.model.wealth
 
 import io.reactivex.rxjava3.disposables.Disposable
-import kr.co.huve.wealthApp.model.backend.data.CovidItem
-import kr.co.huve.wealthApp.model.backend.data.dust.DustItem
+import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
+import kr.co.huve.wealthApp.util.repository.network.data.dust.DustItem
 
 sealed class WealthState {
     object FailReceiveResponseFromAPI : WealthState()

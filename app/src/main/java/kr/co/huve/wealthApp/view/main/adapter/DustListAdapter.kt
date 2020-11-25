@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kr.co.huve.wealthApp.R
-import kr.co.huve.wealthApp.model.backend.data.dust.DustItem
+import kr.co.huve.wealthApp.util.repository.network.data.dust.DustItem
 
 class DustListAdapter(private val dustItem: DustItem) :
     RecyclerView.Adapter<DustListAdapter.Holder>() {

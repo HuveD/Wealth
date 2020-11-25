@@ -7,9 +7,9 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import io.reactivex.rxjava3.core.Single
 import kr.co.huve.wealthApp.R
-import kr.co.huve.wealthApp.model.backend.NetworkConfig
-import kr.co.huve.wealthApp.model.backend.data.TotalWeather
-import kr.co.huve.wealthApp.model.backend.layer.WeatherRestApi
+import kr.co.huve.wealthApp.util.repository.network.NetworkConfig
+import kr.co.huve.wealthApp.util.repository.network.data.TotalWeather
+import kr.co.huve.wealthApp.util.repository.network.layer.WeatherRestApi
 import kr.co.huve.wealthApp.util.NotificationUtil
 import kr.co.huve.wealthApp.util.WealthLocationManager
 import kr.co.huve.wealthApp.util.data.DataKey
