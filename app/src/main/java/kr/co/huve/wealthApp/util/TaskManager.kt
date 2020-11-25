@@ -69,7 +69,7 @@ class TaskManager @Inject constructor(@ApplicationContext val context: Context) 
         val config = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
         // Schedule update checker
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-            DataKey.WORK_COVID_UPDATE.name,
+            DataKey.WORK_COVID_UPDATED.name,
             ExistingPeriodicWorkPolicy.KEEP,
             PeriodicWorkRequest
                 .Builder(CovidUpdateCheckWorker::class.java, 15, TimeUnit.MINUTES)

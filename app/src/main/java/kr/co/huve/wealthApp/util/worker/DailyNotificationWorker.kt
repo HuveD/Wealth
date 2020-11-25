@@ -5,7 +5,6 @@ import androidx.hilt.Assisted
 import androidx.hilt.work.WorkerInject
 import androidx.work.WorkerParameters
 import androidx.work.rxjava3.RxWorker
-import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import kr.co.huve.wealthApp.util.NotificationUtil
 import kr.co.huve.wealthApp.util.TaskManager
@@ -19,23 +18,21 @@ class DailyNotificationWorker @WorkerInject constructor(
     private val notificationUtil: NotificationUtil
 ) : RxWorker(appContext, workerParams) {
     override fun createWork(): Single<Result> {
-        return Single.fromObservable(
-            Observable.create<Result.Success> {
-                val description = inputData.getString(DataKey.WORK_WEATHER_DESCRIPTION.name)
-                val umbrella = inputData.getBoolean(DataKey.WORK_NEED_UMBRELLA.name, false)
-                val mask = inputData.getBoolean(DataKey.WORK_NEED_MASK.name, false)
+        return Single.create<Result> {
+            val description = inputData.getString(DataKey.WORK_WEATHER_DESCRIPTION.name)
+            val umbrella = inputData.getBoolean(DataKey.WORK_NEED_UMBRELLA.name, false)
+            val mask = inputData.getBoolean(DataKey.WORK_NEED_MASK.name, false)
 
-                // Notify message
-                notificationUtil.makeNotification(
-                    res = NotificationRes.DailyAlert(appContext, description ?: "", umbrella, mask)
-                )
+            // Notify message
+            notificationUtil.makeNotification(
+                res = NotificationRes.DailyAlert(appContext, description ?: "", umbrella, mask)
+            )
 
-                // Start Covid Update Check
-                taskManager.scheduleCovidUpdateCheck()
-                // Schedule tomorrow alert
-                taskManager.scheduleMorningAlert()
-                Result.success()
-            }
-        )
+            // Start Covid Update Check
+            taskManager.scheduleCovidUpdateCheck()
+            // Schedule tomorrow alert
+            taskManager.scheduleMorningAlert()
+            Result.success()
+        }
     }
 }

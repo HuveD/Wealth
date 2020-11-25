@@ -1,13 +1,9 @@
 package kr.co.huve.wealthApp.util.worker
 
 import android.content.Context
-import android.content.pm.ServiceInfo
-import android.os.Build
 import androidx.hilt.Assisted
 import androidx.hilt.work.WorkerInject
-import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
-import androidx.work.rxjava3.RxWorker
 import androidx.work.workDataOf
 import io.reactivex.rxjava3.core.Single
 import kr.co.huve.wealthApp.R
@@ -22,13 +18,13 @@ import kr.co.huve.wealthApp.util.data.NotificationRes
 class UmbrellaCheckWorker @WorkerInject constructor(
     @Assisted val appContext: Context,
     @Assisted workerParams: WorkerParameters,
-    var notificationUtil: NotificationUtil,
+    notificationUtil: NotificationUtil,
     var locationManager: WealthLocationManager,
     var weatherApi: WeatherRestApi
-) : RxWorker(appContext, workerParams) {
+) : CommonRxWorker(appContext, workerParams, notificationUtil) {
 
     override fun createWork(): Single<Result> {
-        setForegroundAsync(createForegroundInfo())
+        setForegroundAsync(createForegroundInfo(NotificationRes.LocationForeground(context = appContext)))
         val lastLocation = locationManager.getLastLocation()
         return Single.fromObservable(
             weatherApi.getTotalWeatherWithCoords(
@@ -38,32 +34,16 @@ class UmbrellaCheckWorker @WorkerInject constructor(
                 "minutely",
                 "kr",
                 "metric"
-            )
-        ).map {
-            val outputData = workDataOf(
-                DataKey.WORK_NEED_UMBRELLA.name to needUmbrella(it),
-                DataKey.WORK_WEATHER_DESCRIPTION.name to getDescription(it)
-            )
-            Result.success(outputData)
-        }.doOnError {
-            Result.failure()
-        }
-    }
-
-    private fun createForegroundInfo(): ForegroundInfo {
-        val notificationConfig = NotificationRes.LocationForeground(context = appContext)
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ForegroundInfo(
-                notificationConfig.getId(),
-                notificationUtil.makeForegroundNotification(notificationConfig, true),
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
-            )
-        } else {
-            ForegroundInfo(
-                notificationConfig.getId(),
-                notificationUtil.makeForegroundNotification(notificationConfig, true)
-            )
-        }
+            ).map {
+                val outputData = workDataOf(
+                    DataKey.WORK_NEED_UMBRELLA.name to needUmbrella(it),
+                    DataKey.WORK_WEATHER_DESCRIPTION.name to getDescription(it)
+                )
+                Result.success(outputData)
+            }.onErrorReturn {
+                Result.retry()
+            }
+        )
     }
 
     private fun getDescription(totalWeather: TotalWeather): String {

@@ -37,7 +37,7 @@ class CovidUpdateCheckWorker @WorkerInject constructor(
                 20,
                 format.format(calendar.time),
                 format.format(calendar.time)
-            ).retry(NetworkConfig.RETRY).map {
+            ).map {
                 val result =
                     gson.fromJson(XML.toJSONObject(it).toString(), CovidResult::class.java)
                 if (result.getItemList().isNotEmpty()) {
@@ -51,9 +51,11 @@ class CovidUpdateCheckWorker @WorkerInject constructor(
 
                     // Cancel period work
                     WorkManager.getInstance(appContext)
-                        .cancelUniqueWork(DataKey.WORK_COVID_UPDATE.name)
+                        .cancelUniqueWork(DataKey.WORK_COVID_UPDATED.name)
                 }
                 Result.success()
+            }.onErrorReturn {
+                Result.retry()
             }
         )
     }

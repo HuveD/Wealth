@@ -41,7 +41,7 @@ class MaskCheckWorker @WorkerInject constructor(
                     DataKey.WORK_NEED_MASK.name to needMask(result)
                 )
                 Result.success(outputData)
-            }.doOnError {
+            }.onErrorReturn {
                 Result.retry()
             }
         )
