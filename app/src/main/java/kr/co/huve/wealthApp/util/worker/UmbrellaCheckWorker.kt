@@ -12,14 +12,12 @@ import androidx.work.workDataOf
 import io.reactivex.rxjava3.core.Single
 import kr.co.huve.wealthApp.R
 import kr.co.huve.wealthApp.model.backend.NetworkConfig
-import kr.co.huve.wealthApp.model.backend.NetworkConfig.RETRY
 import kr.co.huve.wealthApp.model.backend.data.TotalWeather
 import kr.co.huve.wealthApp.model.backend.layer.WeatherRestApi
 import kr.co.huve.wealthApp.util.NotificationUtil
 import kr.co.huve.wealthApp.util.WealthLocationManager
 import kr.co.huve.wealthApp.util.data.DataKey
 import kr.co.huve.wealthApp.util.data.NotificationRes
-import timber.log.Timber
 
 class UmbrellaCheckWorker @WorkerInject constructor(
     @Assisted val appContext: Context,
@@ -30,7 +28,6 @@ class UmbrellaCheckWorker @WorkerInject constructor(
 ) : RxWorker(appContext, workerParams) {
 
     override fun createWork(): Single<Result> {
-        Timber.d("WealthAlertCheckWorker Created")
         setForegroundAsync(createForegroundInfo())
         val lastLocation = locationManager.getLastLocation()
         return Single.fromObservable(
@@ -41,15 +38,16 @@ class UmbrellaCheckWorker @WorkerInject constructor(
                 "minutely",
                 "kr",
                 "metric"
-            ).retry(RETRY).map {
-                val outputData = workDataOf(
-                    DataKey.WORK_NEED_UMBRELLA.name to needUmbrella(it),
-                    DataKey.WORK_WEATHER_DESCRIPTION.name to getDescription(it)
-                )
-                Timber.d("WealthAlertCheckWorker Success")
-                Result.success(outputData)
-            }
-        )
+            )
+        ).map {
+            val outputData = workDataOf(
+                DataKey.WORK_NEED_UMBRELLA.name to needUmbrella(it),
+                DataKey.WORK_WEATHER_DESCRIPTION.name to getDescription(it)
+            )
+            Result.success(outputData)
+        }.doOnError {
+            Result.failure()
+        }
     }
 
     private fun createForegroundInfo(): ForegroundInfo {

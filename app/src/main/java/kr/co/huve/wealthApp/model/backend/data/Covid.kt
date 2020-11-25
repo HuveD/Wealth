@@ -8,7 +8,9 @@ data class CovidResult(
     val response: Response
 ) : Serializable {
     fun getItemList(): List<CovidItem> {
-        return response.body.result.covidItems
+        return if (response.body?.result != null) {
+            response.body.result.covidItems
+        } else emptyList()
     }
 }
 
@@ -16,7 +18,7 @@ data class Response(
     @SerializedName("header")
     val header: Header,
     @SerializedName("body")
-    val body: Body
+    val body: Body?
 ) : Serializable
 
 data class Header(
@@ -28,7 +30,7 @@ data class Header(
 
 data class Body(
     @SerializedName("items")
-    val result: CovidItems,
+    val result: CovidItems?,
     @SerializedName("numOfRows")
     val numOfRows: Int,
     @SerializedName("pageNo")

@@ -14,7 +14,6 @@ import kr.co.huve.wealthApp.model.backend.layer.CovidRestApi
 import kr.co.huve.wealthApp.util.NotificationUtil
 import kr.co.huve.wealthApp.util.data.DataKey
 import org.json.XML
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -29,7 +28,6 @@ class MaskCheckWorker @WorkerInject constructor(
     private val calendar = Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, -1) }
 
     override fun createWork(): Single<Result> {
-        Timber.d("CovidAlertCheckWorker Created")
         return Single.fromObservable(
             covidApi.getCovidStatus(
                 NetworkConfig.COVID_KEY,
@@ -37,13 +35,14 @@ class MaskCheckWorker @WorkerInject constructor(
                 20,
                 format.format(calendar.time),
                 format.format(calendar.time)
-            ).retry(NetworkConfig.RETRY).map {
+            ).map {
                 val result = gson.fromJson(XML.toJSONObject(it).toString(), CovidResult::class.java)
                 val outputData = workDataOf(
                     DataKey.WORK_NEED_MASK.name to needMask(result)
                 )
-                Timber.d("CovidAlertCheckWorker Success")
                 Result.success(outputData)
+            }.doOnError {
+                Result.retry()
             }
         )
     }
