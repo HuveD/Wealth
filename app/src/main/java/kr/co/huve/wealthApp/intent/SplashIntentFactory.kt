@@ -5,11 +5,9 @@ import dagger.hilt.android.scopes.ActivityScoped
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kr.co.huve.wealthApp.model.splash.SplashModelStore
 import kr.co.huve.wealthApp.model.splash.SplashState
-import kr.co.huve.wealthApp.util.WealthLocationManager
 import kr.co.huve.wealthApp.util.repository.network.NetworkConfig
 import kr.co.huve.wealthApp.util.repository.network.NetworkConfig.RETRY
 import kr.co.huve.wealthApp.util.repository.network.data.TotalWeather
-import kr.co.huve.wealthApp.util.repository.network.layer.CovidRestApi
 import kr.co.huve.wealthApp.util.repository.network.layer.WeatherRestApi
 import kr.co.huve.wealthApp.view.splash.SplashViewEvent
 import retrofit2.HttpException
@@ -19,9 +17,7 @@ import javax.inject.Inject
 @ActivityScoped
 class SplashIntentFactory @Inject constructor(
     private val splashModelStore: SplashModelStore,
-    private val weatherRestApi: WeatherRestApi,
-    private val covidRestApi: CovidRestApi,
-    private val locationManager: WealthLocationManager
+    private val weatherRestApi: WeatherRestApi
 ) {
 
     fun process(event: SplashViewEvent) {
