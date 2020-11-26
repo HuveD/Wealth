@@ -85,6 +85,7 @@ class WealthLocationManager @Inject constructor(
     }
 
     fun getLastLocation(): Location {
+        if (!initialized) initialize()
         return if (locationRelay.hasValue()) {
             locationRelay.value
         } else {
@@ -96,6 +97,7 @@ class WealthLocationManager @Inject constructor(
     }
 
     fun getLocation(body: (Location) -> Unit) {
+        if (!initialized) initialize()
         locationRelay.subscribe {
             body(it)
         }.dispose()
