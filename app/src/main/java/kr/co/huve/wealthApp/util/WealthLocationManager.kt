@@ -20,8 +20,9 @@ import javax.inject.Singleton
 
 @SuppressLint("MissingPermission")
 @Singleton
-class WealthLocationManager @Inject constructor(@ApplicationContext private val context: Context) :
-    LocationListener {
+class WealthLocationManager @Inject constructor(
+    @ApplicationContext private val context: Context
+) : LocationListener {
     companion object {
         private const val DefaultLocationName = "Default"
         const val LAT_SEOUL = 37.532600
@@ -96,9 +97,8 @@ class WealthLocationManager @Inject constructor(@ApplicationContext private val 
 
     fun getLocation(body: (Location) -> Unit) {
         locationRelay.subscribe {
-            Timber.d("Get Location")
             body(it)
-        }
+        }.dispose()
     }
 
     fun getDetailCity(): String {

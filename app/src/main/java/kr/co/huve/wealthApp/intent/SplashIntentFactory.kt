@@ -1,5 +1,6 @@
 package kr.co.huve.wealthApp.intent
 
+import android.location.Location
 import dagger.hilt.android.scopes.ActivityScoped
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kr.co.huve.wealthApp.model.splash.SplashModelStore
@@ -30,7 +31,7 @@ class SplashIntentFactory @Inject constructor(
     private fun makeIntent(viewEvent: SplashViewEvent): Intent<SplashState> {
         return when (viewEvent) {
             is SplashViewEvent.CheckPermission -> buildCheckPermissionIntent(viewEvent.permission)
-            is SplashViewEvent.PermissionGranted -> buildWeatherRequestIntent()
+            is SplashViewEvent.PermissionGranted -> buildWeatherRequestIntent(viewEvent.location)
         }
     }
 
@@ -43,7 +44,7 @@ class SplashIntentFactory @Inject constructor(
         }
     }
 
-    private fun buildWeatherRequestIntent(): Intent<SplashState> {
+    private fun buildWeatherRequestIntent(location: Location): Intent<SplashState> {
         return intent {
             fun retrofitSuccess(data: TotalWeather) = chainedIntent {
                 SplashState.Complete(dataSet = data)
@@ -57,7 +58,6 @@ class SplashIntentFactory @Inject constructor(
             }
 
             // 현재 위치에 날씨 요청
-            val location = locationManager.getLastLocation()
             val disposable =
                 weatherRestApi.getTotalWeatherWithCoords(
                     NetworkConfig.WEATHER_KEY,
