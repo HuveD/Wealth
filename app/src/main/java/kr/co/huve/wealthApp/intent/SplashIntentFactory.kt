@@ -2,14 +2,14 @@ package kr.co.huve.wealthApp.intent
 
 import dagger.hilt.android.scopes.ActivityScoped
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kr.co.huve.wealthApp.model.splash.SplashModelStore
+import kr.co.huve.wealthApp.model.splash.SplashState
+import kr.co.huve.wealthApp.util.WealthLocationManager
 import kr.co.huve.wealthApp.util.repository.network.NetworkConfig
 import kr.co.huve.wealthApp.util.repository.network.NetworkConfig.RETRY
 import kr.co.huve.wealthApp.util.repository.network.data.TotalWeather
 import kr.co.huve.wealthApp.util.repository.network.layer.CovidRestApi
 import kr.co.huve.wealthApp.util.repository.network.layer.WeatherRestApi
-import kr.co.huve.wealthApp.model.splash.SplashModelStore
-import kr.co.huve.wealthApp.model.splash.SplashState
-import kr.co.huve.wealthApp.util.WealthLocationManager
 import kr.co.huve.wealthApp.view.splash.SplashViewEvent
 import retrofit2.HttpException
 import timber.log.Timber
@@ -57,12 +57,12 @@ class SplashIntentFactory @Inject constructor(
             }
 
             // 현재 위치에 날씨 요청
-            val lastLocation = locationManager.getLastLocation()
+            val location = locationManager.getLastLocation()
             val disposable =
                 weatherRestApi.getTotalWeatherWithCoords(
                     NetworkConfig.WEATHER_KEY,
-                    lastLocation.latitude,
-                    lastLocation.longitude,
+                    location.latitude,
+                    location.longitude,
                     "minutely",
                     "kr",
                     "metric"

@@ -10,6 +10,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Looper
 import androidx.core.content.ContextCompat
+import com.jakewharton.rxrelay3.BehaviorRelay
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kr.co.huve.wealthApp.R
 import timber.log.Timber
@@ -22,13 +23,14 @@ import javax.inject.Singleton
 class WealthLocationManager @Inject constructor(@ApplicationContext private val context: Context) :
     LocationListener {
     companion object {
-        private const val LAT_SEOUL = 37.532600
-        private const val LON_SEOUL = 127.024612
+        private const val DefaultLocationName = "Default"
+        const val LAT_SEOUL = 37.532600
+        const val LON_SEOUL = 127.024612
     }
 
     private val locationManager by lazy { context.getSystemService(Context.LOCATION_SERVICE) as (LocationManager) }
+    private val locationRelay by lazy { BehaviorRelay.create<Location>() }
     private var initialized = false
-    var location = Location("Default")
 
     init {
         initialize()
@@ -37,6 +39,7 @@ class WealthLocationManager @Inject constructor(@ApplicationContext private val 
     private fun initialize() {
         Timber.d("Start initialize")
         if (!permissionGranted()) Timber.e("Check Permission") else {
+            var lastKnownLocation = Location(DefaultLocationName)
             if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                 initialized = true
                 locationManager.requestLocationUpdates(
@@ -47,8 +50,7 @@ class WealthLocationManager @Inject constructor(@ApplicationContext private val 
                     Looper.getMainLooper()
                 )
                 locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)?.run {
-                    Timber.d("Provided from the ${provider} (${latitude},${longitude},${time})")
-                    if (this@WealthLocationManager.location.time < time) location.set(this)
+                    lastKnownLocation = this
                 }
             }
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -61,14 +63,18 @@ class WealthLocationManager @Inject constructor(@ApplicationContext private val 
                     Looper.getMainLooper()
                 )
                 locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)?.run {
-                    Timber.d("Provided from the $provider (${latitude},${longitude},${time})")
-                    if (this@WealthLocationManager.location.time < time) location.set(this)
+                    if (time > lastKnownLocation.time)
+                        lastKnownLocation = this
                 }
             }
-            if (location.provider == "Default") {
-                Timber.d("Provided from the default")
-                if (location.latitude == 0.0) location.latitude = LAT_SEOUL
-                if (location.longitude == 0.0) location.longitude = LON_SEOUL
+
+            if (!initialized) {
+                locationRelay.accept(lastKnownLocation.apply {
+                    latitude = LAT_SEOUL
+                    longitude = LON_SEOUL
+                })
+            } else if (lastKnownLocation.provider != DefaultLocationName) {
+                locationRelay.accept(lastKnownLocation)
             }
         }
     }
@@ -78,11 +84,28 @@ class WealthLocationManager @Inject constructor(@ApplicationContext private val 
     }
 
     fun getLastLocation(): Location {
-        if (!initialized) initialize()
-        return location
+        return if (locationRelay.hasValue()) {
+            locationRelay.value
+        } else {
+            Location(DefaultLocationName).apply {
+                latitude = LAT_SEOUL
+                longitude = LON_SEOUL
+            }
+        }
     }
 
-    fun getDetailCity(): String = getDetailCity(location.latitude, location.longitude)
+    fun getLocation(body: (Location) -> Unit) {
+        locationRelay.subscribe {
+            Timber.d("Get Location")
+            body(it)
+        }
+    }
+
+    fun getDetailCity(): String {
+        val location = getLastLocation()
+        return getDetailCity(location.latitude, location.longitude)
+    }
+
     fun getDetailCity(lat: Double, lng: Double): String {
         val address = Geocoder(context, Locale.getDefault()).getFromLocation(
             lat,
@@ -101,7 +124,11 @@ class WealthLocationManager @Inject constructor(@ApplicationContext private val 
         }
     }
 
-    fun getCity(): String = getCity(location.latitude, location.longitude)
+    fun getCity(): String {
+        val location = getLastLocation()
+        return getCity(location.latitude, location.longitude)
+    }
+
     fun getCity(lat: Double, lng: Double): String {
         val address = Geocoder(context, Locale.getDefault()).getFromLocation(
             lat,
@@ -128,7 +155,7 @@ class WealthLocationManager @Inject constructor(@ApplicationContext private val 
 
     override fun onLocationChanged(location: Location) {
         Timber.d("Location changed from ${location.provider} (${location.latitude},${location.longitude})")
-        this.location.set(location)
+        locationRelay.accept(location)
     }
 
     override fun onProviderDisabled(provider: String) {
