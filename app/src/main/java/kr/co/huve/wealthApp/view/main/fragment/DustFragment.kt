@@ -94,14 +94,6 @@ class DustFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<W
     override fun events(): Observable<WealthViewEvent> = requestRelay
 
     private fun requestDust() {
-        if (!dustView.isbinded) {
-            val location = locationManager.getLastLocation()
-            requestRelay.accept(
-                WealthViewEvent.RequestDust(
-                    location.latitude,
-                    location.longitude
-                )
-            )
-        }
+        if (!dustView.isbinded) requestRelay.accept(WealthViewEvent.RequestDust)
     }
 }

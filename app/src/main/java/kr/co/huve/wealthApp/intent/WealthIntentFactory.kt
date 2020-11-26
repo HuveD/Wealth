@@ -6,17 +6,21 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityScoped
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kr.co.huve.wealthApp.R
+import kr.co.huve.wealthApp.model.wealth.WealthModelStore
+import kr.co.huve.wealthApp.model.wealth.WealthState
+import kr.co.huve.wealthApp.util.WealthLocationManager
+import kr.co.huve.wealthApp.util.repository.database.dao.PlaceDao
+import kr.co.huve.wealthApp.util.repository.database.entity.Place
 import kr.co.huve.wealthApp.util.repository.network.NetworkConfig
 import kr.co.huve.wealthApp.util.repository.network.NetworkConfig.RETRY
 import kr.co.huve.wealthApp.util.repository.network.data.CovidResult
 import kr.co.huve.wealthApp.util.repository.network.data.dust.Dust
 import kr.co.huve.wealthApp.util.repository.network.data.dust.DustStation
+import kr.co.huve.wealthApp.util.repository.network.data.dust.DustStationItem
 import kr.co.huve.wealthApp.util.repository.network.data.dust.TmCoord
 import kr.co.huve.wealthApp.util.repository.network.layer.CovidRestApi
 import kr.co.huve.wealthApp.util.repository.network.layer.DustRestApi
 import kr.co.huve.wealthApp.util.repository.network.layer.KakaoRestApi
-import kr.co.huve.wealthApp.model.wealth.WealthModelStore
-import kr.co.huve.wealthApp.model.wealth.WealthState
 import kr.co.huve.wealthApp.view.main.WealthViewEvent
 import org.json.XML
 import retrofit2.HttpException
@@ -26,10 +30,12 @@ import javax.inject.Inject
 @ActivityScoped
 class WealthIntentFactory @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val locationManager: WealthLocationManager,
     private val modelStore: WealthModelStore,
     private val covidRestApi: CovidRestApi,
     private val dustRestApi: DustRestApi,
     private val kakaoRestApi: KakaoRestApi,
+    private val placeDao: PlaceDao,
     private val gson: Gson
 ) {
     fun process(event: WealthViewEvent) {
@@ -42,7 +48,7 @@ class WealthIntentFactory @Inject constructor(
             is WealthViewEvent.WeatherTabChanged -> intent { WealthState.WeatherTabChanged(viewEvent.isHour) }
             is WealthViewEvent.InvalidateStone -> intent { WealthState.InvalidateStone }
             is WealthViewEvent.RequestCovid -> buildRequestCovidIntent(viewEvent.dateString)
-            is WealthViewEvent.RequestDust -> buildRequestDustIntent(viewEvent.lat, viewEvent.lng)
+            is WealthViewEvent.RequestDust -> buildRequestDustIntent()
         }
     }
 
@@ -73,75 +79,119 @@ class WealthIntentFactory @Inject constructor(
         }
     }
 
-    private fun buildRequestDustIntent(lat: Double, lng: Double): Intent<WealthState> {
-        return intent {
-            // request TM coordinates from wgs84
+    private fun buildRequestDustIntent(): Intent<WealthState> = intent {
+        WealthState.DustRequestRunning(
+            placeDao.loadNearPlaces(locationManager.getDetailCity())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    if (it.isEmpty()) {
+                        // request TM coordinates from wgs84
+                        Timber.d("Request TM coordinates from wgs84")
+                        buildRequestTmCoordIntent()
+                    } else {
+                        // reuse local data
+                        Timber.d("Reuse local dust station data")
+                        buildRequestDustInfoIntent(
+                            DustStation(
+                                listOf(
+                                    DustStationItem(
+                                        0f,
+                                        locationManager.getDetailCity(),
+                                        it.first().dustStation
+                                    )
+                                )
+                            )
+                        )
+                    }
+                }, {
+                    // request TM coordinates from wgs84
+                    Timber.d("Request TM coordinates from wgs84")
+                    buildRequestTmCoordIntent()
+                }), context.getString(R.string.request_coordinates)
+        )
+    }
+
+    private fun buildRequestTmCoordIntent() = chainedIntent {
+        val location = locationManager.getLastLocation()
+        WealthState.DustRequestRunning(
+            kakaoRestApi.getTransverseMercatorCoordinate(
+                auth = "KakaoAK ${NetworkConfig.KAKAO_REST_KEY}",
+                lng = location.longitude,
+                lat = location.latitude,
+                outputCoordSystem = "TM"
+            ).retry(RETRY).subscribeOn(Schedulers.io())
+                .subscribe(::buildRequestDustStationIntent, ::retrofitError),
+            context.getString(R.string.request_coordinates)
+        )
+    }
+
+    private fun buildRequestDustStationIntent(tmCoord: TmCoord) = chainedIntent {
+        // request dust station list
+        if (tmCoord.items.isNotEmpty()) {
+            val tmItem = tmCoord.items.first()
             WealthState.DustRequestRunning(
-                kakaoRestApi.getTransverseMercatorCoordinate(
-                    auth = "KakaoAK ${NetworkConfig.KAKAO_REST_KEY}",
-                    lng = lng,
-                    lat = lat,
-                    outputCoordSystem = "TM"
+                dustRestApi.getDustStation(
+                    key = NetworkConfig.DUST_KEY,
+                    numOfRows = 1,
+                    page = 1,
+                    tmX = tmItem.x,
+                    tmY = tmItem.y,
+                    returnType = "json"
                 ).retry(RETRY).subscribeOn(Schedulers.io())
-                    .subscribe(::buildRequestDustStationIntent, ::retrofitError),
-                context.getString(R.string.request_coordinates)
+                    .subscribe(::buildRequestDustInfoIntent, ::retrofitError),
+                context.getString(R.string.find_dust_station)
             )
-        }
+        } else WealthState.DustRequestError(context.getString(R.string.convert_tm_fail))
     }
 
-    private fun buildRequestDustStationIntent(tmCoord: TmCoord) {
-        return chainedIntent {
-            // request dust station list
-            if (tmCoord.items.isNotEmpty()) {
-                val tmItem = tmCoord.items.first()
-                WealthState.DustRequestRunning(
-                    dustRestApi.getDustStation(
-                        key = NetworkConfig.DUST_KEY,
-                        numOfRows = 1,
-                        page = 1,
-                        tmX = tmItem.x,
-                        tmY = tmItem.y,
-                        returnType = "json"
-                    ).retry(RETRY).subscribeOn(Schedulers.io())
-                        .subscribe(::buildRequestDustInfoIntent, ::retrofitError),
-                    context.getString(R.string.find_dust_station)
-                )
-            } else WealthState.DustRequestError(context.getString(R.string.convert_tm_fail))
-        }
-    }
-
-    private fun buildRequestDustInfoIntent(response: DustStation) {
-        return chainedIntent {
-            // request dust info from selected station
-            fun retrofitSuccess(response: Dust) = chainedIntent {
-                if (response.items.isNotEmpty()) {
-                    WealthState.DustDataReceived(
-                        response.items.first()
-                    )
-                } else {
-                    WealthState.DustRequestError(context.getString(R.string.fail_find_dust_station))
-                }
-            }
-
-            if (response.stations.isNotEmpty()) {
-                val station = response.stations.first()
-                WealthState.DustRequestRunning(
-                    dustRestApi.getNearDustInfo(
-                        key = NetworkConfig.DUST_KEY,
-                        numOfRows = 1,
-                        page = 1,
-                        stationName = station.stationName,
-                        dataTerm = "DAILY",
-                        version = NetworkConfig.DUST_API_VERSION,
-                        returnType = "json"
-                    ).retry(RETRY).subscribeOn(Schedulers.io())
-                        .subscribe(::retrofitSuccess, ::retrofitError),
-                    context.getString(R.string.request_dust_info)
-                )
+    private fun buildRequestDustInfoIntent(response: DustStation) = chainedIntent {
+        fun retrofitSuccess(response: Dust) = chainedIntent {
+            if (response.items.isNotEmpty()) {
+                WealthState.DustDataReceived(response.items.first())
             } else {
-                WealthState.DustRequestError(context.getString(R.string.fail_receicve_dust_from_station))
+                WealthState.DustRequestError(context.getString(R.string.fail_find_dust_station))
             }
         }
+
+        if (response.stations.isNotEmpty()) {
+            // Add to database
+            val station = response.stations.first()
+            addStationInfoToDatabase(station)
+
+            // request dust info from selected station
+            WealthState.DustRequestRunning(
+                dustRestApi.getNearDustInfo(
+                    key = NetworkConfig.DUST_KEY,
+                    numOfRows = 1,
+                    page = 1,
+                    stationName = station.stationName,
+                    dataTerm = "DAILY",
+                    version = NetworkConfig.DUST_API_VERSION,
+                    returnType = "json"
+                ).retry(RETRY).subscribeOn(Schedulers.io())
+                    .subscribe(::retrofitSuccess, ::retrofitError),
+                context.getString(R.string.request_dust_info)
+            )
+        } else {
+            WealthState.DustRequestError(context.getString(R.string.fail_receicve_dust_from_station))
+        }
+    }
+
+    private fun addStationInfoToDatabase(item: DustStationItem) {
+        Timber.d("Request Adding place.")
+        val location = locationManager.getLastLocation()
+        val place = Place(
+            location.latitude,
+            location.longitude,
+            locationManager.getDetailCity(),
+            item.stationName
+        )
+        placeDao.addPlace(place).subscribeOn(Schedulers.io()).onErrorReturn {
+            Timber.d("Request update because of adding fail.")
+            placeDao.updateConflictPlace(place).onErrorReturn {
+                Timber.d("Update Error")
+            }.subscribe()
+        }.subscribe()
     }
 
     private fun retrofitError(t: Throwable) = chainedIntent {

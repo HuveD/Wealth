@@ -8,6 +8,6 @@ import kr.co.huve.wealthApp.util.repository.database.entity.Place
 private const val DATABASE_VERSION = 1
 
 @Database(entities = [Place::class], version = DATABASE_VERSION)
-abstract class WealthDatabase : RoomDatabase(){
+abstract class WealthDatabase : RoomDatabase() {
     abstract fun placeDao(): PlaceDao
 }
