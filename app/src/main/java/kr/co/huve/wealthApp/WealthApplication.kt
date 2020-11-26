@@ -5,6 +5,7 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
 import kr.co.huve.wealthApp.util.TaskManager
+import kr.co.huve.wealthApp.util.repository.database.dao.PlaceDao
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -16,6 +17,9 @@ class WealthApplication : Application(), Configuration.Provider {
 
     @Inject
     lateinit var taskManager: TaskManager
+
+    @Inject
+    lateinit var placeDao: PlaceDao
 
     override fun onCreate() {
         super.onCreate()
