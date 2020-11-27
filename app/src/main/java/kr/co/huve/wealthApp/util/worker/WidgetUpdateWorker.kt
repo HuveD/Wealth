@@ -8,6 +8,11 @@ import androidx.work.WorkerParameters
 import com.google.gson.Gson
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
+import kr.co.huve.wealthApp.util.NotificationUtil
+import kr.co.huve.wealthApp.util.WealthLocationManager
+import kr.co.huve.wealthApp.util.data.DataKey
+import kr.co.huve.wealthApp.util.data.NotificationRes
+import kr.co.huve.wealthApp.util.repository.database.dao.PlaceDao
 import kr.co.huve.wealthApp.util.repository.network.NetworkConfig
 import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
 import kr.co.huve.wealthApp.util.repository.network.data.CovidResult
@@ -16,12 +21,10 @@ import kr.co.huve.wealthApp.util.repository.network.data.dust.DustItem
 import kr.co.huve.wealthApp.util.repository.network.layer.CovidRestApi
 import kr.co.huve.wealthApp.util.repository.network.layer.DustRestApi
 import kr.co.huve.wealthApp.util.repository.network.layer.WeatherRestApi
-import kr.co.huve.wealthApp.util.NotificationUtil
-import kr.co.huve.wealthApp.util.WealthLocationManager
-import kr.co.huve.wealthApp.util.data.DataKey
-import kr.co.huve.wealthApp.util.data.NotificationRes
 import kr.co.huve.wealthApp.view.widget.WealthWidget
 import org.json.XML
+import java.text.SimpleDateFormat
+import java.util.*
 
 class WidgetUpdateWorker @WorkerInject constructor(
     @Assisted val appContext: Context,
@@ -31,30 +34,42 @@ class WidgetUpdateWorker @WorkerInject constructor(
     private val weatherRestApi: WeatherRestApi,
     private val covidRestApi: CovidRestApi,
     private val dustRestApi: DustRestApi,
+    private val placeDao: PlaceDao,
     private val gson: Gson
 ) : CommonRxWorker(appContext, workerParams, notificationUtil) {
 
+    private val format = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+
     override fun createWork(): Single<Result> {
         setForegroundAsync(createForegroundInfo(NotificationRes.LocationForeground(context = appContext)))
-        val source = Observable.zip(
-            getWeatherRequest(),
-            getCovidRequest(),
-            getDustRequest()
-        ) { weather: List<DayWeather>, covid: List<CovidItem>, dust: List<DustItem> ->
-            if (weather.isEmpty() || covid.isEmpty() || dust.isEmpty()) {
-                Result.retry()
-            } else {
-                appContext.sendBroadcast(Intent(appContext, WealthWidget::class.java)
-                    .apply {
-                        putExtra(DataKey.EXTRA_WEATHER_DATA.name, weather.first())
-                        putExtra(DataKey.EXTRA_COVID_DATA.name, covid.reversed().first())
-                        putExtra(DataKey.EXTRA_DUST_DATA.name, dust.first())
-                        this.action = WealthWidget.InvalidateAction
-                    })
-                Result.success()
-            }
-        }
-        return Single.fromObservable(source)
+        return Single.fromObservable(
+            placeDao.loadNearPlaces(locationManager.getDetailCity()).concatMap {
+                Observable.zip(
+                    getWeatherRequest(),
+                    getCovidRequest(),
+                    when (it.isEmpty()) {
+                        true -> getDustRequest()
+                        else -> getDustRequest(it.first().dustStation)
+                    }
+                ) { weather: List<DayWeather>, covid: List<CovidItem>, dust: List<DustItem> ->
+                    if (weather.isEmpty() || covid.isEmpty() || dust.isEmpty()) {
+                        Result.retry()
+                    } else {
+                        appContext.sendBroadcast(Intent(appContext, WealthWidget::class.java)
+                            .apply {
+                                putExtra(DataKey.EXTRA_WEATHER_DATA.name, weather.first())
+                                putExtra(
+                                    DataKey.EXTRA_COVID_DATA.name,
+                                    covid.reversed().first()
+                                )
+                                putExtra(DataKey.EXTRA_DUST_DATA.name, dust.first())
+                                this.action = WealthWidget.InvalidateAction
+                            })
+                        Result.success()
+                    }
+                }
+            }.take(1)
+        )
     }
 
     private fun getWeatherRequest(): Observable<List<DayWeather>> {
@@ -74,12 +89,16 @@ class WidgetUpdateWorker @WorkerInject constructor(
     }
 
     private fun getCovidRequest(): Observable<List<CovidItem>> {
+        val calendar = Calendar.getInstance()
+        val today = format.format(calendar.time)
+        calendar.add(Calendar.DAY_OF_MONTH, -1)
+        val yesterday = format.format(calendar.time)
         return covidRestApi.getCovidStatus(
             key = NetworkConfig.COVID_KEY,
             page = 1,
-            numOfRows = 20,
-            startDate = "20201124",
-            endDate = "20201124"
+            numOfRows = 40,
+            startDate = yesterday,
+            endDate = today
         ).map {
             gson.fromJson(
                 XML.toJSONObject(it).toString(),
@@ -90,12 +109,12 @@ class WidgetUpdateWorker @WorkerInject constructor(
         }
     }
 
-    private fun getDustRequest(): Observable<List<DustItem>> {
+    private fun getDustRequest(stationName: String = "송파구"): Observable<List<DustItem>> {
         return dustRestApi.getNearDustInfo(
             key = NetworkConfig.DUST_KEY,
             numOfRows = 1,
             page = 1,
-            stationName = "송파구",
+            stationName = stationName,
             dataTerm = "DAILY",
             version = NetworkConfig.DUST_API_VERSION,
             returnType = "json"

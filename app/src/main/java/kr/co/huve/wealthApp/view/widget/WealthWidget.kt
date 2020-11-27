@@ -10,11 +10,11 @@ import android.widget.RemoteViews
 import androidx.work.*
 import dagger.hilt.android.AndroidEntryPoint
 import kr.co.huve.wealthApp.R
+import kr.co.huve.wealthApp.util.TaskManager
+import kr.co.huve.wealthApp.util.data.DataKey
 import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
 import kr.co.huve.wealthApp.util.repository.network.data.DayWeather
 import kr.co.huve.wealthApp.util.repository.network.data.dust.DustItem
-import kr.co.huve.wealthApp.util.TaskManager
-import kr.co.huve.wealthApp.util.data.DataKey
 import kr.co.huve.wealthApp.util.worker.WidgetUpdateWorker
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -94,7 +94,17 @@ internal fun updateAppWidget(
     val views = RemoteViews(context.packageName, R.layout.wealth_widget)
     views.setTextViewText(R.id.appwidget_text, Date(System.currentTimeMillis()).toString())
 
-    intent?.run {
+    // Request
+    val pendingIntent: PendingIntent = Intent(
+        context,
+        WealthWidget::class.java
+    ).run {
+        this.action = WealthWidget.ManualUpdateAction
+        PendingIntent.getBroadcast(context, 0, this, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+    views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent)
+
+    if (intent?.action == WealthWidget.InvalidateAction) {
         val weather = intent.getSerializableExtra(DataKey.EXTRA_WEATHER_DATA.name) as DayWeather
         val covid = intent.getSerializableExtra(DataKey.EXTRA_COVID_DATA.name) as CovidItem
         val dust = intent.getSerializableExtra(DataKey.EXTRA_DUST_DATA.name) as DustItem
@@ -105,17 +115,9 @@ internal fun updateAppWidget(
         sb.append("\n미세먼지: ")
         sb.append(dust.pm10Grade1h)
         views.setTextViewText(R.id.appwidget_text, sb.toString())
+    } else {
+        requestWorks(context)
     }
-
-    // Request
-    val pendingIntent: PendingIntent = Intent(
-        context,
-        WealthWidget::class.java
-    ).run {
-        this.action = WealthWidget.ManualUpdateAction
-        PendingIntent.getBroadcast(context, 0, this, PendingIntent.FLAG_UPDATE_CURRENT)
-    }
-    views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent)
 
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
