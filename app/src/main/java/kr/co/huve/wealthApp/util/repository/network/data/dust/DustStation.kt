@@ -5,8 +5,7 @@ import java.io.Serializable
 
 data class DustStation(
     @SerializedName("list")
-    val stations: List<DustStationItem>,
-    var isNetwork: Boolean = true
+    val stations: List<DustStationItem>
 ) : Serializable
 
 data class DustStationItem(

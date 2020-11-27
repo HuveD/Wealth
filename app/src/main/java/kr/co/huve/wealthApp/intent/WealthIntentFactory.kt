@@ -99,7 +99,7 @@ class WealthIntentFactory @Inject constructor(
                                         locationManager.getDetailCity(),
                                         it.first().dustStation
                                     )
-                                ), isNetwork = false
+                                )
                             )
                         )
                     }
@@ -129,6 +129,14 @@ class WealthIntentFactory @Inject constructor(
         // request dust station list
         if (tmCoord.items.isNotEmpty()) {
             val tmItem = tmCoord.items.first()
+            fun retrofitSuccess(response: DustStation) {
+                // Add to database
+                if (response.stations.isNotEmpty()) {
+                    val first = response.stations.first()
+                    addStationInfoToDatabase(first)
+                }
+                buildRequestDustInfoIntent(response)
+            }
             WealthState.DustRequestRunning(
                 dustRestApi.getDustStation(
                     key = NetworkConfig.DUST_KEY,
@@ -138,7 +146,7 @@ class WealthIntentFactory @Inject constructor(
                     tmY = tmItem.y,
                     returnType = "json"
                 ).retry(RETRY).subscribeOn(Schedulers.io())
-                    .subscribe(::buildRequestDustInfoIntent, ::retrofitError),
+                    .subscribe(::retrofitSuccess, ::retrofitError),
                 context.getString(R.string.find_dust_station)
             )
         } else WealthState.DustRequestError(context.getString(R.string.convert_tm_fail))
@@ -154,11 +162,8 @@ class WealthIntentFactory @Inject constructor(
         }
 
         if (response.stations.isNotEmpty()) {
-            // Add to database
-            val station = response.stations.first()
-            if (response.isNetwork) addStationInfoToDatabase(station)
-
             // request dust info from selected station
+            val station = response.stations.first()
             WealthState.DustRequestRunning(
                 dustRestApi.getNearDustInfo(
                     key = NetworkConfig.DUST_KEY,
