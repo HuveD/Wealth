@@ -81,7 +81,7 @@ class WealthIntentFactory @Inject constructor(
 
     private fun buildRequestDustIntent(): Intent<WealthState> = intent {
         WealthState.DustRequestRunning(
-            placeDao.loadNearPlaces(locationManager.getDetailCity())
+            placeDao.loadNearPlaces(locationManager.getDetailCity()).take(1)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     if (it.isEmpty()) {
@@ -93,13 +93,13 @@ class WealthIntentFactory @Inject constructor(
                         Timber.d("Reuse local dust station data")
                         buildRequestDustInfoIntent(
                             DustStation(
-                                listOf(
+                                stations = listOf(
                                     DustStationItem(
                                         0f,
                                         locationManager.getDetailCity(),
                                         it.first().dustStation
                                     )
-                                )
+                                ), isNetwork = false
                             )
                         )
                     }
@@ -156,7 +156,7 @@ class WealthIntentFactory @Inject constructor(
         if (response.stations.isNotEmpty()) {
             // Add to database
             val station = response.stations.first()
-            addStationInfoToDatabase(station)
+            if (response.isNetwork) addStationInfoToDatabase(station)
 
             // request dust info from selected station
             WealthState.DustRequestRunning(

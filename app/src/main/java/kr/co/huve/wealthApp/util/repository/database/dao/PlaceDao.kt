@@ -1,9 +1,6 @@
 package kr.co.huve.wealthApp.util.repository.database.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
 import kr.co.huve.wealthApp.util.repository.database.entity.Place
@@ -16,7 +13,7 @@ interface PlaceDao {
     @Query("SELECT * from place where city like :city ")
     fun loadNearPlaces(city: String): Observable<Array<Place>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addPlace(data: Place): Completable
 
     @Update
