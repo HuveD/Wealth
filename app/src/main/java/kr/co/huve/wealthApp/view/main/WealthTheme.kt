@@ -16,6 +16,7 @@ sealed class WealthTheme {
     object DustNormal : WealthTheme()
     object DustBad : WealthTheme()
     object DustTooBad : WealthTheme()
+    object DustWorking : WealthTheme()
 
     fun getBackgroundColor(context: Context) = when (this) {
         CovidSafe -> ContextCompat.getColor(context, R.color.iconic_safe)
@@ -31,7 +32,7 @@ sealed class WealthTheme {
         WeatherDaytime, CovidSafe, DustNormal -> R.drawable.bg_daytime
         CovidNormal, DustBad -> R.drawable.bg_covid_normal
         CovidDanger, DustTooBad -> R.drawable.bg_covid_warn
-        DustGood -> R.drawable.bg_good
+        DustGood, DustWorking -> R.drawable.bg_good
     }
 
     fun getFigureColor(context: Context) = when (this) {

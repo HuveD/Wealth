@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.FragmentScoped
 import kr.co.huve.wealthApp.R
-import kr.co.huve.wealthApp.util.repository.network.data.dust.DustItem
 import kr.co.huve.wealthApp.util.WealthLocationManager
+import kr.co.huve.wealthApp.util.repository.network.data.dust.DustItem
 import kr.co.huve.wealthApp.view.main.adapter.DustListAdapter
 import javax.inject.Inject
 import kotlin.math.max
@@ -79,9 +79,13 @@ class DustView @Inject constructor(
                 theme = WealthTheme.DustBad
                 context.getString(R.string.grade_bad)
             }
-            else -> {
+            4 -> {
                 theme = WealthTheme.DustTooBad
                 context.getString(R.string.grade_too_bad)
+            }
+            else -> {
+                theme = WealthTheme.DustWorking
+                context.getString(R.string.working)
             }
         }
 
@@ -104,7 +108,8 @@ class DustView @Inject constructor(
 
         // 업데이트 시간
         dustItem.dataTime
-        updateDate.text = ("@${context.getString(R.string.dust_copyright)}\nUPDATE: ${dustItem.dataTime}")
+        updateDate.text =
+            ("@${context.getString(R.string.dust_copyright)}\nUPDATE: ${dustItem.dataTime}")
         updateDate.setTextColor(theme.getLabelColor(context))
     }
 
