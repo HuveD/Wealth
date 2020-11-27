@@ -24,6 +24,7 @@ import kr.co.huve.wealthApp.util.repository.network.layer.DustRestApi
 import kr.co.huve.wealthApp.util.repository.network.layer.WeatherRestApi
 import kr.co.huve.wealthApp.view.widget.WealthWidget
 import org.json.XML
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -85,6 +86,7 @@ class WidgetUpdateWorker @WorkerInject constructor(
         ).map {
             listOf(it.current)
         }.onErrorReturn {
+            Timber.d(it.toString())
             emptyList()
         }
     }
@@ -106,6 +108,7 @@ class WidgetUpdateWorker @WorkerInject constructor(
                 CovidResult::class.java
             ).getItemList()
         }.onErrorReturn {
+            Timber.d(it.toString())
             emptyList()
         }
     }
@@ -119,6 +122,9 @@ class WidgetUpdateWorker @WorkerInject constructor(
             dataTerm = "DAILY",
             version = NetworkConfig.DUST_API_VERSION,
             returnType = "json"
-        ).map { it }.onErrorReturn { Dust(emptyList(), RequestInfo(stationName)) }
+        ).map { it }.onErrorReturn {
+            Timber.d(it.toString())
+            Dust(emptyList(), RequestInfo(stationName))
+        }
     }
 }
