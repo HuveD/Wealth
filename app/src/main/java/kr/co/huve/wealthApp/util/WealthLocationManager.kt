@@ -12,6 +12,7 @@ import android.os.Looper
 import androidx.core.content.ContextCompat
 import com.jakewharton.rxrelay3.BehaviorRelay
 import dagger.hilt.android.qualifiers.ApplicationContext
+import io.reactivex.rxjava3.disposables.Disposable
 import kr.co.huve.wealthApp.R
 import timber.log.Timber
 import java.util.*
@@ -96,11 +97,11 @@ class WealthLocationManager @Inject constructor(
         }
     }
 
-    fun getLocation(body: (Location) -> Unit) {
+    fun getLocation(body: (Location) -> Unit): Disposable {
         if (!initialized) initialize()
-        locationRelay.subscribe {
+        return locationRelay.take(1).subscribe {
             body(it)
-        }.dispose()
+        }
     }
 
     fun getDetailCity(): String {

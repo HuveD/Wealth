@@ -63,6 +63,7 @@ class SplashActivity : AppCompatActivity(),
     override fun onPause() {
         super.onPause()
         // 관찰 해제
+        Timber.d("WealthLocationManager: Clear all subscribe")
         disposables.clear()
     }
 
@@ -109,10 +110,10 @@ class SplashActivity : AppCompatActivity(),
             }
             else -> {
                 // 모든 퍼미션 허용됨
-                Timber.d("All permission granted")
-                locationManager.getLocation {
+                disposables.add(locationManager.getLocation {
                     permissionRelay.accept(SplashViewEvent.PermissionGranted(it))
-                }
+                })
+                Timber.d("All permission granted")
             }
         }
     }

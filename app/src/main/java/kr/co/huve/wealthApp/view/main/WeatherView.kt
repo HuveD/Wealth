@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.FragmentScoped
 import kr.co.huve.wealthApp.R
-import kr.co.huve.wealthApp.util.repository.network.data.TotalWeather
 import kr.co.huve.wealthApp.util.WealthLocationManager
+import kr.co.huve.wealthApp.util.repository.network.data.TotalWeather
 import kr.co.huve.wealthApp.view.main.adapter.PredictWeatherListAdapter
 import java.util.*
 import javax.inject.Inject
@@ -65,7 +65,7 @@ class WeatherView @Inject constructor(
         background.setBackgroundResource(current.getTheme().getBackgroundResource())
 
         // 도시
-        city.text = locationManager.getDetailCity(totalWeather.lat, totalWeather.lon)
+        city.text = locationManager.getDetailCity()
 
         // 현재 날씨 아이콘 및 설명
         val element = if (current.weatherInfo.isNotEmpty()) current.weatherInfo.first() else null
