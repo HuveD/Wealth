@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import android.widget.RemoteViews
 import androidx.work.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,9 +17,11 @@ import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
 import kr.co.huve.wealthApp.util.repository.network.data.DayWeather
 import kr.co.huve.wealthApp.util.repository.network.data.dust.Dust
 import kr.co.huve.wealthApp.util.worker.WidgetUpdateWorker
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class WealthWidget : AppWidgetProvider() {
@@ -90,9 +93,7 @@ internal fun updateAppWidget(
     appWidgetId: Int,
     intent: Intent?
 ) {
-    // Construct the RemoteViews object
     val views = RemoteViews(context.packageName, R.layout.wealth_widget)
-    views.setTextViewText(R.id.appwidget_text, Date(System.currentTimeMillis()).toString())
 
     // Request
     val pendingIntent: PendingIntent = Intent(
@@ -102,25 +103,93 @@ internal fun updateAppWidget(
         this.action = WealthWidget.ManualUpdateAction
         PendingIntent.getBroadcast(context, 0, this, PendingIntent.FLAG_UPDATE_CURRENT)
     }
-    views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent)
 
     if (intent?.action == WealthWidget.InvalidateAction) {
-        val weather = intent.getSerializableExtra(DataKey.EXTRA_WEATHER_DATA.name) as DayWeather
-        val covid = intent.getSerializableExtra(DataKey.EXTRA_COVID_DATA.name) as CovidItem
-        val dust = intent.getSerializableExtra(DataKey.EXTRA_DUST_DATA.name) as Dust
-        val sb = StringBuilder()
-        sb.append(weather.weatherInfo.first().getWeatherDescription(context))
-        sb.append("\n코로나: ")
-        sb.append(covid.increasedCount)
-        sb.append("\n미세먼지: ")
-        sb.append(dust.requestInfo.station)
-        sb.append(" - ")
-        sb.append(dust.items.first().khaiGrade)
-        views.setTextViewText(R.id.appwidget_text, sb.toString())
+        drawView(context = context, views = views, intent = intent)
     } else {
-        requestWorks(context)
+        loadingView(context = context, views = views)
+        requestWorks(context = context)
     }
 
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
+}
+
+internal fun loadingView(context: Context, views: RemoteViews) {
+    val format =
+        SimpleDateFormat(context.getString(R.string.widget_date_pattern), Locale.getDefault())
+    views.setViewVisibility(R.id.labelContainer, View.GONE)
+    views.setViewVisibility(R.id.weatherIcon, View.GONE)
+    views.setTextViewText(R.id.currentTemp, context.getString(R.string.loading))
+    views.setTextViewText(R.id.date, format.format(Calendar.getInstance().time))
+}
+
+internal fun drawView(context: Context, views: RemoteViews, intent: Intent) {
+    val weather = intent.getSerializableExtra(DataKey.EXTRA_WEATHER_DATA.name) as DayWeather
+    val covid = intent.getSerializableExtra(DataKey.EXTRA_COVID_DATA.name) as CovidItem
+    val dust = (intent.getSerializableExtra(DataKey.EXTRA_DUST_DATA.name) as Dust).items.first()
+
+    // Weather
+    views.apply {
+        val icon = weather.weatherInfo.first().getWeatherIcon(isTitle = false)
+        setViewVisibility(R.id.weatherIcon, View.VISIBLE)
+        setImageViewResource(R.id.weatherIcon, icon)
+        setTextViewText(
+            R.id.currentTemp,
+            String.format(context.getString(R.string.temp_with_symbol), weather.temp.roundToInt())
+        )
+    }
+
+    // label
+    views.setViewVisibility(R.id.labelContainer, View.VISIBLE)
+    // pm 10
+    views.apply {
+        setTextViewText(
+            R.id.pm10,
+            getDustGrade(context, R.string.widget_pm10_label, dust.pm10Grade1h)
+        )
+        setInt(R.id.pm10, "setBackgroundResource", getDustBackground(dust.pm10Grade1h))
+    }
+    // pm 2.5
+    views.apply {
+        setTextViewText(
+            R.id.pm25,
+            getDustGrade(context, R.string.widget_pm25_label, dust.pm25Grade1h)
+        )
+        setInt(R.id.pm25, "setBackgroundResource", getDustBackground(dust.pm25Grade1h))
+    }
+    // covid
+    views.apply {
+        val increasedCount = covid.increasedCount
+        setTextViewText(
+            R.id.covid,
+            String.format(context.getString(R.string.widget_covid_label), increasedCount)
+        )
+        setInt(
+            R.id.covid, "setBackgroundResource", when {
+                covid.increasedCount > 300 -> R.drawable.label_red
+                covid.increasedCount > 0 -> R.drawable.label_orange
+                else -> R.drawable.label_green
+            }
+        )
+    }
+}
+
+internal fun getDustGrade(context: Context, labelId: Int, grade: Int) = String.format(
+    context.getString(
+        labelId, when (grade) {
+            1 -> context.getString(R.string.grade_good)
+            2 -> context.getString(R.string.grade_normal)
+            3 -> context.getString(R.string.grade_bad)
+            4 -> context.getString(R.string.grade_too_bad)
+            else -> context.getString(R.string.working)
+        }
+    )
+)
+
+internal fun getDustBackground(grade: Int) = when (grade) {
+    2 -> R.drawable.label_green
+    3 -> R.drawable.label_orange
+    4 -> R.drawable.label_red
+    else -> R.drawable.label_blue
 }

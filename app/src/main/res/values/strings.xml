@@ -3,6 +3,7 @@
     <string name="error_load_app">에러가 발생하여 앱을 종료합니다.</string>
     <string name="turn_on_gps">GPS를 활성화해주세요</string>
     <string name="symbol_celsius">º</string>
+    <string name="temp_with_symbol">%dº</string>
     <string name="dust_copyright">한국환경공단</string>
 
     <!--날씨 id에 따른 날씨 설명-->
@@ -104,4 +105,9 @@
     <string name="request_dust_info">대기 정보 수집 중..</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+
+    <string name="widget_covid_label">코로나&#160;&#160;%d명</string>
+    <string name="widget_pm10_label">미세먼지&#160;&#160;%s</string>
+    <string name="widget_pm25_label">초미세먼지&#160;&#160;%s</string>
+    <string name="widget_date_pattern">E요일&#160;&#160;(yyyy.MM.dd)</string>
 </resources>

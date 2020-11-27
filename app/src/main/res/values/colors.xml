@@ -17,8 +17,8 @@
     <color name="iconic_warn">#E2BFBF</color>
     <color name="iconic_safe">#51B5A3</color>
     <color name="iconic_red">#AF5E5E</color>
-    <color name="light_blue_50">#FFE1F5FE</color>
-    <color name="light_blue_200">#FF81D4FA</color>
-    <color name="light_blue_600">#FF039BE5</color>
-    <color name="light_blue_900">#FF01579B</color>
+    <color name="widget_theme_blue">#28B5D4</color>
+    <color name="widget_theme_orange">#FF8642</color>
+    <color name="widget_theme_green">#8ADBB4</color>
+    <color name="widget_theme_red">#EB8E99</color>
 </resources>

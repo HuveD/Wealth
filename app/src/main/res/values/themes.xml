@@ -1,7 +1,7 @@
 <resources>
 
     <style name="ThemeOverlay.Wealth.AppWidgetContainer" parent="">
-        <item name="appWidgetBackgroundColor">@color/light_blue_600</item>
-        <item name="appWidgetTextColor">@color/light_blue_50</item>
+        <item name="appWidgetBackgroundColor">@drawable/bg_widget_night</item>
+        <item name="appWidgetTextColor">@color/iconic_dark</item>
     </style>
 </resources>
