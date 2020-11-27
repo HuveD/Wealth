@@ -14,7 +14,7 @@ import kr.co.huve.wealthApp.util.TaskManager
 import kr.co.huve.wealthApp.util.data.DataKey
 import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
 import kr.co.huve.wealthApp.util.repository.network.data.DayWeather
-import kr.co.huve.wealthApp.util.repository.network.data.dust.DustItem
+import kr.co.huve.wealthApp.util.repository.network.data.dust.Dust
 import kr.co.huve.wealthApp.util.worker.WidgetUpdateWorker
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -107,13 +107,15 @@ internal fun updateAppWidget(
     if (intent?.action == WealthWidget.InvalidateAction) {
         val weather = intent.getSerializableExtra(DataKey.EXTRA_WEATHER_DATA.name) as DayWeather
         val covid = intent.getSerializableExtra(DataKey.EXTRA_COVID_DATA.name) as CovidItem
-        val dust = intent.getSerializableExtra(DataKey.EXTRA_DUST_DATA.name) as DustItem
+        val dust = intent.getSerializableExtra(DataKey.EXTRA_DUST_DATA.name) as Dust
         val sb = StringBuilder()
         sb.append(weather.weatherInfo.first().getWeatherDescription(context))
         sb.append("\n코로나: ")
         sb.append(covid.increasedCount)
         sb.append("\n미세먼지: ")
-        sb.append(dust.pm10Grade1h)
+        sb.append(dust.requestInfo.station)
+        sb.append(" - ")
+        sb.append(dust.items.first().khaiGrade)
         views.setTextViewText(R.id.appwidget_text, sb.toString())
     } else {
         requestWorks(context)

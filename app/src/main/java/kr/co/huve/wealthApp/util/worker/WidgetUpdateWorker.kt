@@ -17,7 +17,8 @@ import kr.co.huve.wealthApp.util.repository.network.NetworkConfig
 import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
 import kr.co.huve.wealthApp.util.repository.network.data.CovidResult
 import kr.co.huve.wealthApp.util.repository.network.data.DayWeather
-import kr.co.huve.wealthApp.util.repository.network.data.dust.DustItem
+import kr.co.huve.wealthApp.util.repository.network.data.dust.Dust
+import kr.co.huve.wealthApp.util.repository.network.data.dust.RequestInfo
 import kr.co.huve.wealthApp.util.repository.network.layer.CovidRestApi
 import kr.co.huve.wealthApp.util.repository.network.layer.DustRestApi
 import kr.co.huve.wealthApp.util.repository.network.layer.WeatherRestApi
@@ -51,8 +52,8 @@ class WidgetUpdateWorker @WorkerInject constructor(
                         true -> getDustRequest()
                         else -> getDustRequest(it.first().dustStation)
                     }
-                ) { weather: List<DayWeather>, covid: List<CovidItem>, dust: List<DustItem> ->
-                    if (weather.isEmpty() || covid.isEmpty() || dust.isEmpty()) {
+                ) { weather: List<DayWeather>, covid: List<CovidItem>, dust: Dust ->
+                    if (weather.isEmpty() || covid.isEmpty() || dust.items.isEmpty()) {
                         Result.retry()
                     } else {
                         appContext.sendBroadcast(Intent(appContext, WealthWidget::class.java)
@@ -62,7 +63,7 @@ class WidgetUpdateWorker @WorkerInject constructor(
                                     DataKey.EXTRA_COVID_DATA.name,
                                     covid.reversed().first()
                                 )
-                                putExtra(DataKey.EXTRA_DUST_DATA.name, dust.first())
+                                putExtra(DataKey.EXTRA_DUST_DATA.name, dust)
                                 this.action = WealthWidget.InvalidateAction
                             })
                         Result.success()
@@ -109,7 +110,7 @@ class WidgetUpdateWorker @WorkerInject constructor(
         }
     }
 
-    private fun getDustRequest(stationName: String = "송파구"): Observable<List<DustItem>> {
+    private fun getDustRequest(stationName: String = "송파구"): Observable<Dust> {
         return dustRestApi.getNearDustInfo(
             key = NetworkConfig.DUST_KEY,
             numOfRows = 1,
@@ -118,10 +119,6 @@ class WidgetUpdateWorker @WorkerInject constructor(
             dataTerm = "DAILY",
             version = NetworkConfig.DUST_API_VERSION,
             returnType = "json"
-        ).map {
-            it.items
-        }.onErrorReturn {
-            emptyList()
-        }
+        ).map { it }.onErrorReturn { Dust(emptyList(), RequestInfo(stationName)) }
     }
 }
