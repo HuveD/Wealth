@@ -1,5 +1,6 @@
 package kr.co.huve.wealthApp.util.repository.network
 
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,13 +23,13 @@ import javax.inject.Singleton
 object RemoteModule {
     @Provides
     @Singleton
-    fun provideWeatherService(): WeatherRestApi {
+    fun provideWeatherService(gson: Gson): WeatherRestApi {
         val client = OkHttpClient.Builder()
         return Retrofit.Builder()
             .client(client.build())
             .baseUrl(NetworkConfig.WEATHER_API)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build().create(WeatherRestApi::class.java)
     }
 
@@ -49,7 +50,7 @@ object RemoteModule {
 
     @Provides
     @Singleton
-    fun provideDustService(): DustRestApi {
+    fun provideDustService(gson: Gson): DustRestApi {
         val client = OkHttpClient.Builder()
         if (BuildConfig.DEBUG) client.addInterceptor(HttpLoggingInterceptor().also {
             it.level = HttpLoggingInterceptor.Level.HEADERS
@@ -58,13 +59,13 @@ object RemoteModule {
             .client(client.build())
             .baseUrl(NetworkConfig.DUST_API)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build().create(DustRestApi::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideKakaoService(): KakaoRestApi {
+    fun provideKakaoService(gson: Gson): KakaoRestApi {
         val client = OkHttpClient.Builder()
         if (BuildConfig.DEBUG) client.addInterceptor(HttpLoggingInterceptor().also {
             it.level = HttpLoggingInterceptor.Level.HEADERS
@@ -74,7 +75,7 @@ object RemoteModule {
             .client(client.build())
             .baseUrl(NetworkConfig.KAKAO_API)
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build().create(KakaoRestApi::class.java)
     }
 }
