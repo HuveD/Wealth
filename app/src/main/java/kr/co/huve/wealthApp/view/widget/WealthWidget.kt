@@ -125,6 +125,8 @@ internal fun loadingView(context: Context, views: RemoteViews) {
 }
 
 internal fun drawView(context: Context, views: RemoteViews, intent: Intent) {
+    val format =
+        SimpleDateFormat(context.getString(R.string.widget_date_pattern), Locale.getDefault())
     val weather = intent.getSerializableExtra(DataKey.EXTRA_WEATHER_DATA.name) as DayWeather
     val covid = intent.getSerializableExtra(DataKey.EXTRA_COVID_DATA.name) as CovidItem
     val dust = (intent.getSerializableExtra(DataKey.EXTRA_DUST_DATA.name) as Dust).items.first()
@@ -134,6 +136,7 @@ internal fun drawView(context: Context, views: RemoteViews, intent: Intent) {
         val icon = weather.weatherInfo.first().getWeatherIcon(isTitle = false)
         setViewVisibility(R.id.weatherIcon, View.VISIBLE)
         setImageViewResource(R.id.weatherIcon, icon)
+        setTextViewText(R.id.date, format.format(Calendar.getInstance().time))
         setTextViewText(
             R.id.currentTemp,
             String.format(context.getString(R.string.temp_with_symbol), weather.temp.roundToInt())
