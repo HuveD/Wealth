@@ -120,7 +120,7 @@ internal fun updateAppWidget(
 internal fun loadingView(context: Context, views: RemoteViews, forcedUpdate: Boolean) {
     views.setViewVisibility(R.id.labelContainer, View.GONE)
     views.setViewVisibility(R.id.weatherIcon, View.GONE)
-    views.setViewVisibility(R.id.date, View.GONE)
+    views.setViewVisibility(R.id.city, View.GONE)
     views.setViewVisibility(R.id.progress, View.VISIBLE)
     views.setTextViewText(R.id.currentTemp, context.getString(R.string.loading))
 

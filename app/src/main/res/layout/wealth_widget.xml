@@ -42,8 +42,8 @@
                 android:layout_marginStart="8dp"
                 android:fontFamily="@font/gemunu_libre_extra_bold"
                 android:textColor="?attr/appWidgetTextColor"
-                android:textSize="36sp"
-                tools:text="17º" />
+                android:textSize="40sp"
+                tools:text="27º" />
         </LinearLayout>
     </LinearLayout>
 
