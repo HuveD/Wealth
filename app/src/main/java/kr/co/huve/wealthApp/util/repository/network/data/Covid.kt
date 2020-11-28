@@ -57,6 +57,9 @@ data class CovidItem(
     // 해당 지역명
     @SerializedName("gubun")
     val region: String,
+    // 해당 지역명 eng
+    @SerializedName("gubunEn")
+    val regionEng: String,
     // 전일 대비 증감 수
     @SerializedName("incDec")
     val increasedCount: Int,

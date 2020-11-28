@@ -62,7 +62,7 @@ class WidgetUpdateWorker @WorkerInject constructor(
                                 putExtra(DataKey.EXTRA_WEATHER_DATA.name, weather.first())
                                 putExtra(
                                     DataKey.EXTRA_COVID_DATA.name,
-                                    covid.reversed().first()
+                                    covid.first { covid -> covid.regionEng == "Total" }
                                 )
                                 putExtra(DataKey.EXTRA_DUST_DATA.name, dust)
                                 this.action = WealthWidget.InvalidateAction

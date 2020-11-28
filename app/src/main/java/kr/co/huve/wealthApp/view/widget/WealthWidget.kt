@@ -36,7 +36,10 @@ class WealthWidget : AppWidgetProvider() {
 
     override fun onEnabled(context: Context?) {
         super.onEnabled(context)
-        if (context != null) requestWorks(context = context)
+        if (context != null) {
+            val views = RemoteViews(context.packageName, R.layout.wealth_widget)
+            requestWorks(context = context, views = views, forcedUpdate = true)
+        }
     }
 
     override fun onUpdate(
@@ -55,7 +58,8 @@ class WealthWidget : AppWidgetProvider() {
         if (context != null && intent != null) {
             when (intent.action) {
                 ManualUpdateAction -> {
-                    requestWorks(context)
+                    val views = RemoteViews(context.packageName, R.layout.wealth_widget)
+                    requestWorks(context = context, views = views, forcedUpdate = true)
                 }
                 InvalidateAction -> {
                     // Apply the manual update
@@ -70,7 +74,8 @@ class WealthWidget : AppWidgetProvider() {
     }
 }
 
-private fun requestWorks(context: Context) {
+private fun requestWorks(context: Context, views: RemoteViews, forcedUpdate: Boolean) {
+    loadingView(context = context, views = views, forcedUpdate = forcedUpdate)
     WorkManager.getInstance(context).beginUniqueWork(
         DataKey.WORK_UPDATE_WIDGET.name,
         ExistingWorkPolicy.REPLACE,
@@ -94,8 +99,13 @@ internal fun updateAppWidget(
     intent: Intent?
 ) {
     val views = RemoteViews(context.packageName, R.layout.wealth_widget)
+    if (intent?.action == WealthWidget.InvalidateAction) {
+        drawView(context = context, views = views, intent = intent)
+    } else {
+        requestWorks(context = context, views = views, forcedUpdate = false)
+    }
 
-    // Request
+    // Request when parent view clicked
     val pendingIntent: PendingIntent = Intent(
         context,
         WealthWidget::class.java
@@ -103,25 +113,29 @@ internal fun updateAppWidget(
         this.action = WealthWidget.ManualUpdateAction
         PendingIntent.getBroadcast(context, 0, this, PendingIntent.FLAG_UPDATE_CURRENT)
     }
-
-    if (intent?.action == WealthWidget.InvalidateAction) {
-        drawView(context = context, views = views, intent = intent)
-    } else {
-        loadingView(context = context, views = views)
-        requestWorks(context = context)
-    }
+    views.setOnClickPendingIntent(R.id.parent, pendingIntent)
 
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
 
-internal fun loadingView(context: Context, views: RemoteViews) {
+internal fun loadingView(context: Context, views: RemoteViews, forcedUpdate: Boolean) {
     val format =
         SimpleDateFormat(context.getString(R.string.widget_date_pattern), Locale.getDefault())
     views.setViewVisibility(R.id.labelContainer, View.GONE)
     views.setViewVisibility(R.id.weatherIcon, View.GONE)
+    views.setViewVisibility(R.id.progress, View.VISIBLE)
     views.setTextViewText(R.id.currentTemp, context.getString(R.string.loading))
     views.setTextViewText(R.id.date, format.format(Calendar.getInstance().time))
+
+    // Update
+    if (forcedUpdate) {
+        val manager = AppWidgetManager.getInstance(context)
+        val component = ComponentName(context, WealthWidget::class.java)
+        for (appWidgetId in manager.getAppWidgetIds(component)) {
+            manager.updateAppWidget(appWidgetId, views)
+        }
+    }
 }
 
 internal fun drawView(context: Context, views: RemoteViews, intent: Intent) {
@@ -130,6 +144,7 @@ internal fun drawView(context: Context, views: RemoteViews, intent: Intent) {
     val weather = intent.getSerializableExtra(DataKey.EXTRA_WEATHER_DATA.name) as DayWeather
     val covid = intent.getSerializableExtra(DataKey.EXTRA_COVID_DATA.name) as CovidItem
     val dust = (intent.getSerializableExtra(DataKey.EXTRA_DUST_DATA.name) as Dust).items.first()
+    views.setViewVisibility(R.id.progress, View.GONE)
 
     // Weather
     views.apply {
