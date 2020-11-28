@@ -15,14 +15,13 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/date"
+            android:id="@+id/city"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
             android:fontFamily="@font/gemunu_libre_extra_bold"
             android:textColor="?attr/appWidgetTextColor"
-            android:textSize="16sp"
-            tools:text="월요일 (2020.11.27)" />
+            android:textSize="24sp"
+            tools:text="신사동" />
 
         <LinearLayout
             android:layout_width="wrap_content"

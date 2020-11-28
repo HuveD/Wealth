@@ -44,8 +44,9 @@ class WidgetUpdateWorker @WorkerInject constructor(
 
     override fun createWork(): Single<Result> {
         setForegroundAsync(createForegroundInfo(NotificationRes.LocationForeground(context = appContext)))
+        val city = locationManager.getDetailCity()
         return Single.fromObservable(
-            placeDao.loadNearPlaces(locationManager.getDetailCity()).concatMap {
+            placeDao.loadNearPlaces(city).concatMap {
                 Observable.zip(
                     getWeatherRequest(),
                     getCovidRequest(),
@@ -65,6 +66,7 @@ class WidgetUpdateWorker @WorkerInject constructor(
                                     covid.first { covid -> covid.regionEng == "Total" }
                                 )
                                 putExtra(DataKey.EXTRA_DUST_DATA.name, dust)
+                                putExtra(DataKey.EXTRA_CITY_NAME.name, city)
                                 this.action = WealthWidget.InvalidateAction
                             })
                         Result.success()

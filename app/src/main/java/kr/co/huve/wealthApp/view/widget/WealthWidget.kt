@@ -17,8 +17,6 @@ import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
 import kr.co.huve.wealthApp.util.repository.network.data.DayWeather
 import kr.co.huve.wealthApp.util.repository.network.data.dust.Dust
 import kr.co.huve.wealthApp.util.worker.WidgetUpdateWorker
-import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -120,13 +118,11 @@ internal fun updateAppWidget(
 }
 
 internal fun loadingView(context: Context, views: RemoteViews, forcedUpdate: Boolean) {
-    val format =
-        SimpleDateFormat(context.getString(R.string.widget_date_pattern), Locale.getDefault())
     views.setViewVisibility(R.id.labelContainer, View.GONE)
     views.setViewVisibility(R.id.weatherIcon, View.GONE)
+    views.setViewVisibility(R.id.date, View.GONE)
     views.setViewVisibility(R.id.progress, View.VISIBLE)
     views.setTextViewText(R.id.currentTemp, context.getString(R.string.loading))
-    views.setTextViewText(R.id.date, format.format(Calendar.getInstance().time))
 
     // Update
     if (forcedUpdate) {
@@ -139,19 +135,22 @@ internal fun loadingView(context: Context, views: RemoteViews, forcedUpdate: Boo
 }
 
 internal fun drawView(context: Context, views: RemoteViews, intent: Intent) {
-    val format =
-        SimpleDateFormat(context.getString(R.string.widget_date_pattern), Locale.getDefault())
     val weather = intent.getSerializableExtra(DataKey.EXTRA_WEATHER_DATA.name) as DayWeather
     val covid = intent.getSerializableExtra(DataKey.EXTRA_COVID_DATA.name) as CovidItem
     val dust = (intent.getSerializableExtra(DataKey.EXTRA_DUST_DATA.name) as Dust).items.first()
+    val city = intent.getSerializableExtra(DataKey.EXTRA_CITY_NAME.name) as String
     views.setViewVisibility(R.id.progress, View.GONE)
 
     // Weather
     views.apply {
         val icon = weather.weatherInfo.first().getWeatherIcon(isTitle = false)
         setViewVisibility(R.id.weatherIcon, View.VISIBLE)
+        views.setViewVisibility(R.id.city, View.VISIBLE)
         setImageViewResource(R.id.weatherIcon, icon)
-        setTextViewText(R.id.date, format.format(Calendar.getInstance().time))
+        setTextViewText(
+            R.id.city,
+            if (city.isEmpty()) context.getString(R.string.working) else city
+        )
         setTextViewText(
             R.id.currentTemp,
             String.format(context.getString(R.string.temp_with_symbol), weather.temp.roundToInt())
