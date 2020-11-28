@@ -7,13 +7,14 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import io.reactivex.rxjava3.core.Single
 import kr.co.huve.wealthApp.R
-import kr.co.huve.wealthApp.util.repository.network.NetworkConfig
-import kr.co.huve.wealthApp.util.repository.network.data.TotalWeather
-import kr.co.huve.wealthApp.util.repository.network.layer.WeatherRestApi
 import kr.co.huve.wealthApp.util.NotificationUtil
 import kr.co.huve.wealthApp.util.WealthLocationManager
 import kr.co.huve.wealthApp.util.data.DataKey
 import kr.co.huve.wealthApp.util.data.NotificationRes
+import kr.co.huve.wealthApp.util.repository.network.NetworkConfig
+import kr.co.huve.wealthApp.util.repository.network.data.TotalWeather
+import kr.co.huve.wealthApp.util.repository.network.layer.WeatherRestApi
+import kotlin.math.roundToInt
 
 class UmbrellaCheckWorker @WorkerInject constructor(
     @Assisted val appContext: Context,
@@ -51,7 +52,13 @@ class UmbrellaCheckWorker @WorkerInject constructor(
         if (totalWeather.daily.isNotEmpty()) {
             val format = appContext.getString(R.string.daily_alert_format)
             val today = totalWeather.daily.first()
-            sb.append(String.format(format, today.temp.day.toInt(), today.feelsLike.day.toInt()))
+            sb.append(
+                String.format(
+                    format,
+                    today.temp.day.roundToInt(),
+                    today.feelsLike.day.roundToInt()
+                )
+            )
         }
         return sb.toString()
     }

@@ -7,6 +7,7 @@ import kr.co.huve.wealthApp.view.main.WealthTheme
 import timber.log.Timber
 import java.io.Serializable
 import java.util.*
+import kotlin.math.roundToInt
 
 data class SingleWeather(
     val coord: Coordinates?,
@@ -191,7 +192,7 @@ data class DayWeather(
     }
 
     override fun getProbabilityPrecipitation(): Int {
-        return pop?.toInt() ?: 0
+        return pop?.roundToInt() ?: 0
     }
 
     fun getTheme(): WealthTheme {
@@ -258,7 +259,7 @@ data class WeekWeather(
     }
 
     override fun getProbabilityPrecipitation(): Int {
-        return pop?.toInt() ?: 0
+        return pop?.roundToInt() ?: 0
     }
 }
 

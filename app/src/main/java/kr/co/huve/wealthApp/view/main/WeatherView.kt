@@ -18,6 +18,7 @@ import kr.co.huve.wealthApp.util.repository.network.data.TotalWeather
 import kr.co.huve.wealthApp.view.main.adapter.PredictWeatherListAdapter
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 @FragmentScoped
 class WeatherView @Inject constructor(
@@ -74,7 +75,7 @@ class WeatherView @Inject constructor(
             titleImage.setImageResource(getWeatherIcon(true))
         }
         // 현재 온도
-        titleTemp.text = "${current.temp.toInt()}"
+        titleTemp.text = "${current.temp.roundToInt()}"
 
         // 일출, 일몰
         sunSetTime.text = current.getTimeFromSunTime(current.sunset)

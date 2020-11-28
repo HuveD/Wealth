@@ -12,6 +12,7 @@ import kr.co.huve.wealthApp.util.repository.network.data.DayWeather
 import kr.co.huve.wealthApp.util.repository.network.data.Weather
 import kr.co.huve.wealthApp.util.repository.network.data.WeekWeather
 import java.util.*
+import kotlin.math.roundToInt
 
 class PredictWeatherListAdapter<T : Weather>(var weathers: List<T>) :
     RecyclerView.Adapter<PredictWeatherListAdapter<T>.Holder>() {
@@ -59,10 +60,10 @@ class PredictWeatherListAdapter<T : Weather>(var weathers: List<T>) :
     private fun getTemp(context: Context, weather: Weather): String {
         return when (weather) {
             is DayWeather -> {
-                "${weather.temp.toInt()}${context.getString(R.string.symbol_celsius)}"
+                "${weather.temp.roundToInt()}${context.getString(R.string.symbol_celsius)}"
             }
             else -> {
-                "${(weather as WeekWeather).temp.day.toInt()}${context.getString(R.string.symbol_celsius)}"
+                "${(weather as WeekWeather).temp.day.roundToInt()}${context.getString(R.string.symbol_celsius)}"
             }
         }
     }
