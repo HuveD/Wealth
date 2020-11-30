@@ -49,6 +49,7 @@ class WealthIntentFactory @Inject constructor(
             is WealthViewEvent.InvalidateStone -> intent { WealthState.InvalidateStone }
             is WealthViewEvent.RequestCovid -> buildRequestCovidIntent(viewEvent.dateString)
             is WealthViewEvent.RequestDust -> buildRequestDustIntent()
+            is WealthViewEvent.RefreshCovidDashboard -> intent { WealthState.RefreshCovidDashboard(viewEvent.item) }
         }
     }
 

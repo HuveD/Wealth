@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.FragmentScoped
 import kr.co.huve.wealthApp.R
-import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
 import kr.co.huve.wealthApp.util.WealthLocationManager
+import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
 import kr.co.huve.wealthApp.view.main.adapter.CovidListAdapter
 import javax.inject.Inject
 
@@ -63,7 +63,7 @@ class CovidView @Inject constructor(
         loading = view.findViewById(R.id.loading)
     }
 
-    fun bind(data: List<CovidItem>) {
+    fun bind(data: List<CovidItem>, onListClicked: (CovidItem) -> Unit) {
         // 첫번째 리스트가 전국 데이터
         val nationwide = data.first()
         theme = when {
@@ -78,13 +78,13 @@ class CovidView @Inject constructor(
             layoutManager = LinearLayoutManager(context).apply {
                 orientation = LinearLayoutManager.HORIZONTAL
             }
-            adapter = CovidListAdapter(covidList = data)
+            adapter = CovidListAdapter(covidList = data, onClick = onListClicked)
             setHasFixedSize(true)
         }
         isbinded = true
     }
 
-    private fun invalidateData(covidItem: CovidItem) {
+    fun invalidateData(covidItem: CovidItem) {
         // 배경
         background.setBackgroundResource(theme.getBackgroundResource())
         title.setTextColor(theme.getLabelColor(context))

@@ -16,6 +16,7 @@ import kr.co.huve.wealthApp.intent.WealthIntentFactory
 import kr.co.huve.wealthApp.model.wealth.WealthModelStore
 import kr.co.huve.wealthApp.model.wealth.WealthState
 import kr.co.huve.wealthApp.util.WealthLocationManager
+import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
 import kr.co.huve.wealthApp.view.EventObservable
 import kr.co.huve.wealthApp.view.StateSubscriber
 import kr.co.huve.wealthApp.view.main.CovidView
@@ -43,7 +44,7 @@ class CovidFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<
     private val format = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
     private val calendar = Calendar.getInstance()
 
-    private val requestRelay = PublishRelay.create<WealthViewEvent>()
+    private val relay = PublishRelay.create<WealthViewEvent>()
     private val disposable = CompositeDisposable()
 
     override fun onCreateView(
@@ -87,7 +88,7 @@ class CovidFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<
                     calendar.add(Calendar.DAY_OF_MONTH, -1)
                     requestCovidData()
                 } else {
-                    covidView.bind(it.data.reversed())
+                    covidView.bind(it.data.reversed(), onListItemClicked)
                     covidView.refreshProgress(false)
                 }
             }
@@ -99,19 +100,26 @@ class CovidFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<
                     Toast.LENGTH_SHORT
                 ).show()
             }
+            is WealthState.RefreshCovidDashboard -> {
+                covidView.invalidateData(it.item)
+            }
             else -> Unit
         }
     }
 
-    override fun events(): Observable<WealthViewEvent> = requestRelay
+    override fun events(): Observable<WealthViewEvent> = relay
 
     private fun requestCovidData() {
-        if (!covidView.isbinded) requestRelay.accept(
+        if (!covidView.isbinded) relay.accept(
             WealthViewEvent.RequestCovid(
                 format.format(
                     calendar.time
                 )
             )
         )
+    }
+
+    private val onListItemClicked = { item: CovidItem ->
+        relay.accept(WealthViewEvent.RefreshCovidDashboard(item))
     }
 }

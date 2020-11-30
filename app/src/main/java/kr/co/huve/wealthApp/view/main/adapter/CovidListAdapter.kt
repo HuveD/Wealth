@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kr.co.huve.wealthApp.R
 import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
 
-class CovidListAdapter(var covidList: List<CovidItem>) :
+class CovidListAdapter(var covidList: List<CovidItem>, val onClick: (CovidItem) -> Unit) :
     RecyclerView.Adapter<CovidListAdapter.Holder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -26,9 +26,13 @@ class CovidListAdapter(var covidList: List<CovidItem>) :
         holder.region.text = item.region
         holder.total.text = item.covidCount.toString()
         holder.increase.text = item.increasedCount.toString()
+        holder.parent.setOnClickListener {
+            onClick(item)
+        }
     }
 
     inner class Holder(view: View) : RecyclerView.ViewHolder(view) {
+        val parent: View = view
         val region: TextView = view.findViewById(R.id.region)
         val total: TextView = view.findViewById(R.id.total)
         val increase: TextView = view.findViewById(R.id.increase)
