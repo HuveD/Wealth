@@ -119,12 +119,14 @@ class WealthLocationManager @Inject constructor(
             context.getString(R.string.city)
         } else {
             val item = address.first()
-            for (name in listOf(
+            val addressList = arrayListOf(
                 item.thoroughfare,
                 item.subLocality,
                 item.locality,
                 item.adminArea
-            )) {
+            )
+            if (item.countryCode != "KR") addressList.removeAt(0)
+            for (name in addressList) {
                 if (!name.isNullOrEmpty()) return name
             }
             return context.getString(R.string.city)
