@@ -16,7 +16,8 @@ import kr.co.huve.wealthApp.util.data.DataKey
 import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
 import kr.co.huve.wealthApp.util.repository.network.data.DayWeather
 import kr.co.huve.wealthApp.util.repository.network.data.dust.Dust
-import kr.co.huve.wealthApp.util.worker.WidgetUpdateWorker
+import kr.co.huve.wealthApp.util.worker.WealthWidgetUpdateWorker
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -73,11 +74,12 @@ class WealthWidget : AppWidgetProvider() {
 }
 
 private fun requestWorks(context: Context, views: RemoteViews, forcedUpdate: Boolean) {
-    loadingView(context = context, views = views, forcedUpdate = forcedUpdate)
+    Timber.d("Request widget work (forced:%s)", forcedUpdate)
+    if (forcedUpdate) loadingView(context = context, views = views)
     WorkManager.getInstance(context).beginUniqueWork(
         DataKey.WORK_UPDATE_WIDGET.name,
         ExistingWorkPolicy.REPLACE,
-        OneTimeWorkRequest.Builder(WidgetUpdateWorker::class.java)
+        OneTimeWorkRequest.Builder(WealthWidgetUpdateWorker::class.java)
             .setBackoffCriteria(
                 BackoffPolicy.LINEAR,
                 OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
@@ -117,7 +119,7 @@ internal fun updateAppWidget(
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
 
-internal fun loadingView(context: Context, views: RemoteViews, forcedUpdate: Boolean) {
+internal fun loadingView(context: Context, views: RemoteViews) {
     views.setViewVisibility(R.id.labelContainer, View.GONE)
     views.setViewVisibility(R.id.weatherIcon, View.GONE)
     views.setViewVisibility(R.id.city, View.GONE)
@@ -125,12 +127,10 @@ internal fun loadingView(context: Context, views: RemoteViews, forcedUpdate: Boo
     views.setTextViewText(R.id.currentTemp, context.getString(R.string.loading))
 
     // Update
-    if (forcedUpdate) {
-        val manager = AppWidgetManager.getInstance(context)
-        val component = ComponentName(context, WealthWidget::class.java)
-        for (appWidgetId in manager.getAppWidgetIds(component)) {
-            manager.updateAppWidget(appWidgetId, views)
-        }
+    val manager = AppWidgetManager.getInstance(context)
+    val component = ComponentName(context, WealthWidget::class.java)
+    for (appWidgetId in manager.getAppWidgetIds(component)) {
+        manager.updateAppWidget(appWidgetId, views)
     }
 }
 

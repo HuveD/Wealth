@@ -28,7 +28,7 @@ import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-class WidgetUpdateWorker @WorkerInject constructor(
+class WealthWidgetUpdateWorker @WorkerInject constructor(
     @Assisted val appContext: Context,
     @Assisted workerParams: WorkerParameters,
     notificationUtil: NotificationUtil,
