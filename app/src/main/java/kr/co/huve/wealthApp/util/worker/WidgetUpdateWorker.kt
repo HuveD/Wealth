@@ -43,6 +43,7 @@ class WidgetUpdateWorker @WorkerInject constructor(
     private val format = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
 
     override fun createWork(): Single<Result> {
+        Timber.d("Widget worker created")
         setForegroundAsync(createForegroundInfo(NotificationRes.LocationForeground(context = appContext)))
         val city = locationManager.getDetailCity()
         return Single.fromObservable(
