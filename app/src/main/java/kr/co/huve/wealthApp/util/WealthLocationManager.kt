@@ -119,11 +119,15 @@ class WealthLocationManager @Inject constructor(
             context.getString(R.string.city)
         } else {
             val item = address.first()
-            return if (item.thoroughfare.isNullOrEmpty()) {
+            for (name in listOf(
+                item.thoroughfare,
+                item.subLocality,
+                item.locality,
                 item.adminArea
-            } else {
-                item.thoroughfare
+            )) {
+                if (!name.isNullOrEmpty()) return name
             }
+            return context.getString(R.string.city)
         }
     }
 
@@ -138,11 +142,15 @@ class WealthLocationManager @Inject constructor(
             lng,
             5
         )
-        return if (address == null || address.isEmpty() || address.first().adminArea.isNullOrEmpty()) {
-            context.getString(R.string.city)
-        } else {
-            address.first().adminArea
+
+        val item = address.first()
+        for (name in listOf(
+            item.locality,
+            item.adminArea
+        )) {
+            if (!name.isNullOrEmpty()) return name
         }
+        return context.getString(R.string.city)
     }
 
     private fun permissionGranted(): Boolean {
