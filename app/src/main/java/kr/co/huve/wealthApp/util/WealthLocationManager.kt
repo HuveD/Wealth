@@ -26,8 +26,8 @@ class WealthLocationManager @Inject constructor(
 ) : LocationListener {
     companion object {
         private const val DefaultLocationName = "Default"
-        const val LAT_SEOUL = 37.532600
-        const val LON_SEOUL = 127.024612
+        const val LAT_SEOUL = 37.496866
+        const val LON_SEOUL = 127.028107
     }
 
     private val locationManager by lazy { context.getSystemService(Context.LOCATION_SERVICE) as (LocationManager) }
