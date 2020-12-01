@@ -143,6 +143,7 @@ internal fun drawView(context: Context, views: RemoteViews, intent: Intent) {
 
     // Weather
     views.apply {
+        // Weather
         val icon = weather.weatherInfo.first().getWeatherIcon(isTitle = false)
         setViewVisibility(R.id.weatherIcon, View.VISIBLE)
         views.setViewVisibility(R.id.city, View.VISIBLE)
@@ -155,28 +156,25 @@ internal fun drawView(context: Context, views: RemoteViews, intent: Intent) {
             R.id.currentTemp,
             String.format(context.getString(R.string.temp_with_symbol), weather.temp.roundToInt())
         )
-    }
 
-    // label
-    views.setViewVisibility(R.id.labelContainer, View.VISIBLE)
-    // pm 10
-    views.apply {
+        // label container
+        setViewVisibility(R.id.labelContainer, View.VISIBLE)
+
+        // label pm10
         setTextViewText(
             R.id.pm10,
             getDustGrade(context, R.string.widget_pm10_label, dust.pm10Grade1h)
         )
         setInt(R.id.pm10, "setBackgroundResource", getDustBackground(dust.pm10Grade1h))
-    }
-    // pm 2.5
-    views.apply {
+
+        // label pm 2.5
         setTextViewText(
             R.id.pm25,
             getDustGrade(context, R.string.widget_pm25_label, dust.pm25Grade1h)
         )
         setInt(R.id.pm25, "setBackgroundResource", getDustBackground(dust.pm25Grade1h))
-    }
-    // covid
-    views.apply {
+
+        // label covid
         val increasedCount = covid.increasedCount
         setTextViewText(
             R.id.covid,
