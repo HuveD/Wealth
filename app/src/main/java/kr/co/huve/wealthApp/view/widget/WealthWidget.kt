@@ -70,7 +70,7 @@ private fun requestWorks(context: Context, views: RemoteViews, forcedUpdate: Boo
     if (forcedUpdate) loadingView(context = context, views = views)
     WorkManager.getInstance(context).beginUniqueWork(
         DataKey.WORK_UPDATE_WIDGET.name,
-        ExistingWorkPolicy.REPLACE,
+        ExistingWorkPolicy.KEEP,
         OneTimeWorkRequest.Builder(WealthWidgetUpdateWorker::class.java)
             .setBackoffCriteria(
                 BackoffPolicy.LINEAR,
