@@ -33,6 +33,14 @@ class WealthWidget : AppWidgetProvider() {
         const val InvalidateAction = "INVALIDATE_ACTION"
     }
 
+    override fun onEnabled(context: Context?) {
+        super.onEnabled(context)
+        if (context != null) {
+            val views = RemoteViews(context.packageName, R.layout.wealth_widget)
+            requestWorks(context = context, views = views, forcedUpdate = true)
+        }
+    }
+
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,

@@ -12,6 +12,8 @@ import android.os.Looper
 import androidx.core.content.ContextCompat
 import com.jakewharton.rxrelay3.BehaviorRelay
 import dagger.hilt.android.qualifiers.ApplicationContext
+import io.reactivex.rxjava3.core.Maybe
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.Disposable
 import kr.co.huve.wealthApp.R
 import timber.log.Timber
@@ -43,6 +45,7 @@ class WealthLocationManager @Inject constructor(
         if (!permissionGranted()) Timber.e("Check Permission") else {
             var lastKnownLocation = Location(DefaultLocationName)
             if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                Timber.d("NETWORK_PROVIDER Success")
                 initialized = true
                 locationManager.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
@@ -56,6 +59,7 @@ class WealthLocationManager @Inject constructor(
                 }
             }
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                Timber.d("GPS_PROVIDER Success")
                 initialized = true
                 locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
@@ -65,8 +69,7 @@ class WealthLocationManager @Inject constructor(
                     Looper.getMainLooper()
                 )
                 locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)?.run {
-                    if (time > lastKnownLocation.time)
-                        lastKnownLocation = this
+                    if (time > lastKnownLocation.time) lastKnownLocation = this
                 }
             }
 
@@ -77,6 +80,8 @@ class WealthLocationManager @Inject constructor(
                 })
             } else if (lastKnownLocation.provider != DefaultLocationName) {
                 locationRelay.accept(lastKnownLocation)
+            } else {
+                Timber.d("Waiting gps receiving")
             }
         }
     }
@@ -88,8 +93,10 @@ class WealthLocationManager @Inject constructor(
     fun getLastLocation(): Location {
         if (!initialized) initialize()
         return if (locationRelay.hasValue()) {
+            Timber.d("Get last known location from relay")
             locationRelay.value
         } else {
+            Timber.d("Get last known location from default")
             Location(DefaultLocationName).apply {
                 latitude = LAT_SEOUL
                 longitude = LON_SEOUL
@@ -99,9 +106,12 @@ class WealthLocationManager @Inject constructor(
 
     fun getLocation(body: (Location) -> Unit): Disposable {
         if (!initialized) initialize()
-        return locationRelay.take(1).subscribe {
-            body(it)
-        }
+        return Single.fromObservable(locationRelay.take(1)).subscribe(body)
+    }
+
+    fun getLocation(): Maybe<Location> {
+        if (!initialized) initialize()
+        return locationRelay.firstElement()
     }
 
     fun getDetailCity(): String {

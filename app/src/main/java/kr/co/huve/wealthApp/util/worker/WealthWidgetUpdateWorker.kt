@@ -2,12 +2,14 @@ package kr.co.huve.wealthApp.util.worker
 
 import android.content.Context
 import android.content.Intent
+import android.location.Location
 import androidx.hilt.Assisted
 import androidx.hilt.work.WorkerInject
 import androidx.work.WorkerParameters
 import com.google.gson.Gson
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kr.co.huve.wealthApp.util.NotificationUtil
 import kr.co.huve.wealthApp.util.WealthLocationManager
 import kr.co.huve.wealthApp.util.data.DataKey
@@ -45,40 +47,41 @@ class WealthWidgetUpdateWorker @WorkerInject constructor(
     override fun createWork(): Single<Result> {
         Timber.d("Widget worker created")
         setForegroundAsync(createForegroundInfo(NotificationRes.LocationForeground(context = appContext)))
-        val city = locationManager.getDetailCity()
-        return Single.fromObservable(
-            placeDao.loadNearPlaces(city).concatMap {
-                Observable.zip(
-                    getWeatherRequest(),
-                    getCovidRequest(),
-                    when (it.isEmpty()) {
-                        true -> getDustRequest()
-                        else -> getDustRequest(it.first().dustStation)
+        return locationManager.getLocation().concatMapSingle { location ->
+            val city = locationManager.getDetailCity()
+            placeDao.loadNearPlaces(city)
+                .subscribeOn(Schedulers.io())
+                .concatMap {
+                    Observable.zip(
+                        getWeatherRequest(location),
+                        getCovidRequest(),
+                        when (it.isEmpty()) {
+                            true -> getDustRequest()
+                            else -> getDustRequest(it.first().dustStation)
+                        }
+                    ) { weather: List<DayWeather>, covid: List<CovidItem>, dust: Dust ->
+                        if (weather.isEmpty() || covid.isEmpty() || dust.items.isEmpty()) {
+                            Result.retry()
+                        } else {
+                            appContext.sendBroadcast(Intent(appContext, WealthWidget::class.java)
+                                .apply {
+                                    putExtra(DataKey.EXTRA_WEATHER_DATA.name, weather.first())
+                                    putExtra(
+                                        DataKey.EXTRA_COVID_DATA.name,
+                                        covid.first { covid -> covid.regionEng == "Total" }
+                                    )
+                                    putExtra(DataKey.EXTRA_DUST_DATA.name, dust)
+                                    putExtra(DataKey.EXTRA_CITY_NAME.name, city)
+                                    this.action = WealthWidget.InvalidateAction
+                                })
+                            Result.success()
+                        }
                     }
-                ) { weather: List<DayWeather>, covid: List<CovidItem>, dust: Dust ->
-                    if (weather.isEmpty() || covid.isEmpty() || dust.items.isEmpty()) {
-                        Result.retry()
-                    } else {
-                        appContext.sendBroadcast(Intent(appContext, WealthWidget::class.java)
-                            .apply {
-                                putExtra(DataKey.EXTRA_WEATHER_DATA.name, weather.first())
-                                putExtra(
-                                    DataKey.EXTRA_COVID_DATA.name,
-                                    covid.first { covid -> covid.regionEng == "Total" }
-                                )
-                                putExtra(DataKey.EXTRA_DUST_DATA.name, dust)
-                                putExtra(DataKey.EXTRA_CITY_NAME.name, city)
-                                this.action = WealthWidget.InvalidateAction
-                            })
-                        Result.success()
-                    }
-                }
-            }.take(1)
-        )
+                }.firstOrError()
+        }.toSingle()
     }
 
-    private fun getWeatherRequest(): Observable<List<DayWeather>> {
-        val lastLocation = locationManager.getLastLocation()
+    private fun getWeatherRequest(lastLocation: Location): Observable<List<DayWeather>> {
         return weatherRestApi.getTotalWeatherWithCoords(
             NetworkConfig.WEATHER_KEY,
             lastLocation.latitude,
