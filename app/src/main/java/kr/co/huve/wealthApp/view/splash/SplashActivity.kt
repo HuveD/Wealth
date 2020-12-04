@@ -62,8 +62,6 @@ class SplashActivity : AppCompatActivity(),
 
     override fun onPause() {
         super.onPause()
-        // 관찰 해제
-        Timber.d("WealthLocationManager: Clear all subscribe")
         disposables.clear()
     }
 
