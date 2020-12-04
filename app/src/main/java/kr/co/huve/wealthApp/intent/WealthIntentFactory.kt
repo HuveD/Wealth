@@ -6,21 +6,21 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityScoped
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kr.co.huve.wealthApp.R
-import kr.co.huve.wealthApp.model.wealth.WealthModelStore
-import kr.co.huve.wealthApp.model.wealth.WealthState
-import kr.co.huve.wealthApp.util.WealthLocationManager
-import kr.co.huve.wealthApp.model.repository.database.dao.PlaceDao
-import kr.co.huve.wealthApp.model.repository.database.entity.Place
-import kr.co.huve.wealthApp.model.repository.network.NetworkConfig
-import kr.co.huve.wealthApp.model.repository.network.NetworkConfig.RETRY
 import kr.co.huve.wealthApp.model.repository.data.CovidResult
 import kr.co.huve.wealthApp.model.repository.data.dust.Dust
 import kr.co.huve.wealthApp.model.repository.data.dust.DustStation
 import kr.co.huve.wealthApp.model.repository.data.dust.DustStationItem
 import kr.co.huve.wealthApp.model.repository.data.dust.TmCoord
+import kr.co.huve.wealthApp.model.repository.database.dao.PlaceDao
+import kr.co.huve.wealthApp.model.repository.database.entity.Place
+import kr.co.huve.wealthApp.model.repository.network.NetworkConfig
+import kr.co.huve.wealthApp.model.repository.network.NetworkConfig.RETRY
 import kr.co.huve.wealthApp.model.repository.network.layer.CovidRestApi
 import kr.co.huve.wealthApp.model.repository.network.layer.DustRestApi
 import kr.co.huve.wealthApp.model.repository.network.layer.KakaoRestApi
+import kr.co.huve.wealthApp.model.wealth.WealthModelStore
+import kr.co.huve.wealthApp.model.wealth.WealthState
+import kr.co.huve.wealthApp.util.WealthLocationManager
 import kr.co.huve.wealthApp.view.main.WealthViewEvent
 import org.json.XML
 import retrofit2.HttpException
@@ -49,7 +49,11 @@ class WealthIntentFactory @Inject constructor(
             is WealthViewEvent.InvalidateStone -> intent { WealthState.InvalidateStone }
             is WealthViewEvent.RequestCovid -> buildRequestCovidIntent(viewEvent.dateString)
             is WealthViewEvent.RequestDust -> buildRequestDustIntent()
-            is WealthViewEvent.RefreshCovidDashboard -> intent { WealthState.RefreshCovidDashboard(viewEvent.item) }
+            is WealthViewEvent.RefreshCovidDashboard -> intent {
+                WealthState.RefreshCovidDashboard(
+                    viewEvent.item
+                )
+            }
         }
     }
 
@@ -82,7 +86,7 @@ class WealthIntentFactory @Inject constructor(
 
     private fun buildRequestDustIntent(): Intent<WealthState> = intent {
         WealthState.DustRequestRunning(
-            placeDao.loadNearPlaces(locationManager.getDetailCity()).take(1)
+            placeDao.loadNearPlaces(locationManager.getDetailCity())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     if (it.isEmpty()) {

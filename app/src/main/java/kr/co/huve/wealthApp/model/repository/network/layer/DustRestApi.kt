@@ -1,5 +1,6 @@
 package kr.co.huve.wealthApp.model.repository.network.layer
 
+import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 import kr.co.huve.wealthApp.model.repository.data.dust.Dust
 import kr.co.huve.wealthApp.model.repository.data.dust.DustStation
@@ -16,7 +17,7 @@ interface DustRestApi {
         @Query("tmX") tmX: Double,
         @Query("tmY") tmY: Double,
         @Query("_returnType") returnType: String
-    ): Observable<DustStation>
+    ): Maybe<DustStation>
 
     @GET("/openapi/services/rest/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty")
     fun getNearDustInfo(
@@ -27,7 +28,7 @@ interface DustRestApi {
         @Query("dataTerm") dataTerm: String,
         @Query("ver") version: String,
         @Query("_returnType") returnType: String
-    ): Observable<Dust>
+    ): Maybe<Dust>
 
     @GET("/openapi/services/rest/ArpltnInforInqireSvc/getMinuDustFrcstDspth")
     fun getPredictDustInfo(
@@ -35,5 +36,5 @@ interface DustRestApi {
         @Query("searchDate") date: String,
         @Query("ver") version: String,
         @Query("_returnType") returnType: String
-    ): Observable<Dust>
+    ): Maybe<Dust>
 }

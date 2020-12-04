@@ -1,5 +1,6 @@
 package kr.co.huve.wealthApp.model.repository.network.layer
 
+import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 import kr.co.huve.wealthApp.model.repository.data.SingleWeather
 import kr.co.huve.wealthApp.model.repository.data.TotalWeather
@@ -13,7 +14,7 @@ interface WeatherRestApi {
         @Query("q") city: String,
         @Query("lang") lang: String,
         @Query("units") units: String
-    ): Observable<SingleWeather>
+    ): Maybe<SingleWeather>
 
     @GET("/data/2.5/weather")
     fun getCurrentWeatherWithCoords(
@@ -22,7 +23,7 @@ interface WeatherRestApi {
         @Query("lon") lon: Double,
         @Query("lang") lang: String,
         @Query("units") units: String
-    ): Observable<SingleWeather>
+    ): Maybe<SingleWeather>
 
     @GET("/data/2.5/onecall")
     fun getTotalWeatherWithCoords(
@@ -32,5 +33,5 @@ interface WeatherRestApi {
         @Query("exclude") exclude: String,
         @Query("lang") lang: String,
         @Query("units") units: String
-    ): Observable<TotalWeather>
+    ): Maybe<TotalWeather>
 }

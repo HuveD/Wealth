@@ -27,24 +27,22 @@ class UmbrellaCheckWorker @WorkerInject constructor(
     override fun createWork(): Single<Result> {
         setForegroundAsync(createForegroundInfo(NotificationRes.LocationForeground(context = appContext)))
         val lastLocation = locationManager.getLastLocation()
-        return Single.fromObservable(
-            weatherApi.getTotalWeatherWithCoords(
-                NetworkConfig.WEATHER_KEY,
-                lastLocation.latitude,
-                lastLocation.longitude,
-                "minutely",
-                "kr",
-                "metric"
-            ).map {
-                val outputData = workDataOf(
-                    DataKey.WORK_NEED_UMBRELLA.name to needUmbrella(it),
-                    DataKey.WORK_WEATHER_DESCRIPTION.name to getDescription(it)
-                )
-                Result.success(outputData)
-            }.onErrorReturn {
-                Result.retry()
-            }
-        )
+        return weatherApi.getTotalWeatherWithCoords(
+            NetworkConfig.WEATHER_KEY,
+            lastLocation.latitude,
+            lastLocation.longitude,
+            "minutely",
+            "kr",
+            "metric"
+        ).map {
+            val outputData = workDataOf(
+                DataKey.WORK_NEED_UMBRELLA.name to needUmbrella(it),
+                DataKey.WORK_WEATHER_DESCRIPTION.name to getDescription(it)
+            )
+            Result.success(outputData)
+        }.onErrorReturn {
+            Result.retry()
+        }.toSingle()
     }
 
     private fun getDescription(totalWeather: TotalWeather): String {

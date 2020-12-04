@@ -28,23 +28,21 @@ class MaskCheckWorker @WorkerInject constructor(
     private val calendar = Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, -1) }
 
     override fun createWork(): Single<Result> {
-        return Single.fromObservable(
-            covidApi.getCovidStatus(
-                NetworkConfig.COVID_KEY,
-                1,
-                20,
-                format.format(calendar.time),
-                format.format(calendar.time)
-            ).map {
-                val result = gson.fromJson(XML.toJSONObject(it).toString(), CovidResult::class.java)
-                val outputData = workDataOf(
-                    DataKey.WORK_NEED_MASK.name to needMask(result)
-                )
-                Result.success(outputData)
-            }.onErrorReturn {
-                Result.retry()
-            }
-        )
+        return covidApi.getCovidStatus(
+            NetworkConfig.COVID_KEY,
+            1,
+            20,
+            format.format(calendar.time),
+            format.format(calendar.time)
+        ).map {
+            val result = gson.fromJson(XML.toJSONObject(it).toString(), CovidResult::class.java)
+            val outputData = workDataOf(
+                DataKey.WORK_NEED_MASK.name to needMask(result)
+            )
+            Result.success(outputData)
+        }.onErrorReturn {
+            Result.retry()
+        }.toSingle()
     }
 
     private fun needMask(covidResult: CovidResult): Boolean {
