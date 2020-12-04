@@ -1,4 +1,4 @@
-package kr.co.huve.wealthApp.util.repository.database.entity
+package kr.co.huve.wealthApp.model.repository.database.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

@@ -12,10 +12,10 @@ import androidx.work.*
 import dagger.hilt.android.AndroidEntryPoint
 import kr.co.huve.wealthApp.R
 import kr.co.huve.wealthApp.util.TaskManager
-import kr.co.huve.wealthApp.util.data.DataKey
-import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
-import kr.co.huve.wealthApp.util.repository.network.data.DayWeather
-import kr.co.huve.wealthApp.util.repository.network.data.dust.Dust
+import kr.co.huve.wealthApp.model.repository.data.DataKey
+import kr.co.huve.wealthApp.model.repository.data.CovidItem
+import kr.co.huve.wealthApp.model.repository.data.DayWeather
+import kr.co.huve.wealthApp.model.repository.data.dust.Dust
 import kr.co.huve.wealthApp.util.worker.WealthWidgetUpdateWorker
 import timber.log.Timber
 import java.util.concurrent.TimeUnit

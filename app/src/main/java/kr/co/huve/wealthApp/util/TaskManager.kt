@@ -3,7 +3,7 @@ package kr.co.huve.wealthApp.util
 import android.content.Context
 import androidx.work.*
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kr.co.huve.wealthApp.util.data.DataKey
+import kr.co.huve.wealthApp.model.repository.data.DataKey
 import kr.co.huve.wealthApp.util.worker.CovidUpdateCheckWorker
 import kr.co.huve.wealthApp.util.worker.DailyNotificationWorker
 import kr.co.huve.wealthApp.util.worker.MaskCheckWorker

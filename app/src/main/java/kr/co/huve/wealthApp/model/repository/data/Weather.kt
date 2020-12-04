@@ -1,4 +1,4 @@
-package kr.co.huve.wealthApp.util.repository.network.data
+package kr.co.huve.wealthApp.model.repository.data
 
 import android.content.Context
 import com.google.gson.annotations.SerializedName

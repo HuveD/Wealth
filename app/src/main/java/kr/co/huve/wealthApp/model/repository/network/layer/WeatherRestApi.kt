@@ -1,8 +1,8 @@
-package kr.co.huve.wealthApp.util.repository.network.layer
+package kr.co.huve.wealthApp.model.repository.network.layer
 
 import io.reactivex.rxjava3.core.Observable
-import kr.co.huve.wealthApp.util.repository.network.data.SingleWeather
-import kr.co.huve.wealthApp.util.repository.network.data.TotalWeather
+import kr.co.huve.wealthApp.model.repository.data.SingleWeather
+import kr.co.huve.wealthApp.model.repository.data.TotalWeather
 import retrofit2.http.GET
 import retrofit2.http.Query
 

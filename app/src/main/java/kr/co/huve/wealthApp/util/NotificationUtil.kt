@@ -11,7 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kr.co.huve.wealthApp.R
-import kr.co.huve.wealthApp.util.data.NotificationRes
+import kr.co.huve.wealthApp.model.repository.data.NotificationRes
 import kr.co.huve.wealthApp.view.splash.SplashActivity
 import javax.inject.Inject
 import javax.inject.Singleton

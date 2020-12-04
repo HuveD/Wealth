@@ -16,7 +16,7 @@ import kr.co.huve.wealthApp.intent.WealthIntentFactory
 import kr.co.huve.wealthApp.model.wealth.WealthModelStore
 import kr.co.huve.wealthApp.model.wealth.WealthState
 import kr.co.huve.wealthApp.util.WealthLocationManager
-import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
+import kr.co.huve.wealthApp.model.repository.data.CovidItem
 import kr.co.huve.wealthApp.view.EventObservable
 import kr.co.huve.wealthApp.view.StateSubscriber
 import kr.co.huve.wealthApp.view.main.CovidView

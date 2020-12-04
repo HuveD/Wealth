@@ -8,8 +8,8 @@ import androidx.work.rxjava3.RxWorker
 import io.reactivex.rxjava3.core.Single
 import kr.co.huve.wealthApp.util.NotificationUtil
 import kr.co.huve.wealthApp.util.TaskManager
-import kr.co.huve.wealthApp.util.data.DataKey
-import kr.co.huve.wealthApp.util.data.NotificationRes
+import kr.co.huve.wealthApp.model.repository.data.DataKey
+import kr.co.huve.wealthApp.model.repository.data.NotificationRes
 
 class DailyNotificationWorker @WorkerInject constructor(
     @Assisted val appContext: Context,

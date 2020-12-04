@@ -6,10 +6,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
-import kr.co.huve.wealthApp.util.json.CovidItemDeserializer
-import kr.co.huve.wealthApp.util.json.DoubleDeserializer
-import kr.co.huve.wealthApp.util.json.IntDeserializer
-import kr.co.huve.wealthApp.util.repository.network.data.CovidItems
+import kr.co.huve.wealthApp.model.repository.json.CovidItemDeserializer
+import kr.co.huve.wealthApp.model.repository.json.DoubleDeserializer
+import kr.co.huve.wealthApp.model.repository.json.IntDeserializer
+import kr.co.huve.wealthApp.model.repository.data.CovidItems
 import javax.inject.Singleton
 
 

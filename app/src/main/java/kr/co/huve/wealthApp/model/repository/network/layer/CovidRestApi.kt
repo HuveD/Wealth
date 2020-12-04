@@ -1,4 +1,4 @@
-package kr.co.huve.wealthApp.util.repository.network.layer
+package kr.co.huve.wealthApp.model.repository.network.layer
 
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.GET

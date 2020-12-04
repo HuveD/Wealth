@@ -1,9 +1,9 @@
-package kr.co.huve.wealthApp.util.repository.database.dao
+package kr.co.huve.wealthApp.model.repository.database.dao
 
 import androidx.room.*
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Observable
-import kr.co.huve.wealthApp.util.repository.database.entity.Place
+import kr.co.huve.wealthApp.model.repository.database.entity.Place
 
 @Dao
 interface PlaceDao {

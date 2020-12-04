@@ -1,4 +1,4 @@
-package kr.co.huve.wealthApp.util.data
+package kr.co.huve.wealthApp.model.repository.data
 
 import android.annotation.TargetApi
 import android.app.NotificationManager

@@ -1,4 +1,4 @@
-package kr.co.huve.wealthApp.util.json
+package kr.co.huve.wealthApp.model.repository.json
 
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer

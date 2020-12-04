@@ -8,9 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kr.co.huve.wealthApp.R
-import kr.co.huve.wealthApp.util.repository.network.data.DayWeather
-import kr.co.huve.wealthApp.util.repository.network.data.Weather
-import kr.co.huve.wealthApp.util.repository.network.data.WeekWeather
+import kr.co.huve.wealthApp.model.repository.data.DayWeather
+import kr.co.huve.wealthApp.model.repository.data.Weather
+import kr.co.huve.wealthApp.model.repository.data.WeekWeather
 import java.util.*
 import kotlin.math.roundToInt
 

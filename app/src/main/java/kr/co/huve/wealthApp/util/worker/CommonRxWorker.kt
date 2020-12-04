@@ -7,7 +7,7 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import androidx.work.rxjava3.RxWorker
 import kr.co.huve.wealthApp.util.NotificationUtil
-import kr.co.huve.wealthApp.util.data.NotificationRes
+import kr.co.huve.wealthApp.model.repository.data.NotificationRes
 
 abstract class CommonRxWorker(
     appContext: Context,

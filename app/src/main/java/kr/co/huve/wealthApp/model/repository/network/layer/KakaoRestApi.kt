@@ -1,7 +1,7 @@
-package kr.co.huve.wealthApp.util.repository.network.layer
+package kr.co.huve.wealthApp.model.repository.network.layer
 
 import io.reactivex.rxjava3.core.Observable
-import kr.co.huve.wealthApp.util.repository.network.data.dust.TmCoord
+import kr.co.huve.wealthApp.model.repository.data.dust.TmCoord
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query

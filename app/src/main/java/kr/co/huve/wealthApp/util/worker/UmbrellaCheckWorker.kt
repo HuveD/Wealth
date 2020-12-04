@@ -9,11 +9,11 @@ import io.reactivex.rxjava3.core.Single
 import kr.co.huve.wealthApp.R
 import kr.co.huve.wealthApp.util.NotificationUtil
 import kr.co.huve.wealthApp.util.WealthLocationManager
-import kr.co.huve.wealthApp.util.data.DataKey
-import kr.co.huve.wealthApp.util.data.NotificationRes
-import kr.co.huve.wealthApp.util.repository.network.NetworkConfig
-import kr.co.huve.wealthApp.util.repository.network.data.TotalWeather
-import kr.co.huve.wealthApp.util.repository.network.layer.WeatherRestApi
+import kr.co.huve.wealthApp.model.repository.data.DataKey
+import kr.co.huve.wealthApp.model.repository.data.NotificationRes
+import kr.co.huve.wealthApp.model.repository.network.NetworkConfig
+import kr.co.huve.wealthApp.model.repository.data.TotalWeather
+import kr.co.huve.wealthApp.model.repository.network.layer.WeatherRestApi
 import kotlin.math.roundToInt
 
 class UmbrellaCheckWorker @WorkerInject constructor(
