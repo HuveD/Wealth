@@ -73,7 +73,10 @@ class WealthWidgetUpdateWorker @WorkerInject constructor(
                             Result.success()
                         }
                     }
-                }.onErrorReturn { Result.retry() }
+                }.onErrorReturn {
+                    Timber.e("Error occur, retry again")
+                    Result.retry()
+                }
         }.toSingle()
     }
 
@@ -88,7 +91,7 @@ class WealthWidgetUpdateWorker @WorkerInject constructor(
         ).map {
             listOf(it.current)
         }.onErrorReturn {
-            Timber.d(it.toString())
+            Timber.e(it.toString())
             emptyList()
         }
     }
@@ -110,7 +113,7 @@ class WealthWidgetUpdateWorker @WorkerInject constructor(
                 CovidResult::class.java
             ).getItemList()
         }.onErrorReturn {
-            Timber.d(it.toString())
+            Timber.e(it.toString())
             emptyList()
         }
     }
@@ -125,7 +128,7 @@ class WealthWidgetUpdateWorker @WorkerInject constructor(
             version = NetworkConfig.DUST_API_VERSION,
             returnType = "json"
         ).map { it }.onErrorReturn {
-            Timber.d(it.toString())
+            Timber.e(it.toString())
             Dust(emptyList(), RequestInfo(stationName))
         }
     }
