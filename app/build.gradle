@@ -74,6 +74,7 @@ dependencies {
     //endregion OkHttp3
     //region WorkManager
     implementation "androidx.work:work-runtime-ktx:$work_version"
+    implementation "androidx.work:work-multiprocess:$work_version"
     implementation "androidx.work:work-rxjava3:$work_version"
     //endregion WorkManager
     //region Room
