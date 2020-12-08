@@ -1,6 +1,7 @@
 package kr.co.huve.wealthApp
 
 import android.app.Application
+import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
@@ -26,5 +27,8 @@ class WealthApplication : Application(), Configuration.Provider {
     }
 
     override fun getWorkManagerConfiguration(): Configuration =
-        Configuration.Builder().setWorkerFactory(workerFactory).build()
+        Configuration.Builder().apply {
+            if (BuildConfig.DEBUG) setMinimumLoggingLevel(Log.DEBUG)
+            setWorkerFactory(workerFactory)
+        }.build()
 }
