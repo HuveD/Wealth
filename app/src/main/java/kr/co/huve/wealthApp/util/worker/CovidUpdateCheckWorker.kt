@@ -22,6 +22,7 @@ class CovidUpdateCheckWorker @WorkerInject constructor(
     @Assisted val appContext: Context,
     @Assisted val workerParams: WorkerParameters,
     private val notificationUtil: NotificationUtil,
+    private val workManager: WorkManager,
     private val covidApi: CovidRestApi,
     private val gson: Gson
 ) :
@@ -49,8 +50,7 @@ class CovidUpdateCheckWorker @WorkerInject constructor(
                 )
 
                 // Cancel period work
-                WorkManager.getInstance(appContext)
-                    .cancelUniqueWork(DataKey.WORK_COVID_UPDATED.name)
+                workManager.cancelUniqueWork(DataKey.WORK_COVID_UPDATED.name)
             }
             Result.success()
         }.onErrorReturn {
