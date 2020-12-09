@@ -79,8 +79,7 @@ class WealthWidget : AppWidgetProvider() {
         Timber.d("Request widget work (forced:%s)", forcedUpdate)
         if (forcedUpdate) loadingView(context = context, views = views)
         workManager.beginUniqueWork(
-            // Because of the WorkManager bug, Separate worker id to manual update id, and auto-update id.
-            if (forcedUpdate) DataKey.WORK_MANUAL_UPDATE_WIDGET.name else DataKey.WORK_UPDATE_WIDGET.name,
+            DataKey.WORK_UPDATE_WIDGET.name,
             ExistingWorkPolicy.REPLACE,
             OneTimeWorkRequest.Builder(WealthWidgetUpdateWorker::class.java)
                 .setBackoffCriteria(
