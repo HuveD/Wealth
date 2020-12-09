@@ -11,11 +11,13 @@ import kr.co.huve.wealthApp.R
 import kr.co.huve.wealthApp.model.repository.data.DayWeather
 import kr.co.huve.wealthApp.model.repository.data.Weather
 import kr.co.huve.wealthApp.model.repository.data.WeekWeather
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
 class PredictWeatherListAdapter<T : Weather>(var weathers: List<T>) :
     RecyclerView.Adapter<PredictWeatherListAdapter<T>.Holder>() {
+    private val simpleDateString = SimpleDateFormat("EE", Locale.getDefault())
     private val calendar: Calendar = Calendar.getInstance()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -33,13 +35,9 @@ class PredictWeatherListAdapter<T : Weather>(var weathers: List<T>) :
         holder.icon.setImageResource(weather.weatherInfo.first().getWeatherIcon(false))
         holder.temp.apply { text = getTemp(context = context, weather) }
         holder.title.apply { text = getTitle(weather.dt, weather is DayWeather) }
-
-        if (weather is DayWeather) {
-            holder.date.text = getDate(dateTime = weather.dt)
-            holder.date.visibility = View.VISIBLE
-        } else {
-            holder.date.visibility = View.INVISIBLE
-        }
+        holder.date.text = if (weather is DayWeather) {
+            getDate(dateTime = weather.dt)
+        } else getDay(dateTime = weather.dt)
     }
 
     private fun getTitle(dateTime: Long, isHour: Boolean): String {
@@ -55,6 +53,11 @@ class PredictWeatherListAdapter<T : Weather>(var weathers: List<T>) :
     private fun getDate(dateTime: Long): String {
         calendar.time = Date().apply { time = dateTime * 1000L }
         return "${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.DAY_OF_MONTH)}"
+    }
+
+    private fun getDay(dateTime: Long): String {
+        calendar.time = Date().apply { time = dateTime * 1000L }
+        return simpleDateString.format(calendar.time)
     }
 
     private fun getTemp(context: Context, weather: Weather): String {
