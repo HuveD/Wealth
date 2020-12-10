@@ -68,7 +68,7 @@ class WealthWidgetUpdateWorker @WorkerInject constructor(
                                     )
                                     putExtra(DataKey.EXTRA_DUST_DATA.name, dust)
                                     putExtra(DataKey.EXTRA_CITY_NAME.name, city)
-                                    this.action = WealthWidget.InvalidateAction
+                                    this.action = WealthWidget.RefreshAction
                                 })
                             Result.success()
                         }

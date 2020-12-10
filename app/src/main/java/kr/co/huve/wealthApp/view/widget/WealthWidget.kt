@@ -33,7 +33,7 @@ class WealthWidget : AppWidgetProvider() {
 
     companion object {
         const val ManualUpdateAction = "MANUAL_UPDATE_ACTION"
-        const val InvalidateAction = "INVALIDATE_ACTION"
+        const val RefreshAction = "REFRESH_ACTION"
     }
 
     override fun onEnabled(context: Context?) {
@@ -58,12 +58,13 @@ class WealthWidget : AppWidgetProvider() {
     override fun onReceive(context: Context?, intent: Intent?) {
         super.onReceive(context, intent)
         if (context != null && intent != null) {
+            Timber.d("Received: ${intent.action}")
             when (intent.action) {
                 ManualUpdateAction -> {
                     val views = RemoteViews(context.packageName, R.layout.wealth_widget)
                     requestWorks(context = context, views = views, forcedUpdate = true)
                 }
-                InvalidateAction -> {
+                RefreshAction -> {
                     // Apply the manual update
                     val manager = AppWidgetManager.getInstance(context)
                     val component = ComponentName(context, WealthWidget::class.java)
@@ -101,7 +102,7 @@ class WealthWidget : AppWidgetProvider() {
         intent: Intent?
     ) {
         val views = RemoteViews(context.packageName, R.layout.wealth_widget)
-        if (intent?.action == WealthWidget.InvalidateAction) {
+        if (intent?.action == RefreshAction) {
             drawView(context = context, views = views, intent = intent)
         } else {
             requestWorks(context = context, views = views, forcedUpdate = false)
@@ -112,7 +113,7 @@ class WealthWidget : AppWidgetProvider() {
             context,
             WealthWidget::class.java
         ).run {
-            this.action = WealthWidget.ManualUpdateAction
+            this.action = ManualUpdateAction
             PendingIntent.getBroadcast(context, 0, this, PendingIntent.FLAG_UPDATE_CURRENT)
         }
         views.setOnClickPendingIntent(R.id.parent, pendingIntent)
