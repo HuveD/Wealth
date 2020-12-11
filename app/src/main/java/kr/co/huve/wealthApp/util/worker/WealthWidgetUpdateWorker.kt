@@ -87,18 +87,14 @@ class WealthWidgetUpdateWorker @WorkerInject constructor(
                     Timber.e("Error occur, retry again")
                     Result.retry()
                 }.doFinally {
-                    stopForeground()
+                    stopForeground(Intent(appContext, WidgetUpdateService::class.java))
                 }
         }.toSingle()
     }
 
     override fun onStopped() {
         super.onStopped()
-        stopForeground()
-    }
-
-    private fun stopForeground() {
-        appContext.stopService(Intent(appContext, WidgetUpdateService::class.java))
+        stopForeground(Intent(appContext, WidgetUpdateService::class.java))
     }
 
     private fun getWeatherRequest(lastLocation: Location): Maybe<List<DayWeather>> {
