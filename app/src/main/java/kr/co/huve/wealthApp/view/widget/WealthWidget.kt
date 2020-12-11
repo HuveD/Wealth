@@ -66,9 +66,7 @@ class WealthWidget : AppWidgetProvider() {
             when (intent.action) {
                 ManualUpdateAction -> {
                     val views = RemoteViews(context.packageName, R.layout.wealth_widget)
-//                    loadingView(context = context, views = views)
                     requestWorks(context = context, views = views, forcedUpdate = true)
-//                    context.startService(Intent(context, WidgetUpdateService::class.java))
                 }
                 RefreshAction -> {
                     // Apply the manual update
@@ -85,10 +83,6 @@ class WealthWidget : AppWidgetProvider() {
     private fun requestWorks(context: Context, views: RemoteViews, forcedUpdate: Boolean) {
         Timber.d("Request widget work (forced:%s)", forcedUpdate)
         if (forcedUpdate) loadingView(context = context, views = views)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Don't need to foreground under the api 26. This foreground service is used to access user location.
-            context.startForegroundService(Intent(context, WidgetUpdateService::class.java))
-        }
         workManager.beginUniqueWork(
             DataKey.WORK_UPDATE_WIDGET.name,
             ExistingWorkPolicy.REPLACE,
