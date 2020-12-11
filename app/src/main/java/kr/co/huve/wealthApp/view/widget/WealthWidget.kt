@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.view.View
 import android.widget.RemoteViews
 import androidx.work.*
@@ -15,6 +16,7 @@ import kr.co.huve.wealthApp.model.repository.data.CovidItem
 import kr.co.huve.wealthApp.model.repository.data.DataKey
 import kr.co.huve.wealthApp.model.repository.data.DayWeather
 import kr.co.huve.wealthApp.model.repository.data.dust.Dust
+import kr.co.huve.wealthApp.util.NotificationUtil
 import kr.co.huve.wealthApp.util.TaskManager
 import kr.co.huve.wealthApp.util.worker.WealthWidgetUpdateWorker
 import timber.log.Timber
@@ -27,6 +29,9 @@ class WealthWidget : AppWidgetProvider() {
 
     @Inject
     lateinit var taskManager: TaskManager
+
+    @Inject
+    lateinit var notificationUtil: NotificationUtil
 
     @Inject
     lateinit var workManager: WorkManager
@@ -58,11 +63,12 @@ class WealthWidget : AppWidgetProvider() {
     override fun onReceive(context: Context?, intent: Intent?) {
         super.onReceive(context, intent)
         if (context != null && intent != null) {
-            Timber.d("Received: ${intent.action}")
             when (intent.action) {
                 ManualUpdateAction -> {
                     val views = RemoteViews(context.packageName, R.layout.wealth_widget)
+//                    loadingView(context = context, views = views)
                     requestWorks(context = context, views = views, forcedUpdate = true)
+//                    context.startService(Intent(context, WidgetUpdateService::class.java))
                 }
                 RefreshAction -> {
                     // Apply the manual update
@@ -79,6 +85,10 @@ class WealthWidget : AppWidgetProvider() {
     private fun requestWorks(context: Context, views: RemoteViews, forcedUpdate: Boolean) {
         Timber.d("Request widget work (forced:%s)", forcedUpdate)
         if (forcedUpdate) loadingView(context = context, views = views)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Don't need to foreground under the api 26. This foreground service is used to access user location.
+            context.startForegroundService(Intent(context, WidgetUpdateService::class.java))
+        }
         workManager.beginUniqueWork(
             DataKey.WORK_UPDATE_WIDGET.name,
             ExistingWorkPolicy.REPLACE,

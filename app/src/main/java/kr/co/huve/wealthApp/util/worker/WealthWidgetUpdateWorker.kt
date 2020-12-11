@@ -10,7 +10,10 @@ import com.google.gson.Gson
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kr.co.huve.wealthApp.model.repository.data.*
+import kr.co.huve.wealthApp.model.repository.data.CovidItem
+import kr.co.huve.wealthApp.model.repository.data.CovidResult
+import kr.co.huve.wealthApp.model.repository.data.DataKey
+import kr.co.huve.wealthApp.model.repository.data.DayWeather
 import kr.co.huve.wealthApp.model.repository.data.dust.Dust
 import kr.co.huve.wealthApp.model.repository.data.dust.RequestInfo
 import kr.co.huve.wealthApp.model.repository.database.dao.PlaceDao
@@ -21,6 +24,7 @@ import kr.co.huve.wealthApp.model.repository.network.layer.WeatherRestApi
 import kr.co.huve.wealthApp.util.NotificationUtil
 import kr.co.huve.wealthApp.util.WealthLocationManager
 import kr.co.huve.wealthApp.view.widget.WealthWidget
+import kr.co.huve.wealthApp.view.widget.WidgetUpdateService
 import org.json.XML
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -42,7 +46,8 @@ class WealthWidgetUpdateWorker @WorkerInject constructor(
 
     override fun createWork(): Single<Result> {
         Timber.d("Widget worker created")
-        setForegroundAsync(createForegroundInfo(NotificationRes.LocationForeground(context = appContext)))
+        // Because of Re-initial foreground service bug on WorkManager lib, Do it directly as a temporary.
+//        setForegroundAsync(createForegroundInfo(NotificationRes.LocationForeground(context = appContext)))
         return locationManager.getLocation().concatMap { location ->
             val city = locationManager.getDetailCity()
             placeDao.loadNearPlaces(city)
@@ -76,8 +81,19 @@ class WealthWidgetUpdateWorker @WorkerInject constructor(
                 }.onErrorReturn {
                     Timber.e("Error occur, retry again")
                     Result.retry()
+                }.doFinally {
+                    stopForeground()
                 }
         }.toSingle()
+    }
+
+    override fun onStopped() {
+        super.onStopped()
+        stopForeground()
+    }
+
+    private fun stopForeground() {
+        appContext.stopService(Intent(appContext, WidgetUpdateService::class.java))
     }
 
     private fun getWeatherRequest(lastLocation: Location): Maybe<List<DayWeather>> {
