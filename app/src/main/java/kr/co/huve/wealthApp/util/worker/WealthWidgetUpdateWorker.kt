@@ -3,6 +3,7 @@ package kr.co.huve.wealthApp.util.worker
 import android.content.Context
 import android.content.Intent
 import android.location.Location
+import android.os.Build
 import androidx.hilt.Assisted
 import androidx.hilt.work.WorkerInject
 import androidx.work.WorkerParameters
@@ -48,6 +49,10 @@ class WealthWidgetUpdateWorker @WorkerInject constructor(
         Timber.d("Widget worker created")
         // Because of Re-initial foreground service bug on WorkManager lib, Do it directly as a temporary.
 //        setForegroundAsync(createForegroundInfo(NotificationRes.LocationForeground(context = appContext)))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Don't need to foreground under the api 26. This foreground service is used to access user location.
+            appContext.startForegroundService(Intent(appContext, WidgetUpdateService::class.java))
+        }
         return locationManager.getLocation().concatMap { location ->
             val city = locationManager.getDetailCity()
             placeDao.loadNearPlaces(city)
