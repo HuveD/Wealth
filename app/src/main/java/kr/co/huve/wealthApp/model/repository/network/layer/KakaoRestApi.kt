@@ -1,7 +1,8 @@
-package kr.co.huve.wealthApp.util.repository.network.layer
+package kr.co.huve.wealthApp.model.repository.network.layer
 
+import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
-import kr.co.huve.wealthApp.util.repository.network.data.dust.TmCoord
+import kr.co.huve.wealthApp.model.repository.data.dust.TmCoord
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
@@ -13,5 +14,5 @@ interface KakaoRestApi {
         @Query("x") lng: Double,
         @Query("y") lat: Double,
         @Query("output_coord") outputCoordSystem: String
-    ): Observable<TmCoord>
+    ): Maybe<TmCoord>
 }

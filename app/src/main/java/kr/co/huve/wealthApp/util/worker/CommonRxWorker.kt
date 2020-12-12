@@ -1,16 +1,17 @@
 package kr.co.huve.wealthApp.util.worker
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import androidx.work.rxjava3.RxWorker
+import kr.co.huve.wealthApp.model.repository.data.NotificationRes
 import kr.co.huve.wealthApp.util.NotificationUtil
-import kr.co.huve.wealthApp.util.data.NotificationRes
 
 abstract class CommonRxWorker(
-    appContext: Context,
+    private val appContext: Context,
     workerParams: WorkerParameters,
     var notificationUtil: NotificationUtil
 ) : RxWorker(appContext, workerParams) {
@@ -28,5 +29,9 @@ abstract class CommonRxWorker(
                 notificationUtil.makeForegroundNotification(config, true)
             )
         }
+    }
+
+    protected fun stopForeground(intent: Intent) {
+        appContext.stopService(intent)
     }
 }

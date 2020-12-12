@@ -1,4 +1,4 @@
-package kr.co.huve.wealthApp.util.repository.database
+package kr.co.huve.wealthApp.model.repository.database
 
 import android.content.Context
 import androidx.room.Room
@@ -7,7 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kr.co.huve.wealthApp.util.repository.database.dao.PlaceDao
+import kr.co.huve.wealthApp.model.repository.database.dao.PlaceDao
 import javax.inject.Singleton
 
 @InstallIn(ApplicationComponent::class)

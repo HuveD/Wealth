@@ -1,9 +1,10 @@
-package kr.co.huve.wealthApp.util.data
+package kr.co.huve.wealthApp.model.repository.data
 
 import android.annotation.TargetApi
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import androidx.annotation.RequiresApi
 import kr.co.huve.wealthApp.R
 
 
@@ -51,6 +52,7 @@ sealed class NotificationRes : NotificationInfo {
 
         override fun getContent(): String = context.getString(R.string.location_foreground_content)
 
+        @RequiresApi(Build.VERSION_CODES.N)
         override fun getPriority(): Int {
             return NotificationManager.IMPORTANCE_LOW
         }
@@ -121,6 +123,6 @@ private interface NotificationInfo {
     fun getTitle(): String
     fun getContent(): String
 
-    @TargetApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.N)
     fun getPriority(): Int = NotificationManager.IMPORTANCE_DEFAULT
 }

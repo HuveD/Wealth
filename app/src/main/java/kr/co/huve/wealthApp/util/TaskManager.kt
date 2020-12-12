@@ -3,7 +3,7 @@ package kr.co.huve.wealthApp.util
 import android.content.Context
 import androidx.work.*
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kr.co.huve.wealthApp.util.data.DataKey
+import kr.co.huve.wealthApp.model.repository.data.DataKey
 import kr.co.huve.wealthApp.util.worker.CovidUpdateCheckWorker
 import kr.co.huve.wealthApp.util.worker.DailyNotificationWorker
 import kr.co.huve.wealthApp.util.worker.MaskCheckWorker
@@ -15,7 +15,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class TaskManager @Inject constructor(@ApplicationContext val context: Context) {
+class TaskManager @Inject constructor(
+    @ApplicationContext val context: Context,
+    private val workManager: WorkManager
+) {
     fun scheduleMorningAlert() {
         // Set time
         val morningHour = 7
@@ -56,7 +59,7 @@ class TaskManager @Inject constructor(@ApplicationContext val context: Context) 
             .build()
 
         // Scheduled chained task
-        WorkManager.getInstance(context).beginUniqueWork(
+        workManager.beginUniqueWork(
             DataKey.WORK_NOTIFICATION.name,
             ExistingWorkPolicy.REPLACE, listOf(weatherRequest, covidRequest)
         ).then(
@@ -68,7 +71,7 @@ class TaskManager @Inject constructor(@ApplicationContext val context: Context) 
         // Create covid worker
         val config = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
         // Schedule update checker
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+        workManager.enqueueUniquePeriodicWork(
             DataKey.WORK_COVID_UPDATED.name,
             ExistingPeriodicWorkPolicy.KEEP,
             PeriodicWorkRequest

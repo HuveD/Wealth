@@ -1,6 +1,6 @@
 package kr.co.huve.wealthApp.view.main
 
-import kr.co.huve.wealthApp.util.repository.network.data.CovidItem
+import kr.co.huve.wealthApp.model.repository.data.CovidItem
 
 sealed class WealthViewEvent {
     data class PageChanged(val index: Int) : WealthViewEvent()

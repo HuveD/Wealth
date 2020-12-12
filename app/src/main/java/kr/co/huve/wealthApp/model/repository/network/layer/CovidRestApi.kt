@@ -1,5 +1,6 @@
-package kr.co.huve.wealthApp.util.repository.network.layer
+package kr.co.huve.wealthApp.model.repository.network.layer
 
+import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -12,5 +13,5 @@ interface CovidRestApi {
         @Query("numOfRows") numOfRows: Int,
         @Query("startCreateDt") startDate: String,
         @Query("endCreateDt") endDate: String
-    ): Observable<String>
+    ): Maybe<String>
 }

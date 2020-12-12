@@ -14,7 +14,7 @@ import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.FragmentScoped
 import kr.co.huve.wealthApp.R
 import kr.co.huve.wealthApp.util.WealthLocationManager
-import kr.co.huve.wealthApp.util.repository.network.data.TotalWeather
+import kr.co.huve.wealthApp.model.repository.data.TotalWeather
 import kr.co.huve.wealthApp.view.main.adapter.PredictWeatherListAdapter
 import java.util.*
 import javax.inject.Inject

@@ -1,9 +1,9 @@
-package kr.co.huve.wealthApp.util.repository.database
+package kr.co.huve.wealthApp.model.repository.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import kr.co.huve.wealthApp.util.repository.database.dao.PlaceDao
-import kr.co.huve.wealthApp.util.repository.database.entity.Place
+import kr.co.huve.wealthApp.model.repository.database.dao.PlaceDao
+import kr.co.huve.wealthApp.model.repository.database.entity.Place
 
 private const val DATABASE_VERSION = 1
 

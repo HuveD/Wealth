@@ -1,4 +1,4 @@
-package kr.co.huve.wealthApp.util.data
+package kr.co.huve.wealthApp.model.repository.data
 
 enum class DataKey {
     EXTRA_WEATHER_DATA,
