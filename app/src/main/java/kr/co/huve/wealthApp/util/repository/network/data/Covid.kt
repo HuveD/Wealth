@@ -78,4 +78,7 @@ data class CovidItem(
     // 10만명 당 발생 비율
     @SerializedName("qurRate")
     val occurrencePerTenThousand: String,
+    // 표기 오류로 업데이트 되는 경우 업데이트가 발생 (2020-11-30 15:33:54.69)
+    @SerializedName("updateDt")
+    val updateDate: String
 ) : Serializable
