@@ -20,8 +20,8 @@ android {
         applicationId "kr.co.huve.wealthApp"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 8
-        versionName "1.2.1"
+        versionCode 9
+        versionName "1.2.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
