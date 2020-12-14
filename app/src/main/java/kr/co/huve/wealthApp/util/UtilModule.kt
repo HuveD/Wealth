@@ -1,6 +1,8 @@
 package kr.co.huve.wealthApp.util
 
+import android.appwidget.AppWidgetManager
 import android.content.Context
+import android.os.PowerManager
 import androidx.work.WorkManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -35,4 +37,14 @@ object UtilModule {
     fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
         return WorkManager.getInstance(context)
     }
+
+    @Provides
+    @Singleton
+    fun providePowerManager(@ApplicationContext context: Context): PowerManager =
+        context.getSystemService(Context.POWER_SERVICE) as PowerManager
+
+    @Provides
+    @Singleton
+    fun provideWidgetManager(@ApplicationContext context: Context): AppWidgetManager =
+        AppWidgetManager.getInstance(context)
 }

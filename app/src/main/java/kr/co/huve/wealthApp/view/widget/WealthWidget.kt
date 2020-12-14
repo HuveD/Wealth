@@ -6,7 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.os.Build
+import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
 import androidx.work.*
@@ -34,18 +34,17 @@ class WealthWidget : AppWidgetProvider() {
     lateinit var notificationUtil: NotificationUtil
 
     @Inject
-    lateinit var workManager: WorkManager
+    lateinit var widgetManager: AppWidgetManager
 
     companion object {
         const val ManualUpdateAction = "MANUAL_UPDATE_ACTION"
-        const val RefreshAction = "REFRESH_ACTION"
     }
 
     override fun onEnabled(context: Context?) {
         super.onEnabled(context)
         if (context != null) {
             val views = RemoteViews(context.packageName, R.layout.wealth_widget)
-            requestWorks(context = context, views = views, forcedUpdate = true)
+            widgetManager.requestWidgetUpdate(context = context, views = views, forcedUpdate = true)
         }
     }
 
@@ -55,9 +54,7 @@ class WealthWidget : AppWidgetProvider() {
         appWidgetIds: IntArray
     ) {
         // There may be multiple widgets active, so update all of them
-        for (appWidgetId in appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId, null)
-        }
+        widgetManager.updateWidgetUi(context, null, appWidgetIds)
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -66,141 +63,153 @@ class WealthWidget : AppWidgetProvider() {
             when (intent.action) {
                 ManualUpdateAction -> {
                     val views = RemoteViews(context.packageName, R.layout.wealth_widget)
-                    requestWorks(context = context, views = views, forcedUpdate = true)
-                }
-                RefreshAction -> {
-                    // Apply the manual update
-                    val manager = AppWidgetManager.getInstance(context)
-                    val component = ComponentName(context, WealthWidget::class.java)
-                    for (appWidgetId in manager.getAppWidgetIds(component)) {
-                        updateAppWidget(context, manager, appWidgetId, intent)
-                    }
+                    widgetManager.requestWidgetUpdate(
+                        context = context,
+                        views = views,
+                        forcedUpdate = true
+                    )
                 }
             }
         }
     }
+}
 
-    private fun requestWorks(context: Context, views: RemoteViews, forcedUpdate: Boolean) {
-        Timber.d("Request widget work (forced:%s)", forcedUpdate)
-        if (forcedUpdate) loadingView(context = context, views = views)
-        workManager.beginUniqueWork(
-            DataKey.WORK_UPDATE_WIDGET.name,
-            ExistingWorkPolicy.REPLACE,
-            OneTimeWorkRequest.Builder(WealthWidgetUpdateWorker::class.java)
-                .setBackoffCriteria(
-                    BackoffPolicy.LINEAR,
-                    OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
-                    TimeUnit.MILLISECONDS
-                ).setConstraints(
-                    Constraints.Builder()
-                        .setRequiredNetworkType(NetworkType.CONNECTED)
-                        .build()
-                ).build()
-        ).enqueue()
+fun AppWidgetManager.updateWidgetUi(
+    context: Context,
+    data: Bundle?,
+    widgetIds: IntArray = getAppWidgetIds(ComponentName(context, WealthWidget::class.java))
+) {
+    // Apply the manual update
+    for (appWidgetId in widgetIds) {
+        updateAppWidget(context, appWidgetId, data)
+    }
+}
+
+private fun AppWidgetManager.updateAppWidget(
+    context: Context,
+    appWidgetId: Int,
+    bundleData: Bundle?
+) {
+    val views = RemoteViews(context.packageName, R.layout.wealth_widget)
+    if (bundleData != null) {
+        drawView(context = context, views = views, bundleData = bundleData)
+    } else {
+        requestWidgetUpdate(context = context, views = views, forcedUpdate = false)
     }
 
-    private fun updateAppWidget(
-        context: Context,
-        appWidgetManager: AppWidgetManager,
-        appWidgetId: Int,
-        intent: Intent?
-    ) {
-        val views = RemoteViews(context.packageName, R.layout.wealth_widget)
-        if (intent?.action == RefreshAction) {
-            drawView(context = context, views = views, intent = intent)
-        } else {
-            requestWorks(context = context, views = views, forcedUpdate = false)
-        }
-
-        // Request when parent view clicked
-        val pendingIntent: PendingIntent = Intent(
-            context,
-            WealthWidget::class.java
-        ).run {
-            this.action = ManualUpdateAction
-            PendingIntent.getBroadcast(context, 0, this, PendingIntent.FLAG_UPDATE_CURRENT)
-        }
-        views.setOnClickPendingIntent(R.id.parent, pendingIntent)
-
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views)
+    // Request when parent view clicked
+    val pendingIntent: PendingIntent = Intent(
+        context,
+        WealthWidget::class.java
+    ).run {
+        this.action = WealthWidget.ManualUpdateAction
+        PendingIntent.getBroadcast(context, 0, this, PendingIntent.FLAG_UPDATE_CURRENT)
     }
+    views.setOnClickPendingIntent(R.id.parent, pendingIntent)
 
-    private fun loadingView(context: Context, views: RemoteViews) {
-        views.setViewVisibility(R.id.labelContainer, View.GONE)
-        views.setViewVisibility(R.id.weatherIcon, View.GONE)
-        views.setViewVisibility(R.id.city, View.GONE)
-        views.setViewVisibility(R.id.progress, View.VISIBLE)
-        views.setTextViewText(R.id.currentTemp, context.getString(R.string.loading))
+    // Instruct the widget manager to update the widget
+    updateAppWidget(appWidgetId, views)
+}
 
-        // Update
-        val manager = AppWidgetManager.getInstance(context)
-        val component = ComponentName(context, WealthWidget::class.java)
-        for (appWidgetId in manager.getAppWidgetIds(component)) {
-            manager.updateAppWidget(appWidgetId, views)
-        }
+private fun AppWidgetManager.requestWidgetUpdate(
+    context: Context,
+    views: RemoteViews,
+    forcedUpdate: Boolean
+) {
+    Timber.d("Request widget work (forced:%s)", forcedUpdate)
+    val workManager = WorkManager.getInstance(context)
+    if (forcedUpdate) loadingView(context = context, views = views)
+    workManager.beginUniqueWork(
+        DataKey.WORK_UPDATE_WIDGET.name,
+        ExistingWorkPolicy.REPLACE,
+        OneTimeWorkRequest.Builder(WealthWidgetUpdateWorker::class.java)
+            .setBackoffCriteria(
+                BackoffPolicy.LINEAR,
+                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+                TimeUnit.MILLISECONDS
+            ).setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build()
+            ).build()
+    ).enqueue()
+}
+
+private fun AppWidgetManager.loadingView(context: Context, views: RemoteViews) {
+    views.setViewVisibility(R.id.labelContainer, View.GONE)
+    views.setViewVisibility(R.id.weatherIcon, View.GONE)
+    views.setViewVisibility(R.id.city, View.GONE)
+    views.setViewVisibility(R.id.progress, View.VISIBLE)
+    views.setTextViewText(R.id.currentTemp, context.getString(R.string.loading))
+
+    // Update
+    val component = ComponentName(context, WealthWidget::class.java)
+    for (appWidgetId in getAppWidgetIds(component)) {
+        updateAppWidget(appWidgetId, views)
     }
+}
 
-    private fun drawView(context: Context, views: RemoteViews, intent: Intent) {
-        val weather = intent.getSerializableExtra(DataKey.EXTRA_WEATHER_DATA.name) as DayWeather
-        val covid = intent.getSerializableExtra(DataKey.EXTRA_COVID_DATA.name) as CovidItem
-        val dust = (intent.getSerializableExtra(DataKey.EXTRA_DUST_DATA.name) as Dust).items.first()
-        val city = intent.getSerializableExtra(DataKey.EXTRA_CITY_NAME.name) as String
-        views.setViewVisibility(R.id.progress, View.GONE)
+private fun drawView(context: Context, views: RemoteViews, bundleData: Bundle) {
+    val weather = bundleData.getSerializable(DataKey.EXTRA_WEATHER_DATA.name) as DayWeather
+    val covid = bundleData.getSerializable(DataKey.EXTRA_COVID_DATA.name) as CovidItem
+    val dust = (bundleData.getSerializable(DataKey.EXTRA_DUST_DATA.name) as Dust).items.first()
+    val city = bundleData.getSerializable(DataKey.EXTRA_CITY_NAME.name) as String
+    views.setViewVisibility(R.id.progress, View.GONE)
 
+    // Weather
+    views.apply {
         // Weather
-        views.apply {
-            // Weather
-            val icon = weather.weatherInfo.first().getWeatherIcon(isTitle = false)
-            setViewVisibility(R.id.weatherIcon, View.VISIBLE)
-            views.setViewVisibility(R.id.city, View.VISIBLE)
-            setImageViewResource(R.id.weatherIcon, icon)
-            setTextViewText(
-                R.id.city,
-                if (city.isEmpty()) context.getString(R.string.working) else city
+        val icon = weather.weatherInfo.first().getWeatherIcon(isTitle = false)
+        setViewVisibility(R.id.weatherIcon, View.VISIBLE)
+        views.setViewVisibility(R.id.city, View.VISIBLE)
+        setImageViewResource(R.id.weatherIcon, icon)
+        setTextViewText(
+            R.id.city,
+            if (city.isEmpty()) context.getString(R.string.working) else city
+        )
+        setTextViewText(
+            R.id.currentTemp,
+            String.format(
+                context.getString(R.string.temp_with_symbol),
+                weather.temp.roundToInt()
             )
-            setTextViewText(
-                R.id.currentTemp,
-                String.format(
-                    context.getString(R.string.temp_with_symbol),
-                    weather.temp.roundToInt()
-                )
-            )
+        )
 
-            // label container
-            setViewVisibility(R.id.labelContainer, View.VISIBLE)
+        // label container
+        setViewVisibility(R.id.labelContainer, View.VISIBLE)
 
-            // label pm10
-            setTextViewText(
-                R.id.pm10,
-                getDustGrade(context, R.string.widget_pm10_label, dust.pm10Grade1h)
-            )
-            setInt(R.id.pm10, "setBackgroundResource", getDustBackground(dust.pm10Grade1h))
+        // label pm10
+        setTextViewText(
+            R.id.pm10,
+            getDustGrade(context, R.string.widget_pm10_label, dust.pm10Grade1h)
+        )
+        setInt(R.id.pm10, "setBackgroundResource", getDustBackground(dust.pm10Grade1h))
 
-            // label pm 2.5
-            setTextViewText(
-                R.id.pm25,
-                getDustGrade(context, R.string.widget_pm25_label, dust.pm25Grade1h)
-            )
-            setInt(R.id.pm25, "setBackgroundResource", getDustBackground(dust.pm25Grade1h))
+        // label pm 2.5
+        setTextViewText(
+            R.id.pm25,
+            getDustGrade(context, R.string.widget_pm25_label, dust.pm25Grade1h)
+        )
+        setInt(R.id.pm25, "setBackgroundResource", getDustBackground(dust.pm25Grade1h))
 
-            // label covid
-            val increasedCount = covid.increasedCount
-            setTextViewText(
-                R.id.covid,
-                String.format(context.getString(R.string.widget_covid_label), increasedCount)
-            )
-            setInt(
-                R.id.covid, "setBackgroundResource", when {
-                    covid.increasedCount > 300 -> R.drawable.label_red
-                    covid.increasedCount > 0 -> R.drawable.label_orange
-                    else -> R.drawable.label_green
-                }
-            )
-        }
+        // label covid
+        val increasedCount = covid.increasedCount
+        setTextViewText(
+            R.id.covid,
+            String.format(context.getString(R.string.widget_covid_label), increasedCount)
+        )
+        setInt(
+            R.id.covid, "setBackgroundResource", when {
+                covid.increasedCount > 300 -> R.drawable.label_red
+                covid.increasedCount > 0 -> R.drawable.label_orange
+                else -> R.drawable.label_green
+            }
+        )
     }
+}
 
-    private fun getDustGrade(context: Context, labelId: Int, grade: Int) = String.format(
+private fun getDustGrade(context: Context, labelId: Int, grade: Int) =
+    String.format(
         context.getString(
             labelId, when (grade) {
                 1 -> context.getString(R.string.grade_good)
@@ -212,10 +221,9 @@ class WealthWidget : AppWidgetProvider() {
         )
     )
 
-    private fun getDustBackground(grade: Int) = when (grade) {
-        2 -> R.drawable.label_green
-        3 -> R.drawable.label_orange
-        4 -> R.drawable.label_red
-        else -> R.drawable.label_blue
-    }
+private fun getDustBackground(grade: Int) = when (grade) {
+    2 -> R.drawable.label_green
+    3 -> R.drawable.label_orange
+    4 -> R.drawable.label_red
+    else -> R.drawable.label_blue
 }

@@ -15,12 +15,12 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import kr.co.huve.wealthApp.R
 import kr.co.huve.wealthApp.intent.SplashIntentFactory
+import kr.co.huve.wealthApp.model.repository.data.DataKey
+import kr.co.huve.wealthApp.model.repository.data.TotalWeather
 import kr.co.huve.wealthApp.model.splash.SplashModelStore
 import kr.co.huve.wealthApp.model.splash.SplashState
 import kr.co.huve.wealthApp.util.TaskManager
 import kr.co.huve.wealthApp.util.WealthLocationManager
-import kr.co.huve.wealthApp.model.repository.data.DataKey
-import kr.co.huve.wealthApp.model.repository.data.TotalWeather
 import kr.co.huve.wealthApp.view.EventObservable
 import kr.co.huve.wealthApp.view.StateSubscriber
 import kr.co.huve.wealthApp.view.main.WealthActivity

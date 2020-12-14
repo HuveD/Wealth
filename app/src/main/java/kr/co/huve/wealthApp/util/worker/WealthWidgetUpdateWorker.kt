@@ -1,9 +1,11 @@
 package kr.co.huve.wealthApp.util.worker
 
+import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.os.Build
+import android.os.Bundle
 import androidx.hilt.Assisted
 import androidx.hilt.work.WorkerInject
 import androidx.work.WorkerParameters
@@ -24,8 +26,8 @@ import kr.co.huve.wealthApp.model.repository.network.layer.DustRestApi
 import kr.co.huve.wealthApp.model.repository.network.layer.WeatherRestApi
 import kr.co.huve.wealthApp.util.NotificationUtil
 import kr.co.huve.wealthApp.util.WealthLocationManager
-import kr.co.huve.wealthApp.view.widget.WealthWidget
 import kr.co.huve.wealthApp.view.widget.WidgetUpdateService
+import kr.co.huve.wealthApp.view.widget.updateWidgetUi
 import org.json.XML
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -36,6 +38,7 @@ class WealthWidgetUpdateWorker @WorkerInject constructor(
     @Assisted workerParams: WorkerParameters,
     notificationUtil: NotificationUtil,
     private val locationManager: WealthLocationManager,
+    private val widgetManager: AppWidgetManager,
     private val weatherRestApi: WeatherRestApi,
     private val covidRestApi: CovidRestApi,
     private val dustRestApi: DustRestApi,
@@ -69,16 +72,22 @@ class WealthWidgetUpdateWorker @WorkerInject constructor(
                         if (weather.isEmpty() || covid.isEmpty() || dust.items.isEmpty()) {
                             Result.retry()
                         } else {
-                            appContext.sendBroadcast(Intent(appContext, WealthWidget::class.java)
-                                .apply {
-                                    putExtra(DataKey.EXTRA_WEATHER_DATA.name, weather.first())
-                                    putExtra(
-                                        DataKey.EXTRA_COVID_DATA.name,
-                                        covid.first { covid -> covid.regionEng == "Total" }
+                            widgetManager.updateWidgetUi(
+                                context = appContext,
+                                data = Bundle().apply {
+                                    putSerializable(
+                                        DataKey.EXTRA_WEATHER_DATA.name,
+                                        weather.first()
                                     )
-                                    putExtra(DataKey.EXTRA_DUST_DATA.name, dust)
-                                    putExtra(DataKey.EXTRA_CITY_NAME.name, city)
-                                    this.action = WealthWidget.RefreshAction
+                                    putSerializable(
+                                        DataKey.EXTRA_COVID_DATA.name,
+                                        covid.first { covidItem -> covidItem.regionEng == "Total" }
+                                    )
+                                    putSerializable(
+                                        DataKey.EXTRA_DUST_DATA.name,
+                                        dust
+                                    )
+                                    putString(DataKey.EXTRA_CITY_NAME.name, city)
                                 })
                             Result.success()
                         }
