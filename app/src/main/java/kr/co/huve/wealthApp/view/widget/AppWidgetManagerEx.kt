@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.view.View
@@ -82,20 +83,19 @@ private fun AppWidgetManager.updateAppWidget(
 }
 
 private fun AppWidgetManager.loadingView(context: Context, views: RemoteViews) {
-    if (isUpdateDelayed(context)) {
-        //TODO: Write the scenario when the battery save mode was turn on.
-    } else {
-        views.setViewVisibility(R.id.labelContainer, View.GONE)
-        views.setViewVisibility(R.id.weatherIcon, View.GONE)
-        views.setViewVisibility(R.id.city, View.GONE)
-        views.setViewVisibility(R.id.progress, View.VISIBLE)
-        views.setTextViewText(R.id.currentTemp, context.getString(R.string.loading))
+    if (isUpdateDelayed(context) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        context.startForegroundService(Intent(context, WidgetUpdateService::class.java))
+    }
+    views.setViewVisibility(R.id.labelContainer, View.GONE)
+    views.setViewVisibility(R.id.weatherIcon, View.GONE)
+    views.setViewVisibility(R.id.city, View.GONE)
+    views.setViewVisibility(R.id.progress, View.VISIBLE)
+    views.setTextViewText(R.id.currentTemp, context.getString(R.string.loading))
 
-        // Update
-        val component = ComponentName(context, WealthWidget::class.java)
-        for (appWidgetId in getAppWidgetIds(component)) {
-            updateAppWidget(appWidgetId, views)
-        }
+    // Update
+    val component = ComponentName(context, WealthWidget::class.java)
+    for (appWidgetId in getAppWidgetIds(component)) {
+        updateAppWidget(appWidgetId, views)
     }
 }
 
