@@ -67,7 +67,6 @@ class SplashActivity : AppCompatActivity(),
 
     override fun Observable<SplashState>.subscribeToState(): Disposable {
         return subscribe {
-            Timber.d("State Changed: $it")
             when (it) {
                 is SplashState.Idle -> checkPermission()
                 is SplashState.RequestPermission -> {

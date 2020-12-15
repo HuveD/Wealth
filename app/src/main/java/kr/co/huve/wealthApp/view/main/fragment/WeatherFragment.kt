@@ -11,15 +11,14 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import kr.co.huve.wealthApp.intent.WealthIntentFactory
+import kr.co.huve.wealthApp.model.repository.data.DataKey
 import kr.co.huve.wealthApp.model.repository.data.TotalWeather
 import kr.co.huve.wealthApp.model.wealth.WealthModelStore
 import kr.co.huve.wealthApp.model.wealth.WealthState
-import kr.co.huve.wealthApp.model.repository.data.DataKey
 import kr.co.huve.wealthApp.view.EventObservable
 import kr.co.huve.wealthApp.view.StateSubscriber
 import kr.co.huve.wealthApp.view.main.WealthViewEvent
 import kr.co.huve.wealthApp.view.main.WeatherView
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -75,7 +74,6 @@ class WeatherFragment : Fragment(), EventObservable<WealthViewEvent>, StateSubsc
 
     override fun Observable<WealthState>.subscribeToState(): Disposable {
         return subscribe {
-            Timber.d("State Changed: $it")
             when (it) {
                 WealthState.InvalidateStone -> weatherView.invalidateCurrentStone()
                 is WealthState.WeatherTabChanged -> {

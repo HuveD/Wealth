@@ -13,16 +13,15 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
 import kr.co.huve.wealthApp.R
 import kr.co.huve.wealthApp.intent.WealthIntentFactory
+import kr.co.huve.wealthApp.model.repository.data.CovidItem
 import kr.co.huve.wealthApp.model.wealth.WealthModelStore
 import kr.co.huve.wealthApp.model.wealth.WealthState
 import kr.co.huve.wealthApp.util.WealthLocationManager
-import kr.co.huve.wealthApp.model.repository.data.CovidItem
 import kr.co.huve.wealthApp.view.EventObservable
 import kr.co.huve.wealthApp.view.StateSubscriber
 import kr.co.huve.wealthApp.view.main.CovidView
 import kr.co.huve.wealthApp.view.main.WealthViewEvent
 import kr.co.huve.wealthApp.view.main.adapter.WealthPagerAdapter
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -67,7 +66,6 @@ class CovidFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<
     }
 
     override fun Observable<WealthState>.subscribeToState(): Disposable = subscribe {
-        Timber.d("State Changed: $it")
         when (it) {
             is WealthState.FragmentSelected -> {
                 if (it.position == WealthPagerAdapter.Type.Covid.ordinal) requestCovidData()

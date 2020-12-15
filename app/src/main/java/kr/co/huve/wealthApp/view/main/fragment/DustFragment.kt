@@ -21,7 +21,6 @@ import kr.co.huve.wealthApp.view.StateSubscriber
 import kr.co.huve.wealthApp.view.main.DustView
 import kr.co.huve.wealthApp.view.main.WealthViewEvent
 import kr.co.huve.wealthApp.view.main.adapter.WealthPagerAdapter
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -61,7 +60,6 @@ class DustFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<W
     }
 
     override fun Observable<WealthState>.subscribeToState(): Disposable = subscribe {
-        Timber.d("State Changed: $it")
         when (it) {
             is WealthState.FragmentSelected -> {
                 if (it.position == WealthPagerAdapter.Type.Dust.ordinal) requestDust()

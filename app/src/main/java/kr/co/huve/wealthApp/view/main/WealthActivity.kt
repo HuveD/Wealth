@@ -18,7 +18,6 @@ import kr.co.huve.wealthApp.util.DepthPageTransformer
 import kr.co.huve.wealthApp.view.EventObservable
 import kr.co.huve.wealthApp.view.StateSubscriber
 import kr.co.huve.wealthApp.view.main.adapter.WealthPagerAdapter
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -66,7 +65,6 @@ class WealthActivity : FragmentActivity(), StateSubscriber<WealthState>,
 
     override fun Observable<WealthState>.subscribeToState(): Disposable {
         return subscribe {
-            Timber.d("State Changed: $it")
             when (it) {
                 WealthState.IDLE -> initializePager()
                 is WealthState.FragmentSelected -> invalidateIndicator(it.position)
