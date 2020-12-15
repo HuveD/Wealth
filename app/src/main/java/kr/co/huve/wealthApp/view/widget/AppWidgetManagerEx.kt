@@ -138,14 +138,14 @@ private fun drawView(context: Context, views: RemoteViews, bundleData: Bundle) {
             R.id.pm10,
             getDustGrade(context, R.string.widget_pm10_label, dust.pm10Grade1h)
         )
-        setInt(R.id.pm10, "setBackgroundResource", getDustBackground(dust.pm10Grade1h))
+        setBackgroundResource(R.id.pm10, getDustBackground(dust.pm10Grade1h))
 
         // label pm 2.5
         setTextViewText(
             R.id.pm25,
             getDustGrade(context, R.string.widget_pm25_label, dust.pm25Grade1h)
         )
-        setInt(R.id.pm25, "setBackgroundResource", getDustBackground(dust.pm25Grade1h))
+        setBackgroundResource(R.id.pm25, getDustBackground(dust.pm25Grade1h))
 
         // label covid
         val increasedCount = covid.increasedCount
@@ -153,14 +153,25 @@ private fun drawView(context: Context, views: RemoteViews, bundleData: Bundle) {
             R.id.covid,
             String.format(context.getString(R.string.widget_covid_label), increasedCount)
         )
-        setInt(
-            R.id.covid, "setBackgroundResource", when {
+        setBackgroundResource(
+            R.id.covid, when {
+                covid.increasedCount > 300 -> R.drawable.label_red
+                covid.increasedCount > 0 -> R.drawable.label_orange
+                else -> R.drawable.label_green
+            }
+        )
+        setBackgroundResource(
+            R.id.covid, when {
                 covid.increasedCount > 300 -> R.drawable.label_red
                 covid.increasedCount > 0 -> R.drawable.label_orange
                 else -> R.drawable.label_green
             }
         )
     }
+}
+
+fun RemoteViews.setBackgroundResource(viewId: Int, res: Int) {
+    setInt(viewId, "setBackgroundResource", res)
 }
 
 private fun getDustGrade(context: Context, labelId: Int, grade: Int) =
