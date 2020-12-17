@@ -16,7 +16,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        android:theme="@style/AppTheme">
 
         <activity
             android:name=".view.splash.SplashActivity"
@@ -34,7 +34,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".view.ChartTestActivity"
+            android:name=".view.TestActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
