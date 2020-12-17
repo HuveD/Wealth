@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.components.XAxis.XAxisPosition
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -99,6 +100,7 @@ class TestActivity : AppCompatActivity() {
             xAxis.setDrawGridLines(false)
             xAxis.textColor = ContextCompat.getColor(context, R.color.iconic_white)
             xAxis.textSize = 15f
+            xAxis.position = XAxisPosition.TOP_INSIDE
 
             description = Description().apply {
                 text = "Week Weather"
