@@ -1,7 +1,6 @@
 package kr.co.huve.wealthApp.view.main
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.jakewharton.rxrelay3.PublishRelay
@@ -38,7 +37,6 @@ class WealthActivity : FragmentActivity(), StateSubscriber<WealthState>,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.black)
         setContentView(R.layout.activity_wealth)
     }
 

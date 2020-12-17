@@ -7,12 +7,12 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.jakewharton.rxrelay3.PublishRelay
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
+import kr.co.huve.wealthApp.BuildConfig
 import kr.co.huve.wealthApp.R
 import kr.co.huve.wealthApp.intent.SplashIntentFactory
 import kr.co.huve.wealthApp.model.repository.data.DataKey
@@ -23,6 +23,7 @@ import kr.co.huve.wealthApp.util.TaskManager
 import kr.co.huve.wealthApp.util.WealthLocationManager
 import kr.co.huve.wealthApp.view.EventObservable
 import kr.co.huve.wealthApp.view.StateSubscriber
+import kr.co.huve.wealthApp.view.TestActivity
 import kr.co.huve.wealthApp.view.main.WealthActivity
 import timber.log.Timber
 import javax.inject.Inject
@@ -48,7 +49,6 @@ class SplashActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.black)
         setContentView(R.layout.activity_splash)
     }
 
@@ -124,15 +124,23 @@ class SplashActivity : AppCompatActivity(),
     }
 
     private fun startWealth(singleWeather: TotalWeather) {
-        // 로딩 완료
-        if (!locationManager.isAvailableGps())
-            Toast.makeText(this, getString(R.string.turn_on_gps), Toast.LENGTH_SHORT).show()
+        if (BuildConfig.DEBUG and BuildConfig.TEST_ACTIVITY) {
+            // Start test activity
+            startActivity(Intent(this@SplashActivity, TestActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                putExtra(DataKey.EXTRA_WEATHER_DATA.name, singleWeather)
+            })
+        } else {
+            // 로딩 완료
+            if (!locationManager.isAvailableGps())
+                Toast.makeText(this, getString(R.string.turn_on_gps), Toast.LENGTH_SHORT).show()
 
-        // Start wealth activity
-        startActivity(Intent(this@SplashActivity, WealthActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            putExtra(DataKey.EXTRA_WEATHER_DATA.name, singleWeather)
-        })
+            // Start wealth activity
+            startActivity(Intent(this@SplashActivity, WealthActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                putExtra(DataKey.EXTRA_WEATHER_DATA.name, singleWeather)
+            })
+        }
     }
 
     private fun errorOccurred() {

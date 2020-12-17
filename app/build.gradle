@@ -23,6 +23,10 @@ android {
         versionCode 9
         versionName "1.2.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        //region project config variable
+        buildConfigField "boolean", "TEST_ACTIVITY", "false"
+        //endregion project config variable
     }
 
     compileOptions {
