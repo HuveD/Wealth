@@ -50,7 +50,7 @@ class CovidFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return covidView.view
     }
 

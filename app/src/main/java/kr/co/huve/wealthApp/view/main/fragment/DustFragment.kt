@@ -11,6 +11,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
+import kotlinx.android.synthetic.main.fragment_dust.*
 import kr.co.huve.wealthApp.R
 import kr.co.huve.wealthApp.intent.WealthIntentFactory
 import kr.co.huve.wealthApp.model.wealth.WealthModelStore
@@ -44,7 +45,7 @@ class DustFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<W
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return dustView.view
     }
 
