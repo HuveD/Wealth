@@ -142,6 +142,10 @@ class TestActivity : AppCompatActivity() {
                 setCircleColor(ContextCompat.getColor(baseContext, R.color.iconic_white))
                 circleHoleColor = ContextCompat.getColor(baseContext, R.color.iconic_dark)
                 valueTextColor = ContextCompat.getColor(baseContext, R.color.iconic_white)
+
+                setDrawFilled(true)
+                fillColor = ContextCompat.getColor(baseContext, R.color.white)
+                fillAlpha = 100
             })
         }
     }
