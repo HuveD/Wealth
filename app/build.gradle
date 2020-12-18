@@ -25,7 +25,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         //region project config variable
-        buildConfigField "boolean", "TEST_ACTIVITY", "false"
+        buildConfigField "boolean", "TEST_ACTIVITY", "false" // true: Test Activity, false: Wealth Activity
         //endregion project config variable
     }
 

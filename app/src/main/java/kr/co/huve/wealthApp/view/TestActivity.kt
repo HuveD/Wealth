@@ -39,8 +39,6 @@ class TestActivity : AppCompatActivity() {
     }
 
     private fun initializeChart(totalWeather: TotalWeather) {
-
-
         var dataSet = ArrayList<ILineDataSet>()
         var currentEntry = ArrayList<Entry>()
         var minEntry = ArrayList<Entry>()
