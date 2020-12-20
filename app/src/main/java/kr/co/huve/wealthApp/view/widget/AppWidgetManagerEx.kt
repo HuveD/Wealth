@@ -83,7 +83,7 @@ private fun AppWidgetManager.updateAppWidget(
 }
 
 private fun AppWidgetManager.loadingView(context: Context, views: RemoteViews) {
-    if (isUpdateDelayed(context) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    if (isBackgroundTaskDelayed(context) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         context.startForegroundService(Intent(context, WidgetUpdateService::class.java))
     }
     views.setViewVisibility(R.id.labelContainer, View.GONE)
@@ -99,9 +99,13 @@ private fun AppWidgetManager.loadingView(context: Context, views: RemoteViews) {
     }
 }
 
-private fun isUpdateDelayed(context: Context): Boolean {
+private fun isBackgroundTaskDelayed(context: Context): Boolean {
     val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-    return powerManager.isPowerSaveMode
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        powerManager.isPowerSaveMode or powerManager.isDeviceIdleMode
+    } else {
+        powerManager.isPowerSaveMode
+    }
 }
 
 private fun drawView(context: Context, views: RemoteViews, bundleData: Bundle) {
