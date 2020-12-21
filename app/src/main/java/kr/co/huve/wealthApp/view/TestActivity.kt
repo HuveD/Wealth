@@ -1,6 +1,7 @@
 package kr.co.huve.wealthApp.view
 
 import android.os.Bundle
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -14,6 +15,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import kotlinx.android.synthetic.main.chart_test_activty.*
 import kr.co.huve.wealthApp.R
 import kr.co.huve.wealthApp.model.repository.data.DataKey
+import kr.co.huve.wealthApp.model.repository.data.DayWeather
 import kr.co.huve.wealthApp.model.repository.data.TotalWeather
 import kr.co.huve.wealthApp.model.repository.data.WeekWeather
 import kr.co.huve.wealthApp.util.notNull
@@ -22,6 +24,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.math.floor
 
 private const val DEFAULT_LINE_WITH = 2.5f
 private const val DEFAULT_TEXT_SIZE = 15f
@@ -34,14 +37,37 @@ class TestActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.chart_test_activty)
 
+
         intent.getSerializableExtra(DataKey.EXTRA_WEATHER_DATA.name).notNull {
-            initializeChart(CharType.DAY_TEMP, this as TotalWeather)
+            buttonContainer.apply {
+                // 주간 날씨
+                addView(Button(context).apply {
+                    text = CharType.WEEK_TEMP.name
+                    setOnClickListener {
+                        initializeLineChart(CharType.WEEK_TEMP, this@notNull as TotalWeather)
+                    }
+                })
+                // 일간 날씨
+                addView(Button(context).apply {
+                    text = CharType.DAY_TEMP.name
+                    setOnClickListener {
+                        initializeLineChart(CharType.DAY_TEMP, this@notNull as TotalWeather)
+                    }
+                })
+                // 체감 날씨
+                addView(Button(context).apply {
+                    text = CharType.FEEL_TEMP.name
+                    setOnClickListener {
+                        initializeLineChart(CharType.FEEL_TEMP, this@notNull as TotalWeather)
+                    }
+                })
+            }
         }.whenNull {
             Toast.makeText(this, "no data", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun initializeChart(type: CharType, totalWeather: TotalWeather) {
+    private fun initializeLineChart(type: CharType, totalWeather: TotalWeather) {
         if (axisHash.size > 0) axisHash.clear()
         chart.apply {
             legend.textSize = DEFAULT_TEXT_SIZE
@@ -58,18 +84,19 @@ class TestActivity : AppCompatActivity() {
             xAxis.textSize = DEFAULT_TEXT_SIZE
             xAxis.position = XAxisPosition.TOP_INSIDE
 
-            setTouchEnabled(false)
+            setTouchEnabled(true)
             data = LineData(
                 when (type) {
                     CharType.WEEK_TEMP -> applyWeekTemp(totalWeather)
                     CharType.DAY_TEMP -> applyDailyTemperatureRange(totalWeather)
-                    else -> applyWeekTemp(totalWeather)
+                    else -> applyFeelsTemp(totalWeather)
                 }
             )
             isAutoScaleMinMaxEnabled = true
             background = ContextCompat.getDrawable(baseContext, R.drawable.bg_good)
             description.isEnabled = false
-            setScaleEnabled(false)
+            isScaleYEnabled = false
+            isDragEnabled = true
             invalidate()
         }
     }
@@ -123,7 +150,7 @@ class TestActivity : AppCompatActivity() {
     }
 
     private fun applyDailyTemperatureRange(totalWeather: TotalWeather): ArrayList<ILineDataSet> {
-        var rangeEntry = ArrayList<Entry>()
+        val rangeEntry = ArrayList<Entry>()
         for (weather: WeekWeather in totalWeather.daily) {
             val position = (rangeEntry.size).toFloat()
             val date = weather.dt * 1000
@@ -149,14 +176,58 @@ class TestActivity : AppCompatActivity() {
             })
         }
     }
+
+    private fun applyFeelsTemp(totalWeather: TotalWeather): ArrayList<ILineDataSet> {
+        var currentEntry = ArrayList<Entry>()
+        val feelsEntry = ArrayList<Entry>()
+        for (weather: DayWeather in totalWeather.hourly) {
+            val position = (feelsEntry.size).toFloat()
+            val date = weather.dt * 1000
+            currentEntry.add(Entry(position, weather.temp))
+            feelsEntry.add(Entry(position, weather.feelsLike))
+            axisHash[position] = date
+        }
+
+        return ArrayList<ILineDataSet>().apply {
+            add(LineDataSet(feelsEntry, "체감 온도").apply {
+                mode = LineDataSet.Mode.CUBIC_BEZIER
+                circleRadius = DEFAULT_CIRCLE_RADIUS
+                lineWidth = DEFAULT_LINE_WITH
+                valueTextSize = DEFAULT_TEXT_SIZE
+                cubicIntensity = DEFAULT_CUBIC_INTENSITY
+                color = ContextCompat.getColor(baseContext, R.color.iconic_red)
+                setCircleColor(ContextCompat.getColor(baseContext, R.color.iconic_red))
+                valueTextColor = ContextCompat.getColor(baseContext, R.color.iconic_white)
+            })
+            add(LineDataSet(currentEntry, "평균 기온").apply {
+                mode = LineDataSet.Mode.CUBIC_BEZIER
+                circleRadius = DEFAULT_CIRCLE_RADIUS
+                lineWidth = DEFAULT_LINE_WITH
+                valueTextSize = DEFAULT_TEXT_SIZE
+                cubicIntensity = DEFAULT_CUBIC_INTENSITY
+                color = ContextCompat.getColor(baseContext, R.color.iconic_white)
+                setCircleColor(ContextCompat.getColor(baseContext, R.color.iconic_white))
+                circleHoleColor = ContextCompat.getColor(baseContext, R.color.iconic_dark)
+                valueTextColor = ContextCompat.getColor(baseContext, R.color.iconic_white)
+            })
+        }
+    }
 }
 
 class DayValueFormatter(hashMap: HashMap<Float, Long>) : ValueFormatter() {
     val data: HashMap<Float, Long> = hashMap
-    private val simpleDate = lazy { SimpleDateFormat("E", Locale.getDefault()) }
+    private val dayFormat = lazy { SimpleDateFormat("E", Locale.getDefault()) }
+    private val timeFormat = lazy { SimpleDateFormat("(E) HH", Locale.getDefault()) }
     override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-        data[value].notNull {
-            return simpleDate.value.format(Date(this))
+        val timeStamp = data[floor(value)]
+        timeStamp.notNull {
+//            val step = 1 / Companion.SECTION_COUNT
+//            return timeFormat.value.format(calendar.run {
+//                time.time = this@notNull
+//                set(Calendar.HOUR_OF_DAY, round(value / step).toInt())
+//                this.time
+//            })
+            return dayFormat.value.format(Date(this))
         }
         return super.getAxisLabel(value, axis)
     }
@@ -164,5 +235,6 @@ class DayValueFormatter(hashMap: HashMap<Float, Long>) : ValueFormatter() {
 
 private enum class CharType {
     WEEK_TEMP,
-    DAY_TEMP
+    DAY_TEMP,
+    FEEL_TEMP;
 }
