@@ -12,6 +12,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.disposables.Disposable
+import kotlinx.android.synthetic.main.activity_splash.*
 import kr.co.huve.wealthApp.BuildConfig
 import kr.co.huve.wealthApp.R
 import kr.co.huve.wealthApp.intent.SplashIntentFactory
@@ -50,6 +51,12 @@ class SplashActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+
+        if (BuildConfig.TEST_ACTIVITY && BuildConfig.DEBUG) {
+            txt_logo.setOnClickListener {
+                it.isActivated = true
+            }
+        }
     }
 
     override fun onResume() {
@@ -124,7 +131,7 @@ class SplashActivity : AppCompatActivity(),
     }
 
     private fun startWealth(singleWeather: TotalWeather) {
-        if (BuildConfig.DEBUG and BuildConfig.TEST_ACTIVITY) {
+        if (BuildConfig.DEBUG and BuildConfig.TEST_ACTIVITY and txt_logo.isActivated) {
             // Start test activity
             startActivity(Intent(this@SplashActivity, TestActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
