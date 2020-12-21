@@ -145,7 +145,7 @@ abstract class Weather {
     abstract val windDeg: Int
 
     // 강수 확률
-    protected abstract val pop: Float?
+    abstract val pop: Float?
     abstract val weatherInfo: List<WeatherInfo>
     abstract fun getTimeFromSunTime(time: Long?): String
     abstract fun getProbabilityPrecipitation(): Int
