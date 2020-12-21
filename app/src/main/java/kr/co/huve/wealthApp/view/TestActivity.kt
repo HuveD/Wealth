@@ -248,8 +248,8 @@ class TestActivity : AppCompatActivity() {
                 lineWidth = DEFAULT_LINE_WITH
                 valueTextSize = DEFAULT_TEXT_SIZE
                 cubicIntensity = DEFAULT_CUBIC_INTENSITY
-                color = ContextCompat.getColor(baseContext, R.color.iconic_dark)
-                setCircleColor(ContextCompat.getColor(baseContext, R.color.iconic_dark))
+                color = ContextCompat.getColor(baseContext, R.color.iconic_little_warn)
+                setCircleColor(ContextCompat.getColor(baseContext, R.color.iconic_little_warn))
                 circleHoleColor = ContextCompat.getColor(baseContext, R.color.iconic_white)
                 valueTextColor = ContextCompat.getColor(baseContext, R.color.iconic_dark)
             })
