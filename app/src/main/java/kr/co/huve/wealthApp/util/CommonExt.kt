@@ -3,10 +3,30 @@ package kr.co.huve.wealthApp.util
 import android.content.Context
 
 
+fun <R> R?.isNotNull(): Boolean {
+    return this != null
+}
+
+fun <R> R?.isNull(): Boolean {
+    return this == null
+}
+
 inline fun <R> R?.notNull(body: R.() -> Unit) {
     if (this != null) {
         body()
     }
+}
+
+inline fun <reified R> notNulls(vararg arg: R?, body: (arg: Array<out R>) -> Unit) {
+    val nonNullArg: Array<R> = Array(arg.size) {
+        val params = arg[it]
+        if (params.isNotNull()) {
+            params!!
+        } else {
+            return
+        }
+    }
+    body(nonNullArg)
 }
 
 inline fun <R> R?.whenNull(body: () -> Unit) {

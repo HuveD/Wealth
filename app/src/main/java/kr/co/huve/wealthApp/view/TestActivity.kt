@@ -19,6 +19,7 @@ import kr.co.huve.wealthApp.model.repository.data.DayWeather
 import kr.co.huve.wealthApp.model.repository.data.TotalWeather
 import kr.co.huve.wealthApp.model.repository.data.WeekWeather
 import kr.co.huve.wealthApp.util.notNull
+import kr.co.huve.wealthApp.util.notNulls
 import kr.co.huve.wealthApp.util.whenNull
 import java.text.SimpleDateFormat
 import java.util.*
@@ -70,6 +71,13 @@ class TestActivity : AppCompatActivity() {
     private fun initializeLineChart(type: CharType, totalWeather: TotalWeather) {
         if (axisHash.size > 0) axisHash.clear()
         chart.apply {
+            data = LineData(
+                when (type) {
+                    CharType.WEEK_TEMP -> applyWeekTemp(totalWeather)
+                    CharType.DAY_TEMP -> applyDailyTemperatureRange(totalWeather)
+                    else -> applyFeelsTemp(totalWeather)
+                }
+            )
             legend.textSize = DEFAULT_TEXT_SIZE
             legend.xEntrySpace = 8f
             legend.textColor = ContextCompat.getColor(context, R.color.iconic_white)
@@ -83,20 +91,13 @@ class TestActivity : AppCompatActivity() {
             xAxis.textColor = ContextCompat.getColor(context, R.color.iconic_white)
             xAxis.textSize = DEFAULT_TEXT_SIZE
             xAxis.position = XAxisPosition.TOP_INSIDE
-
+            setScaleEnabled(false)
             setTouchEnabled(true)
-            data = LineData(
-                when (type) {
-                    CharType.WEEK_TEMP -> applyWeekTemp(totalWeather)
-                    CharType.DAY_TEMP -> applyDailyTemperatureRange(totalWeather)
-                    else -> applyFeelsTemp(totalWeather)
-                }
-            )
+
             isAutoScaleMinMaxEnabled = true
             background = ContextCompat.getDrawable(baseContext, R.drawable.bg_good)
             description.isEnabled = false
             isScaleYEnabled = false
-            isDragEnabled = true
             invalidate()
         }
     }
@@ -106,7 +107,7 @@ class TestActivity : AppCompatActivity() {
         var minEntry = ArrayList<Entry>()
         var maxEntry = ArrayList<Entry>()
         for (weather: WeekWeather in totalWeather.daily) {
-            val position = (currentEntry.size + 1).toFloat()
+            val position = (currentEntry.size).toFloat()
             val date = weather.dt * 1000
             currentEntry.add(Entry(position, weather.temp.day))
             minEntry.add(Entry(position, weather.temp.min))
@@ -216,18 +217,28 @@ class TestActivity : AppCompatActivity() {
 
 class DayValueFormatter(hashMap: HashMap<Float, Long>) : ValueFormatter() {
     val data: HashMap<Float, Long> = hashMap
+    val calendar = Calendar.getInstance(Locale.getDefault())
     private val dayFormat = lazy { SimpleDateFormat("E", Locale.getDefault()) }
-    private val timeFormat = lazy { SimpleDateFormat("(E) HH", Locale.getDefault()) }
+    private val timeFormat = lazy { SimpleDateFormat("HH'h'", Locale.getDefault()) }
+    private var sectionInterval = 0
     override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+        if (data.size > 1 && sectionInterval == 0) {
+            notNulls(data[0f], data[1f]) {
+                val firstDateTime = it[0]
+                val nextDate = it[1]
+                sectionInterval = (nextDate - firstDateTime).toInt()
+            }
+        }
         val timeStamp = data[floor(value)]
         timeStamp.notNull {
-//            val step = 1 / Companion.SECTION_COUNT
-//            return timeFormat.value.format(calendar.run {
-//                time.time = this@notNull
-//                set(Calendar.HOUR_OF_DAY, round(value / step).toInt())
-//                this.time
-//            })
-            return dayFormat.value.format(Date(this))
+            val additionalTimestamp = (sectionInterval * (value - floor(value))).toLong()
+            val dateTimeResult = this + additionalTimestamp
+            calendar.timeInMillis = dateTimeResult
+            return if (calendar.get(Calendar.HOUR) == 0) {
+                dayFormat.value.format(calendar.time)
+            } else {
+                timeFormat.value.format(calendar.time)
+            }
         }
         return super.getAxisLabel(value, axis)
     }
