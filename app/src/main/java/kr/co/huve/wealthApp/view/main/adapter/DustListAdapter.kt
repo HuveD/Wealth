@@ -75,7 +75,8 @@ class DustListAdapter(private val dustItem: DustItem) :
                 1 -> R.string.grade_good
                 2 -> R.string.grade_normal
                 3 -> R.string.grade_bad
-                else -> R.string.grade_too_bad
+                4 -> R.string.grade_too_bad
+                else -> R.string.working
             }
         }
 
