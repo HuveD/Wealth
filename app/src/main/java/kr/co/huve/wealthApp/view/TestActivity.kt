@@ -1,29 +1,34 @@
 package kr.co.huve.wealthApp.view
 
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis.XAxisPosition
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.github.mikephil.charting.utils.MPPointF
+import com.google.gson.Gson
+import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.chart_test_activty.*
 import kr.co.huve.wealthApp.R
-import kr.co.huve.wealthApp.model.repository.data.DataKey
-import kr.co.huve.wealthApp.model.repository.data.DayWeather
-import kr.co.huve.wealthApp.model.repository.data.TotalWeather
-import kr.co.huve.wealthApp.model.repository.data.WeekWeather
+import kr.co.huve.wealthApp.model.repository.data.*
+import kr.co.huve.wealthApp.model.repository.network.NetworkConfig
+import kr.co.huve.wealthApp.model.repository.network.layer.CovidRestApi
+import kr.co.huve.wealthApp.util.isNotNull
 import kr.co.huve.wealthApp.util.notNull
-import kr.co.huve.wealthApp.util.notNulls
-import kr.co.huve.wealthApp.util.whenNull
+import org.json.XML
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.math.floor
@@ -33,30 +38,58 @@ private const val DEFAULT_TEXT_SIZE = 13f
 private const val DEFAULT_CIRCLE_RADIUS = 4f
 private const val DEFAULT_CUBIC_INTENSITY = 0.15f
 
+@AndroidEntryPoint
 class TestActivity : AppCompatActivity() {
+    @Inject
+    lateinit var covidApi: CovidRestApi
+
+    @Inject
+    lateinit var gson: Gson
+
+    private val format = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+    private val calendar = Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, -1) }
     private val axisHash = HashMap<Float, Long>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.chart_test_activty)
-        intent.getSerializableExtra(DataKey.EXTRA_WEATHER_DATA.name).notNull {
-            buttonContainer.apply {
-                for (type: CharType in CharType.values()) {
-                    addView(Button(context).apply {
-                        setOnClickListener {
-                            initializeLineChart(type, this@notNull as TotalWeather)
-                        }
-                        text = type.name
-                    })
+
+        val weatherData = intent.getSerializableExtra(DataKey.EXTRA_WEATHER_DATA.name)
+        covidApi.getCovidStatus(
+            NetworkConfig.COVID_KEY,
+            1,
+            20,
+            format.format(calendar.time),
+            format.format(calendar.time)
+        ).observeOn(AndroidSchedulers.mainThread()).subscribe {
+            val result = gson.fromJson(XML.toJSONObject(it).toString(), CovidResult::class.java)
+            if (weatherData.isNotNull() and result.isNotNull()) {
+                buttonContainer.apply {
+                    for (type: LineType in LineType.values()) {
+                        addView(Button(context).apply {
+                            setOnClickListener {
+                                initializeLineChart(type, weatherData as TotalWeather)
+                            }
+                            text = type.name
+                        })
+                    }
+                    for (type: PieType in PieType.values()) {
+                        addView(Button(context).apply {
+                            setOnClickListener {
+                                initializePieChart(type, result.getItemList())
+                            }
+                            text = type.name
+                        })
+                    }
                 }
             }
-        }.whenNull {
-            Toast.makeText(this, "no data", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun initializeLineChart(type: CharType, totalWeather: TotalWeather) {
+    private fun initializeLineChart(type: LineType, totalWeather: TotalWeather) {
         if (axisHash.size > 0) axisHash.clear()
-        chart.apply {
+        pieChart.visibility = View.GONE
+        lineChart.visibility = View.VISIBLE
+        lineChart.apply {
             legend.apply {
                 verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
                 horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
@@ -68,7 +101,7 @@ class TestActivity : AppCompatActivity() {
             }
             xAxis.apply {
                 valueFormatter = when (type) {
-                    CharType.FEEL_TEMP, CharType.DAY_TEMP, CharType.WEEK_TEMP, CharType.WEATHER_DETAIL -> {
+                    LineType.FEEL_TEMP, LineType.DAY_TEMP, LineType.WEEK_TEMP, LineType.WEATHER_DETAIL -> {
                         DayValueFormatter(axisHash)
                     }
                     else -> null
@@ -96,12 +129,71 @@ class TestActivity : AppCompatActivity() {
 
             data = LineData(
                 when (type) {
-                    CharType.WEEK_TEMP -> applyWeekTemp(totalWeather)
-                    CharType.DAY_TEMP -> applyDailyTemperatureRange(totalWeather)
-                    CharType.WEATHER_DETAIL -> applyWeatherDetail(totalWeather)
+                    LineType.WEEK_TEMP -> applyWeekTemp(totalWeather)
+                    LineType.DAY_TEMP -> applyDailyTemperatureRange(totalWeather)
+                    LineType.WEATHER_DETAIL -> applyWeatherDetail(totalWeather)
                     else -> applyFeelsTemp(totalWeather)
                 }
             )
+            invalidate()
+        }
+    }
+
+    private fun initializePieChart(type: PieType, covidItem: List<CovidItem>) {
+        if (axisHash.size > 0) axisHash.clear()
+        lineChart.visibility = View.GONE
+        pieChart.visibility = View.VISIBLE
+        pieChart.apply {
+            // chart.spin(2000, 0, 360);
+            legend.apply {
+                verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+                horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+                orientation = Legend.LegendOrientation.HORIZONTAL
+                setDrawInside(false)
+                textSize = DEFAULT_TEXT_SIZE
+                xEntrySpace = 8f
+                textColor = ContextCompat.getColor(context, R.color.iconic_dark)
+            }
+
+            setUsePercentValues(true)
+            description.isEnabled = false
+            setExtraOffsets(5f, 10f, 5f, 5f)
+
+            dragDecelerationFrictionCoef = 0.95f
+
+
+            isDrawHoleEnabled = true
+            setEntryLabelColor(ContextCompat.getColor(this@TestActivity, R.color.iconic_white))
+            setTransparentCircleColor(Color.WHITE)
+            setTransparentCircleAlpha(110)
+            setHoleColor(Color.WHITE)
+
+            holeRadius = 58f
+            transparentCircleRadius = 61f
+
+            centerText = covidItem.reversed().first().region
+            setCenterTextTypeface(Typeface.DEFAULT_BOLD)
+            setDrawCenterText(true)
+
+            rotationAngle = 0f
+            isRotationEnabled = false
+            isHighlightPerTapEnabled = true
+
+            data = PieData(
+                when (type) {
+                    PieType.Covid -> applyCovidDetail(covidItem.reversed())
+                }
+            )
+            // entry label styling
+            setEntryLabelColor(ContextCompat.getColor(this@TestActivity, R.color.iconic_dark))
+            setEntryLabelTextSize(DEFAULT_TEXT_SIZE)
+            setDrawEntryLabels(false)
+            // value styling
+            data.setValueTextColor(ContextCompat.getColor(this@TestActivity, R.color.iconic_dark))
+            data.setValueFormatter(PercentFormatter(this))
+            data.setValueTextSize(DEFAULT_TEXT_SIZE)
+            data.setValueTypeface(Typeface.DEFAULT_BOLD)
+            highlightValues(emptyArray())
             invalidate()
         }
     }
@@ -265,6 +357,43 @@ class TestActivity : AppCompatActivity() {
             })
         }
     }
+
+    private fun applyCovidDetail(covidData: List<CovidItem>): PieDataSet {
+        val entries = ArrayList<PieEntry>()
+        val total = covidData.first()
+        entries.add(
+            PieEntry(
+                total.isolatingCount.toFloat(),
+                "치료"
+            )
+        )
+        entries.add(
+            PieEntry(
+                total.isolationDoneCount.toFloat(),
+                "완치"
+            )
+        )
+        entries.add(
+            PieEntry(
+                total.deathCount.toFloat(),
+                "사망"
+            )
+        )
+
+        val dataSet = PieDataSet(entries, "")
+        dataSet.setDrawIcons(false)
+        dataSet.sliceSpace = 3f
+        dataSet.iconsOffset = MPPointF(0f, 40f)
+//        dataSet.selectionShift = 5f
+        dataSet.selectionShift = 0f
+
+        val colors = ArrayList<Int>()
+        colors.add(ContextCompat.getColor(this, R.color.iconic_little_warn))
+        colors.add(ContextCompat.getColor(this, R.color.iconic_safe))
+        colors.add(ContextCompat.getColor(this, R.color.iconic_warn))
+        dataSet.colors = colors
+        return dataSet
+    }
 }
 
 class DayValueFormatter(hashMap: HashMap<Float, Long>) : ValueFormatter() {
@@ -275,9 +404,9 @@ class DayValueFormatter(hashMap: HashMap<Float, Long>) : ValueFormatter() {
     private var sectionInterval = 0
     override fun getAxisLabel(value: Float, axis: AxisBase?): String {
         if (data.size > 1 && sectionInterval == 0) {
-            notNulls(data[0f], data[1f]) {
-                val firstDateTime = it[0]
-                val nextDate = it[1]
+            if (data[0f].isNotNull() and data[1f].isNotNull()) {
+                val firstDateTime = data[0f]!!
+                val nextDate = data[1f]!!
                 sectionInterval = (nextDate - firstDateTime).toInt()
             }
         }
@@ -296,9 +425,13 @@ class DayValueFormatter(hashMap: HashMap<Float, Long>) : ValueFormatter() {
     }
 }
 
-private enum class CharType {
+private enum class LineType {
     WEEK_TEMP,
     DAY_TEMP,
     FEEL_TEMP,
     WEATHER_DETAIL;
+}
+
+private enum class PieType {
+    Covid;
 }

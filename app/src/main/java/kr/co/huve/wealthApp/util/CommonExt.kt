@@ -17,18 +17,6 @@ inline fun <R> R?.notNull(body: R.() -> Unit) {
     }
 }
 
-inline fun <reified R> notNulls(vararg arg: R?, body: (arg: Array<out R>) -> Unit) {
-    val nonNullArg: Array<R> = Array(arg.size) {
-        val params = arg[it]
-        if (params.isNotNull()) {
-            params!!
-        } else {
-            return
-        }
-    }
-    body(nonNullArg)
-}
-
 inline fun <R> R?.whenNull(body: () -> Unit) {
     if (this == null) {
         body()
