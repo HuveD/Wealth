@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.FragmentScoped
 import kr.co.huve.wealthApp.R
-import kr.co.huve.wealthApp.util.WealthLocationManager
 import kr.co.huve.wealthApp.model.repository.data.dust.DustItem
+import kr.co.huve.wealthApp.util.WealthLocationManager
 import kr.co.huve.wealthApp.view.main.adapter.DustListAdapter
 import javax.inject.Inject
 import kotlin.math.max
@@ -36,6 +36,7 @@ class DustView @Inject constructor(
     private val dustGrade: TextView
     private val loading: TextView
     private val city: TextView
+    val detail: TextView
 
     init {
         progressBackground = view.findViewById(R.id.progressBackground)
@@ -48,6 +49,7 @@ class DustView @Inject constructor(
         updateDate = view.findViewById(R.id.updateDate)
         dustGrade = view.findViewById(R.id.dustGrade)
         loading = view.findViewById(R.id.loading)
+        detail = view.findViewById(R.id.detail)
         city = view.findViewById(R.id.city)
     }
 

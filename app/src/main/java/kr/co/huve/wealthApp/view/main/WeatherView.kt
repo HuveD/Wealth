@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.scopes.FragmentScoped
 import kr.co.huve.wealthApp.R
-import kr.co.huve.wealthApp.util.WealthLocationManager
 import kr.co.huve.wealthApp.model.repository.data.TotalWeather
+import kr.co.huve.wealthApp.util.WealthLocationManager
 import kr.co.huve.wealthApp.view.main.adapter.PredictWeatherListAdapter
 import java.util.*
 import javax.inject.Inject
@@ -28,6 +28,7 @@ class WeatherView @Inject constructor(
     val view: View = LayoutInflater.from(context).inflate(R.layout.fragment_weather, null, false)
     val todayTab: ImageView
     val weekTab: ImageView
+    val detail: TextView
     private val predictWeatherList: RecyclerView
     private val currentStone: SeekBar
     private val titleMessage: TextView
@@ -54,6 +55,7 @@ class WeatherView @Inject constructor(
         sunRiseTime = view.findViewById(R.id.sunRiseTime)
         sunSetTime = view.findViewById(R.id.sunSetTime)
         background = view.findViewById(R.id.background)
+        detail = view.findViewById(R.id.detail)
         city = view.findViewById(R.id.city)
     }
 

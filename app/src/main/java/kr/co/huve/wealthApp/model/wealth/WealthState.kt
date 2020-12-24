@@ -9,6 +9,7 @@ sealed class WealthState {
 
     object IDLE : WealthState()
     object InvalidateStone : WealthState()
+    object ShowDetail : WealthState()
     data class FragmentSelected(val position: Int) : WealthState()
     data class WeatherTabChanged(val isHour: Boolean) : WealthState()
 

@@ -110,4 +110,5 @@
     <string name="widget_pm10_label">미세먼지&#160;&#160;%s</string>
     <string name="widget_pm25_label">초미세먼지&#160;&#160;%s</string>
     <string name="widget_date_pattern">E요일&#160;&#160;(yyyy.MM.dd)</string>
+    <string name="detail">Detail</string>
 </resources>

@@ -9,6 +9,20 @@
     tools:context=".view.main.WealthActivity">
 
     <TextView
+        android:id="@+id/detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:background="@drawable/ic_bg_detail_button"
+        android:fontFamily="@font/gemunu_libre_extra_bold"
+        android:gravity="center"
+        android:text="@string/detail"
+        android:textColor="@color/iconic_white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

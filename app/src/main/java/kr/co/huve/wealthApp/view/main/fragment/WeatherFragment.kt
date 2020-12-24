@@ -39,9 +39,13 @@ class WeatherFragment : Fragment(), EventObservable<WealthViewEvent>, StateSubsc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        data = activity?.run {
-            intent.getSerializableExtra(DataKey.EXTRA_WEATHER_DATA.name) as TotalWeather?
-        }
+        val bundle = savedInstanceState ?: requireActivity().intent.extras
+        data = bundle?.getSerializable(DataKey.EXTRA_WEATHER_DATA.name) as TotalWeather?
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable(DataKey.EXTRA_WEATHER_DATA.name, data)
     }
 
     override fun onCreateView(
@@ -68,13 +72,15 @@ class WeatherFragment : Fragment(), EventObservable<WealthViewEvent>, StateSubsc
         return Observable.merge(
             Observable.interval(0, 1, TimeUnit.MINUTES).map { WealthViewEvent.InvalidateStone },
             weatherView.weekTab.clicks().map { WealthViewEvent.WeatherTabChanged(isHour = false) },
-            weatherView.todayTab.clicks().map { WealthViewEvent.WeatherTabChanged(isHour = true) }
+            weatherView.todayTab.clicks().map { WealthViewEvent.WeatherTabChanged(isHour = true) },
+            weatherView.detail.clicks().map { WealthViewEvent.ShowDetail }
         )
     }
 
     override fun Observable<WealthState>.subscribeToState(): Disposable {
         return subscribe {
             when (it) {
+                WealthState.ShowDetail -> showDetailPopup()
                 WealthState.InvalidateStone -> weatherView.invalidateCurrentStone()
                 is WealthState.WeatherTabChanged -> {
                     weatherView.initializePredictWeatherList(it.isHour)
@@ -82,5 +88,11 @@ class WeatherFragment : Fragment(), EventObservable<WealthViewEvent>, StateSubsc
                 else -> Unit
             }
         }
+    }
+
+    private fun showDetailPopup() {
+        ChartDialog()
+            .apply { bind(data) }
+            .show(parentFragmentManager, ChartDialog::class.simpleName)
     }
 }

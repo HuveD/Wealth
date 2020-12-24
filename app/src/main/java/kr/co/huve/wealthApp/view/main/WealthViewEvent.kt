@@ -9,4 +9,5 @@ sealed class WealthViewEvent {
     data class RefreshCovidDashboard(val item: CovidItem) : WealthViewEvent()
     object RequestDust : WealthViewEvent()
     object InvalidateStone : WealthViewEvent()
+    object ShowDetail : WealthViewEvent()
 }
