@@ -54,22 +54,22 @@ class WeatherDetailDialog :
                 when {
                     totalWeather.isNotNull() -> {
                         initializeLineChart(
-                            this.findViewById(R.id.detailChart),
+                            this.findViewById(R.id.lineChartDetail),
                             LineType.WEATHER_DETAIL,
                             totalWeather!!
                         )
                         initializeLineChart(
-                            this.findViewById(R.id.weekTempChart),
+                            this.findViewById(R.id.lineChartDetail),
                             LineType.WEEK_TEMP,
                             totalWeather!!
                         )
                         initializeLineChart(
-                            this.findViewById(R.id.weekTempRangeChart),
+                            this.findViewById(R.id.lineChartDetail),
                             LineType.WEEK_RANGE,
                             totalWeather!!
                         )
                         initializeLineChart(
-                            this.findViewById(R.id.feelsLikeChart),
+                            this.findViewById(R.id.lineChartDetail),
                             LineType.FEEL_TEMP,
                             totalWeather!!
                         )
