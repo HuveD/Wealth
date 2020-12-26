@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.*
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.github.mikephil.charting.charts.LineChart
@@ -33,7 +34,7 @@ private const val DEFAULT_CIRCLE_RADIUS = 4f
 private const val DEFAULT_CUBIC_INTENSITY = 0.15f
 
 @AndroidEntryPoint
-class ChartDialog :
+class WeatherDetailDialog :
     DialogFragment() {
 
     private val format = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
@@ -52,11 +53,33 @@ class ChartDialog :
             .apply {
                 when {
                     totalWeather.isNotNull() -> {
-                        initializeLineChart(this, LineType.DAY_TEMP, totalWeather!!)
+                        initializeLineChart(
+                            this.findViewById(R.id.detailChart),
+                            LineType.WEATHER_DETAIL,
+                            totalWeather!!
+                        )
+                        initializeLineChart(
+                            this.findViewById(R.id.weekTempChart),
+                            LineType.WEEK_TEMP,
+                            totalWeather!!
+                        )
+                        initializeLineChart(
+                            this.findViewById(R.id.weekTempRangeChart),
+                            LineType.WEEK_RANGE,
+                            totalWeather!!
+                        )
+                        initializeLineChart(
+                            this.findViewById(R.id.feelsLikeChart),
+                            LineType.FEEL_TEMP,
+                            totalWeather!!
+                        )
                     }
-                    covidResult.isNotNull() -> {
-                        initializeLineChart(this, LineType.DAY_TEMP, totalWeather!!)
-                    }
+//                    covidResult.isNotNull() -> {
+//                        initializeLineChart(this, LineType.DAY_TEMP, totalWeather!!)
+//                    }
+                }
+                this.findViewById<ImageView>(R.id.closeButton).setOnClickListener {
+                    dismiss()
                 }
             }
         dialog?.window?.attributes?.apply {
@@ -69,7 +92,7 @@ class ChartDialog :
         super.onStart()
         dialog?.window?.setLayout(
             WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.MATCH_PARENT
+            WindowManager.LayoutParams.WRAP_CONTENT
         )
     }
 
@@ -78,11 +101,12 @@ class ChartDialog :
         this.covidResult = covidResult
     }
 
-    private fun initializeLineChart(dialog: View, type: LineType, totalWeather: TotalWeather) {
-        val lineChart = dialog.findViewById<LineChart>(R.id.lineChart)
-        val pieChart = dialog.findViewById<PieChart>(R.id.pieChart)
+    private fun initializeLineChart(
+        lineChart: LineChart,
+        type: LineType,
+        totalWeather: TotalWeather
+    ) {
         if (axisHash.size > 0) axisHash.clear()
-        pieChart.visibility = View.GONE
         lineChart.visibility = View.VISIBLE
         lineChart.apply {
             legend.apply {
@@ -96,7 +120,7 @@ class ChartDialog :
             }
             xAxis.apply {
                 valueFormatter = when (type) {
-                    LineType.FEEL_TEMP, LineType.DAY_TEMP, LineType.WEEK_TEMP, LineType.WEATHER_DETAIL -> {
+                    LineType.FEEL_TEMP, LineType.WEEK_RANGE, LineType.WEEK_TEMP, LineType.WEATHER_DETAIL -> {
                         DayValueFormatter(axisHash)
                     }
                     else -> null
@@ -125,7 +149,7 @@ class ChartDialog :
             data = LineData(
                 when (type) {
                     LineType.WEEK_TEMP -> applyWeekTemp(totalWeather)
-                    LineType.DAY_TEMP -> applyDailyTemperatureRange(totalWeather)
+                    LineType.WEEK_RANGE -> applyDailyTemperatureRange(totalWeather)
                     LineType.WEATHER_DETAIL -> applyWeatherDetail(totalWeather)
                     else -> applyFeelsTemp(totalWeather)
                 }
@@ -394,7 +418,7 @@ class ChartDialog :
 
     private enum class LineType {
         WEEK_TEMP,
-        DAY_TEMP,
+        WEEK_RANGE,
         FEEL_TEMP,
         WEATHER_DETAIL;
     }

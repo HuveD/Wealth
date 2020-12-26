@@ -91,8 +91,8 @@ class WeatherFragment : Fragment(), EventObservable<WealthViewEvent>, StateSubsc
     }
 
     private fun showDetailPopup() {
-        ChartDialog()
+        WeatherDetailDialog()
             .apply { bind(data) }
-            .show(parentFragmentManager, ChartDialog::class.simpleName)
+            .show(parentFragmentManager, WeatherDetailDialog::class.simpleName)
     }
 }
