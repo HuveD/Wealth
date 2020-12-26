@@ -202,6 +202,7 @@ class WeatherDetailDialog :
                 color = ContextCompat.getColor(requireContext(), R.color.iconic_sky_blue)
                 setCircleColor(ContextCompat.getColor(requireContext(), R.color.iconic_sky_blue))
                 valueTextColor = ContextCompat.getColor(requireContext(), R.color.iconic_dark)
+                setDrawValues(false)
             })
             add(LineDataSet(currentEntry, "평균 기온").apply {
                 mode = LineDataSet.Mode.LINEAR
@@ -213,6 +214,7 @@ class WeatherDetailDialog :
                 setCircleColor(ContextCompat.getColor(requireContext(), R.color.iconic_dark))
                 circleHoleColor = ContextCompat.getColor(requireContext(), R.color.iconic_white)
                 valueTextColor = ContextCompat.getColor(requireContext(), R.color.iconic_dark)
+                setDrawValues(false)
             })
             add(LineDataSet(maxEntry, "최고 기온").apply {
                 mode = LineDataSet.Mode.LINEAR
@@ -223,6 +225,7 @@ class WeatherDetailDialog :
                 color = ContextCompat.getColor(requireContext(), R.color.iconic_red)
                 setCircleColor(ContextCompat.getColor(requireContext(), R.color.iconic_red))
                 valueTextColor = ContextCompat.getColor(requireContext(), R.color.iconic_dark)
+                setDrawValues(false)
             })
         }
     }
@@ -247,10 +250,7 @@ class WeatherDetailDialog :
                 setCircleColor(ContextCompat.getColor(requireContext(), R.color.iconic_dark))
                 circleHoleColor = ContextCompat.getColor(requireContext(), R.color.iconic_white)
                 valueTextColor = ContextCompat.getColor(requireContext(), R.color.iconic_dark)
-
-                setDrawFilled(true)
-                fillColor = ContextCompat.getColor(requireContext(), R.color.white)
-                fillAlpha = 100
+                setDrawValues(false)
             })
         }
     }
@@ -276,6 +276,7 @@ class WeatherDetailDialog :
                 color = ContextCompat.getColor(requireContext(), R.color.iconic_red)
                 setCircleColor(ContextCompat.getColor(requireContext(), R.color.iconic_red))
                 valueTextColor = ContextCompat.getColor(requireContext(), R.color.iconic_dark)
+                setDrawValues(false)
             })
             add(LineDataSet(currentEntry, "평균 기온").apply {
                 mode = LineDataSet.Mode.LINEAR
@@ -287,6 +288,7 @@ class WeatherDetailDialog :
                 setCircleColor(ContextCompat.getColor(requireContext(), R.color.iconic_dark))
                 circleHoleColor = ContextCompat.getColor(requireContext(), R.color.iconic_white)
                 valueTextColor = ContextCompat.getColor(requireContext(), R.color.iconic_dark)
+                setDrawValues(false)
             })
         }
     }
@@ -314,6 +316,7 @@ class WeatherDetailDialog :
                 color = ContextCompat.getColor(requireContext(), R.color.iconic_sky_blue)
                 setCircleColor(ContextCompat.getColor(requireContext(), R.color.iconic_sky_blue))
                 valueTextColor = ContextCompat.getColor(requireContext(), R.color.iconic_dark)
+                setDrawValues(false)
             })
             add(LineDataSet(cloudyEntry, "운량(%)").apply {
                 mode = LineDataSet.Mode.LINEAR
@@ -325,6 +328,7 @@ class WeatherDetailDialog :
                 setCircleColor(ContextCompat.getColor(requireContext(), R.color.iconic_little_warn))
                 circleHoleColor = ContextCompat.getColor(requireContext(), R.color.iconic_white)
                 valueTextColor = ContextCompat.getColor(requireContext(), R.color.iconic_dark)
+                setDrawValues(false)
             })
             add(LineDataSet(popEntry, "강수확률(%)").apply {
                 mode = LineDataSet.Mode.LINEAR
@@ -335,6 +339,7 @@ class WeatherDetailDialog :
                 color = ContextCompat.getColor(requireContext(), R.color.iconic_dark_blue)
                 setCircleColor(ContextCompat.getColor(requireContext(), R.color.iconic_dark_blue))
                 valueTextColor = ContextCompat.getColor(requireContext(), R.color.iconic_dark)
+                setDrawValues(false)
             })
         }
     }
