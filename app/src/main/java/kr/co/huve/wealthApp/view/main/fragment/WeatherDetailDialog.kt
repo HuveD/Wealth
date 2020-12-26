@@ -1,32 +1,34 @@
 package kr.co.huve.wealthApp.view.main.fragment
 
-import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
 import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.*
-import com.github.mikephil.charting.formatter.PercentFormatter
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
-import com.github.mikephil.charting.utils.MPPointF
 import dagger.hilt.android.AndroidEntryPoint
 import kr.co.huve.wealthApp.R
-import kr.co.huve.wealthApp.model.repository.data.*
+import kr.co.huve.wealthApp.model.repository.data.CovidResult
+import kr.co.huve.wealthApp.model.repository.data.DayWeather
+import kr.co.huve.wealthApp.model.repository.data.TotalWeather
+import kr.co.huve.wealthApp.model.repository.data.WeekWeather
 import kr.co.huve.wealthApp.util.isNotNull
+import kr.co.huve.wealthApp.util.isNull
 import kr.co.huve.wealthApp.util.notNull
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.floor
-
 
 private const val DEFAULT_LINE_WITH = 2.5f
 private const val DEFAULT_TEXT_SIZE = 13f
@@ -37,8 +39,6 @@ private const val DEFAULT_CUBIC_INTENSITY = 0.15f
 class WeatherDetailDialog :
     DialogFragment() {
 
-    private val format = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
-    private val calendar = Calendar.getInstance().apply { add(Calendar.DAY_OF_MONTH, -1) }
     private val axisHash = HashMap<Float, Long>()
     private var totalWeather: TotalWeather? = null
     private var covidResult: CovidResult? = null
@@ -51,35 +51,42 @@ class WeatherDetailDialog :
         val layout = LayoutInflater.from(requireContext())
             .inflate(R.layout.dialog_detail, null)
             .apply {
-                when {
-                    totalWeather.isNotNull() -> {
-                        initializeLineChart(
-                            this.findViewById(R.id.lineChartDetail),
-                            LineType.WEATHER_DETAIL,
-                            totalWeather!!
-                        )
-                        initializeLineChart(
-                            this.findViewById(R.id.lineChartDetail),
-                            LineType.WEEK_TEMP,
-                            totalWeather!!
-                        )
-                        initializeLineChart(
-                            this.findViewById(R.id.lineChartDetail),
-                            LineType.WEEK_RANGE,
-                            totalWeather!!
-                        )
-                        initializeLineChart(
-                            this.findViewById(R.id.lineChartDetail),
-                            LineType.FEEL_TEMP,
-                            totalWeather!!
-                        )
-                    }
-//                    covidResult.isNotNull() -> {
-//                        initializeLineChart(this, LineType.DAY_TEMP, totalWeather!!)
-//                    }
-                }
-                this.findViewById<ImageView>(R.id.closeButton).setOnClickListener {
+                if (totalWeather.isNull()) {
                     dismiss()
+                } else {
+                    val tabContainer: ViewGroup = this.findViewById(R.id.tabContainer)
+                    val chart: LineChart = this.findViewById(R.id.lineChartDetail)
+                    initializeLineChart(chart, totalWeather!!)
+                    this.findViewById<ImageView>(R.id.closeButton).setOnClickListener {
+                        dismiss()
+                    }
+                    for (child: View in tabContainer.children) {
+                        child.setOnClickListener {
+                            when (it.id) {
+                                R.id.detailTab -> invalidateChart(
+                                    chart,
+                                    LineType.WEATHER_DETAIL,
+                                    totalWeather!!
+                                )
+                                R.id.weekTab -> invalidateChart(
+                                    chart,
+                                    LineType.WEEK_TEMP,
+                                    totalWeather!!
+                                )
+                                R.id.rangeTab -> invalidateChart(
+                                    chart,
+                                    LineType.WEEK_RANGE,
+                                    totalWeather!!
+                                )
+                                R.id.feelsLikeTab -> invalidateChart(
+                                    chart,
+                                    LineType.FEEL_TEMP,
+                                    totalWeather!!
+                                )
+                            }
+                            changeStyle(tabContainer, it)
+                        }
+                    }
                 }
             }
         dialog?.window?.attributes?.apply {
@@ -103,7 +110,6 @@ class WeatherDetailDialog :
 
     private fun initializeLineChart(
         lineChart: LineChart,
-        type: LineType,
         totalWeather: TotalWeather
     ) {
         if (axisHash.size > 0) axisHash.clear()
@@ -119,12 +125,6 @@ class WeatherDetailDialog :
                 textColor = ContextCompat.getColor(context, R.color.iconic_dark)
             }
             xAxis.apply {
-                valueFormatter = when (type) {
-                    LineType.FEEL_TEMP, LineType.WEEK_RANGE, LineType.WEEK_TEMP, LineType.WEATHER_DETAIL -> {
-                        DayValueFormatter(axisHash)
-                    }
-                    else -> null
-                }
                 textColor = ContextCompat.getColor(context, R.color.iconic_dark)
                 textSize = DEFAULT_TEXT_SIZE
                 position = XAxis.XAxisPosition.TOP
@@ -145,77 +145,37 @@ class WeatherDetailDialog :
 
             isAutoScaleMinMaxEnabled = true
             description.isEnabled = false
+        }
+        invalidateChart(lineChart, LineType.WEATHER_DETAIL, totalWeather)
+    }
 
-            data = LineData(
+    private fun invalidateChart(chart: LineChart, type: LineType, data: TotalWeather) {
+        chart.apply {
+            xAxis.valueFormatter = DayValueFormatter(axisHash)
+            this.data = LineData(
                 when (type) {
-                    LineType.WEEK_TEMP -> applyWeekTemp(totalWeather)
-                    LineType.WEEK_RANGE -> applyDailyTemperatureRange(totalWeather)
-                    LineType.WEATHER_DETAIL -> applyWeatherDetail(totalWeather)
-                    else -> applyFeelsTemp(totalWeather)
+                    LineType.WEEK_TEMP -> applyWeekTemp(data)
+                    LineType.WEEK_RANGE -> applyDailyTemperatureRange(data)
+                    LineType.WEATHER_DETAIL -> applyWeatherDetail(data)
+                    else -> applyFeelsTemp(data)
                 }
             )
             invalidate()
         }
     }
 
-    private fun initializePieChart(dialog: View, type: PieType, covidItem: List<CovidItem>) {
-        val lineChart = dialog.findViewById<LineChart>(R.id.lineChart)
-        val pieChart = dialog.findViewById<PieChart>(R.id.pieChart)
-        if (axisHash.size > 0) axisHash.clear()
-        lineChart.visibility = View.GONE
-        pieChart.visibility = View.VISIBLE
-        pieChart.apply {
-            // chart.spin(2000, 0, 360);
-            legend.apply {
-                verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
-                horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
-                orientation = Legend.LegendOrientation.HORIZONTAL
-                setDrawInside(false)
-                textSize = DEFAULT_TEXT_SIZE
-                xEntrySpace = 8f
-                textColor = ContextCompat.getColor(context, R.color.iconic_dark)
+    private fun changeStyle(container: ViewGroup, selectedItem: View) {
+        for (v: View in container.children) {
+            val child = v as TextView
+            if (child == selectedItem) {
+                child.background =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.bg_round_rect)
+                child.setTextColor(ContextCompat.getColor(requireContext(), R.color.iconic_dark))
+            } else {
+                child.background =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.bg_round_rect_gray)
+                child.setTextColor(ContextCompat.getColor(requireContext(), R.color.hint))
             }
-
-            setUsePercentValues(true)
-            description.isEnabled = false
-            setExtraOffsets(5f, 10f, 5f, 5f)
-
-            dragDecelerationFrictionCoef = 0.95f
-
-
-            isDrawHoleEnabled = true
-            setEntryLabelColor(ContextCompat.getColor(requireContext(), R.color.iconic_white))
-            setTransparentCircleColor(Color.WHITE)
-            setTransparentCircleAlpha(110)
-            setHoleColor(Color.WHITE)
-
-            holeRadius = 58f
-            transparentCircleRadius = 61f
-
-            centerText = covidItem.reversed().first().region
-            setCenterTextTypeface(Typeface.DEFAULT_BOLD)
-            setDrawCenterText(true)
-
-            rotationAngle = 0f
-            isRotationEnabled = false
-            isHighlightPerTapEnabled = true
-
-            data = PieData(
-                when (type) {
-                    PieType.Covid -> applyCovidDetail(covidItem.reversed())
-                }
-            )
-            // entry label styling
-            setEntryLabelColor(ContextCompat.getColor(requireContext(), R.color.iconic_dark))
-            setEntryLabelTextSize(DEFAULT_TEXT_SIZE)
-            setDrawEntryLabels(false)
-            // value styling
-            data.setValueTextColor(ContextCompat.getColor(requireContext(), R.color.iconic_dark))
-            data.setValueFormatter(PercentFormatter(this))
-            data.setValueTextSize(DEFAULT_TEXT_SIZE)
-            data.setValueTypeface(Typeface.DEFAULT_BOLD)
-            highlightValues(emptyArray())
-            invalidate()
         }
     }
 
@@ -379,52 +339,11 @@ class WeatherDetailDialog :
         }
     }
 
-    private fun applyCovidDetail(covidData: List<CovidItem>): PieDataSet {
-        val entries = ArrayList<PieEntry>()
-        val total = covidData.first()
-        entries.add(
-            PieEntry(
-                total.isolatingCount.toFloat(),
-                "치료"
-            )
-        )
-        entries.add(
-            PieEntry(
-                total.isolationDoneCount.toFloat(),
-                "완치"
-            )
-        )
-        entries.add(
-            PieEntry(
-                total.deathCount.toFloat(),
-                "사망"
-            )
-        )
-
-        val dataSet = PieDataSet(entries, "")
-        dataSet.setDrawIcons(false)
-        dataSet.sliceSpace = 3f
-        dataSet.iconsOffset = MPPointF(0f, 40f)
-//        dataSet.selectionShift = 5f
-        dataSet.selectionShift = 0f
-
-        val colors = ArrayList<Int>()
-        colors.add(ContextCompat.getColor(requireContext(), R.color.iconic_little_warn))
-        colors.add(ContextCompat.getColor(requireContext(), R.color.iconic_safe))
-        colors.add(ContextCompat.getColor(requireContext(), R.color.iconic_warn))
-        dataSet.colors = colors
-        return dataSet
-    }
-
     private enum class LineType {
         WEEK_TEMP,
         WEEK_RANGE,
         FEEL_TEMP,
         WEATHER_DETAIL;
-    }
-
-    private enum class PieType {
-        Covid;
     }
 
     class DayValueFormatter(hashMap: HashMap<Float, Long>) : ValueFormatter() {
