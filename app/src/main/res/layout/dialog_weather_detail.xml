@@ -35,7 +35,7 @@
             android:background="@drawable/bg_round_rect"
             android:fontFamily="@font/gemunu_libre_extra_bold"
             android:padding="8dp"
-            android:text="날씨 상세"
+            android:text="@string/weather_detail_tab"
             android:textColor="@color/iconic_dark"
             android:textSize="12sp" />
 
@@ -47,7 +47,7 @@
             android:background="@drawable/bg_round_rect_gray"
             android:fontFamily="@font/gemunu_libre_extra_bold"
             android:padding="8dp"
-            android:text="주간 날씨"
+            android:text="@string/week_weather_tab"
             android:textColor="@color/hint"
             android:textSize="12sp" />
 
@@ -59,7 +59,7 @@
             android:background="@drawable/bg_round_rect_gray"
             android:fontFamily="@font/gemunu_libre_extra_bold"
             android:padding="8dp"
-            android:text="일교차"
+            android:text="@string/temp_range_tab"
             android:textColor="@color/hint"
             android:textSize="12sp" />
 
@@ -71,7 +71,7 @@
             android:background="@drawable/bg_round_rect_gray"
             android:fontFamily="@font/gemunu_libre_extra_bold"
             android:padding="8dp"
-            android:text="체감 온도"
+            android:text="@string/feels_like_tab"
             android:textColor="@color/hint"
             android:textSize="12sp" />
     </LinearLayout>

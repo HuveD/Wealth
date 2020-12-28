@@ -35,7 +35,7 @@
             android:background="@drawable/bg_round_rect"
             android:fontFamily="@font/gemunu_libre_extra_bold"
             android:padding="8dp"
-            android:text="감염 상세"
+            android:text="@string/covid_detail_tab"
             android:textColor="@color/iconic_dark"
             android:textSize="12sp" />
     </LinearLayout>

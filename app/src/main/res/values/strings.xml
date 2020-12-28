@@ -120,4 +120,9 @@
     <string name="max_temp_chart_label">최고 기온(°C)</string>
     <string name="average_temp_chart_label">평균 기온(°C)</string>
     <string name="min_temp_chart_label">최저 기온(°C)</string>
+    <string name="covid_detail_tab">감염 상세</string>
+    <string name="week_weather_tab">주간 날씨</string>
+    <string name="weather_detail_tab">날씨 상세</string>
+    <string name="temp_range_tab">일교차</string>
+    <string name="feels_like_tab">체감 온도</string>
 </resources>
