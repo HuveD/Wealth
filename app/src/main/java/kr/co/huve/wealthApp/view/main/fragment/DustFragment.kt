@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.jakewharton.rxbinding4.view.clicks
 import com.jakewharton.rxrelay3.PublishRelay
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.Observable
@@ -91,10 +90,7 @@ class DustFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<W
         }
     }
 
-    override fun events(): Observable<WealthViewEvent> = Observable.merge(
-        dustView.detail.clicks().map { WealthViewEvent.ShowDetail },
-        requestRelay
-    )
+    override fun events(): Observable<WealthViewEvent> = requestRelay
 
     private fun requestDust() {
         if (!dustView.isbinded) requestRelay.accept(WealthViewEvent.RequestDust)

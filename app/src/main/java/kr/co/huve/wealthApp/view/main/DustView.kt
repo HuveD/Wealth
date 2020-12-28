@@ -36,7 +36,6 @@ class DustView @Inject constructor(
     private val dustGrade: TextView
     private val loading: TextView
     private val city: TextView
-    val detail: TextView
 
     init {
         progressBackground = view.findViewById(R.id.progressBackground)
@@ -49,7 +48,6 @@ class DustView @Inject constructor(
         updateDate = view.findViewById(R.id.updateDate)
         dustGrade = view.findViewById(R.id.dustGrade)
         loading = view.findViewById(R.id.loading)
-        detail = view.findViewById(R.id.detail)
         city = view.findViewById(R.id.city)
     }
 

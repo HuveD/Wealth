@@ -106,7 +106,7 @@ class CovidDetailDialog :
             holeRadius = 58f
             transparentCircleRadius = 61f
 
-            centerText = covidItem.reversed().first().region
+            centerText = covidItem.first().region
             setCenterTextTypeface(Typeface.DEFAULT_BOLD)
             setDrawCenterText(true)
 
@@ -165,19 +165,19 @@ class CovidDetailDialog :
         entries.add(
             PieEntry(
                 total.isolatingCount.toFloat(),
-                "치료"
+                getString(R.string.under_treatment)
             )
         )
         entries.add(
             PieEntry(
                 total.isolationDoneCount.toFloat(),
-                "완치"
+                getString(R.string.complete_cure)
             )
         )
         entries.add(
             PieEntry(
                 total.deathCount.toFloat(),
-                "사망"
+                getString(R.string.death)
             )
         )
 

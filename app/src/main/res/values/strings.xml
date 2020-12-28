@@ -125,4 +125,7 @@
     <string name="weather_detail_tab">날씨 상세</string>
     <string name="temp_range_tab">일교차</string>
     <string name="feels_like_tab">체감 온도</string>
+    <string name="complete_cure">완치</string>
+    <string name="under_treatment">치료</string>
+    <string name="death">사망</string>
 </resources>
