@@ -111,4 +111,13 @@
     <string name="widget_pm25_label">초미세먼지&#160;&#160;%s</string>
     <string name="widget_date_pattern">E요일&#160;&#160;(yyyy.MM.dd)</string>
     <string name="detail">Detail</string>
+    <string name="cloud_chart_label">운량(%)</string>
+    <string name="pop_chart_label">강수확률(%)</string>
+    <string name="humidity_chart_label">습도(%)</string>
+    <string name="feelslike_chart_label">체감 온도(°C)</string>
+    <string name="current_temp_chart_label">기온(°C)</string>
+    <string name="temp_range_chart_label">일교차(°C)</string>
+    <string name="max_temp_chart_label">최고 기온(°C)</string>
+    <string name="average_temp_chart_label">평균 기온(°C)</string>
+    <string name="min_temp_chart_label">최저 기온(°C)</string>
 </resources>

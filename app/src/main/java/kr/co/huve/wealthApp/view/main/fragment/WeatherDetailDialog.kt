@@ -180,9 +180,9 @@ class WeatherDetailDialog :
     }
 
     private fun applyWeekTemp(totalWeather: TotalWeather): ArrayList<ILineDataSet> {
-        var currentEntry = ArrayList<Entry>()
-        var minEntry = ArrayList<Entry>()
-        var maxEntry = ArrayList<Entry>()
+        val currentEntry = ArrayList<Entry>()
+        val minEntry = ArrayList<Entry>()
+        val maxEntry = ArrayList<Entry>()
         for (weather: WeekWeather in totalWeather.daily) {
             val position = (currentEntry.size).toFloat()
             val date = weather.dt * 1000
@@ -193,7 +193,7 @@ class WeatherDetailDialog :
         }
 
         return ArrayList<ILineDataSet>().apply {
-            add(LineDataSet(minEntry, "최저 기온").apply {
+            add(LineDataSet(minEntry, getString(R.string.min_temp_chart_label)).apply {
                 mode = LineDataSet.Mode.LINEAR
                 circleRadius = DEFAULT_CIRCLE_RADIUS
                 lineWidth = DEFAULT_LINE_WITH
@@ -204,7 +204,7 @@ class WeatherDetailDialog :
                 valueTextColor = ContextCompat.getColor(requireContext(), R.color.iconic_dark)
                 setDrawValues(false)
             })
-            add(LineDataSet(currentEntry, "평균 기온").apply {
+            add(LineDataSet(currentEntry, getString(R.string.average_temp_chart_label)).apply {
                 mode = LineDataSet.Mode.LINEAR
                 circleRadius = DEFAULT_CIRCLE_RADIUS
                 lineWidth = DEFAULT_LINE_WITH
@@ -216,7 +216,7 @@ class WeatherDetailDialog :
                 valueTextColor = ContextCompat.getColor(requireContext(), R.color.iconic_dark)
                 setDrawValues(false)
             })
-            add(LineDataSet(maxEntry, "최고 기온").apply {
+            add(LineDataSet(maxEntry, getString(R.string.max_temp_chart_label)).apply {
                 mode = LineDataSet.Mode.LINEAR
                 valueTextSize = DEFAULT_TEXT_SIZE
                 circleRadius = DEFAULT_CIRCLE_RADIUS
@@ -240,7 +240,7 @@ class WeatherDetailDialog :
         }
 
         return ArrayList<ILineDataSet>().apply {
-            add(LineDataSet(rangeEntry, "일교차").apply {
+            add(LineDataSet(rangeEntry, getString(R.string.temp_range_chart_label)).apply {
                 mode = LineDataSet.Mode.LINEAR
                 circleRadius = DEFAULT_CIRCLE_RADIUS
                 lineWidth = DEFAULT_LINE_WITH
@@ -267,7 +267,7 @@ class WeatherDetailDialog :
         }
 
         return ArrayList<ILineDataSet>().apply {
-            add(LineDataSet(feelsEntry, "체감 온도").apply {
+            add(LineDataSet(feelsEntry, getString(R.string.feelslike_chart_label)).apply {
                 mode = LineDataSet.Mode.LINEAR
                 circleRadius = DEFAULT_CIRCLE_RADIUS
                 lineWidth = DEFAULT_LINE_WITH
@@ -278,7 +278,7 @@ class WeatherDetailDialog :
                 valueTextColor = ContextCompat.getColor(requireContext(), R.color.iconic_dark)
                 setDrawValues(false)
             })
-            add(LineDataSet(currentEntry, "평균 기온").apply {
+            add(LineDataSet(currentEntry, getString(R.string.current_temp_chart_label)).apply {
                 mode = LineDataSet.Mode.LINEAR
                 circleRadius = DEFAULT_CIRCLE_RADIUS
                 lineWidth = DEFAULT_LINE_WITH
@@ -307,7 +307,7 @@ class WeatherDetailDialog :
         }
 
         return ArrayList<ILineDataSet>().apply {
-            add(LineDataSet(humidityEntry, "습도(%)").apply {
+            add(LineDataSet(humidityEntry, getString(R.string.humidity_chart_label)).apply {
                 mode = LineDataSet.Mode.LINEAR
                 circleRadius = DEFAULT_CIRCLE_RADIUS
                 lineWidth = DEFAULT_LINE_WITH
@@ -318,7 +318,7 @@ class WeatherDetailDialog :
                 valueTextColor = ContextCompat.getColor(requireContext(), R.color.iconic_dark)
                 setDrawValues(false)
             })
-            add(LineDataSet(cloudyEntry, "운량(%)").apply {
+            add(LineDataSet(cloudyEntry, getString(R.string.cloud_chart_label)).apply {
                 mode = LineDataSet.Mode.LINEAR
                 circleRadius = DEFAULT_CIRCLE_RADIUS
                 lineWidth = DEFAULT_LINE_WITH
@@ -330,7 +330,7 @@ class WeatherDetailDialog :
                 valueTextColor = ContextCompat.getColor(requireContext(), R.color.iconic_dark)
                 setDrawValues(false)
             })
-            add(LineDataSet(popEntry, "강수확률(%)").apply {
+            add(LineDataSet(popEntry, getString(R.string.pop_chart_label)).apply {
                 mode = LineDataSet.Mode.LINEAR
                 circleRadius = DEFAULT_CIRCLE_RADIUS
                 lineWidth = DEFAULT_LINE_WITH
