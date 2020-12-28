@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.jakewharton.rxbinding4.view.clicks
 import com.jakewharton.rxrelay3.PublishRelay
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.core.Observable
@@ -22,6 +23,8 @@ import kr.co.huve.wealthApp.view.StateSubscriber
 import kr.co.huve.wealthApp.view.main.CovidView
 import kr.co.huve.wealthApp.view.main.WealthViewEvent
 import kr.co.huve.wealthApp.view.main.adapter.WealthPagerAdapter
+import kr.co.huve.wealthApp.view.main.dialog.CovidDetailDialog
+import kr.co.huve.wealthApp.view.main.dialog.WeatherDetailDialog
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -40,6 +43,8 @@ class CovidFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<
 
     @Inject
     lateinit var covidView: CovidView
+
+    private lateinit var covidData: List<CovidItem>
     private val format = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
     private val calendar = Calendar.getInstance()
 
@@ -86,7 +91,8 @@ class CovidFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<
                     calendar.add(Calendar.DAY_OF_MONTH, -1)
                     requestCovidData()
                 } else {
-                    covidView.bind(it.data.reversed(), onListItemClicked)
+                    covidData = it.data.reversed()
+                    covidView.bind(covidData, onListItemClicked)
                     covidView.refreshProgress(false)
                 }
             }
@@ -101,11 +107,13 @@ class CovidFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<
             is WealthState.RefreshCovidDashboard -> {
                 covidView.invalidateData(it.item)
             }
+            is WealthState.ShowDetail -> showDetailPopup()
             else -> Unit
         }
     }
 
-    override fun events(): Observable<WealthViewEvent> = relay
+    override fun events(): Observable<WealthViewEvent> =
+        Observable.merge(relay, covidView.detail.clicks().map { WealthViewEvent.ShowDetail })
 
     private fun requestCovidData() {
         if (!covidView.isbinded) relay.accept(
@@ -115,6 +123,12 @@ class CovidFragment : Fragment(), StateSubscriber<WealthState>, EventObservable<
                 )
             )
         )
+    }
+
+    private fun showDetailPopup() {
+        CovidDetailDialog()
+            .apply { bind(covidData) }
+            .show(parentFragmentManager, WeatherDetailDialog::class.simpleName)
     }
 
     private val onListItemClicked = { item: CovidItem ->

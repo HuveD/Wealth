@@ -24,6 +24,7 @@ class CovidView @Inject constructor(
 ) {
     val view: View = LayoutInflater.from(context).inflate(R.layout.fragment_disaster, null, false)
     var theme: WealthTheme = WealthTheme.CovidSafe
+    val detail: TextView
     var isbinded = false
     private val background: ViewGroup
     private val title: TextView
@@ -61,6 +62,7 @@ class CovidView @Inject constructor(
         progressBackground = view.findViewById(R.id.progressBackground)
         progress = view.findViewById(R.id.progress)
         loading = view.findViewById(R.id.loading)
+        detail = view.findViewById(R.id.detail)
     }
 
     fun bind(data: List<CovidItem>, onListClicked: (CovidItem) -> Unit) {

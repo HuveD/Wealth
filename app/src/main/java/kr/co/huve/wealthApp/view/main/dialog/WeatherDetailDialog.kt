@@ -1,4 +1,4 @@
-package kr.co.huve.wealthApp.view.main.fragment
+package kr.co.huve.wealthApp.view.main.dialog
 
 import android.os.Bundle
 import android.view.*
@@ -18,7 +18,6 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import dagger.hilt.android.AndroidEntryPoint
 import kr.co.huve.wealthApp.R
-import kr.co.huve.wealthApp.model.repository.data.CovidResult
 import kr.co.huve.wealthApp.model.repository.data.DayWeather
 import kr.co.huve.wealthApp.model.repository.data.TotalWeather
 import kr.co.huve.wealthApp.model.repository.data.WeekWeather
@@ -41,7 +40,6 @@ class WeatherDetailDialog :
 
     private val axisHash = HashMap<Float, Long>()
     private var totalWeather: TotalWeather? = null
-    private var covidResult: CovidResult? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,7 +47,7 @@ class WeatherDetailDialog :
         savedInstanceState: Bundle?
     ): View {
         val layout = LayoutInflater.from(requireContext())
-            .inflate(R.layout.dialog_detail, null)
+            .inflate(R.layout.dialog_weather_detail, null)
             .apply {
                 if (totalWeather.isNull()) {
                     dismiss()
@@ -103,9 +101,8 @@ class WeatherDetailDialog :
         )
     }
 
-    fun bind(totalWeather: TotalWeather?, covidResult: CovidResult? = null) {
+    fun bind(totalWeather: TotalWeather?) {
         this.totalWeather = totalWeather
-        this.covidResult = covidResult
     }
 
     private fun initializeLineChart(
@@ -256,7 +253,7 @@ class WeatherDetailDialog :
     }
 
     private fun applyFeelsTemp(totalWeather: TotalWeather): ArrayList<ILineDataSet> {
-        var currentEntry = ArrayList<Entry>()
+        val currentEntry = ArrayList<Entry>()
         val feelsEntry = ArrayList<Entry>()
         for (weather: DayWeather in totalWeather.hourly) {
             val position = (feelsEntry.size).toFloat()
@@ -294,7 +291,7 @@ class WeatherDetailDialog :
     }
 
     private fun applyWeatherDetail(totalWeather: TotalWeather): ArrayList<ILineDataSet> {
-        var humidityEntry = ArrayList<Entry>()
+        val humidityEntry = ArrayList<Entry>()
         val cloudyEntry = ArrayList<Entry>()
         val popEntry = ArrayList<Entry>()
         for (weather: DayWeather in totalWeather.hourly) {

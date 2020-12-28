@@ -19,6 +19,7 @@ import kr.co.huve.wealthApp.view.EventObservable
 import kr.co.huve.wealthApp.view.StateSubscriber
 import kr.co.huve.wealthApp.view.main.WealthViewEvent
 import kr.co.huve.wealthApp.view.main.WeatherView
+import kr.co.huve.wealthApp.view.main.dialog.WeatherDetailDialog
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
